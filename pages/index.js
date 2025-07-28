@@ -24,13 +24,11 @@ export default function IndexPage() {
   const [traits, setTraits] = useState([]);
 
   useEffect(() => {
-    // Lade alle Traits aus lokaler traits.json
+    // Traits laden (Dropdown)
     fetch('/traits.json')
       .then(res => res.json())
       .then(data => {
-        const sorted = data.sort((a, b) =>
-          a.label.localeCompare(b.label)
-        );
+        const sorted = data.sort((a, b) => a.label.localeCompare(b.label));
         setTraits(sorted);
       })
       .catch(err => console.error('Fehler beim Laden der Traits:', err));
@@ -42,24 +40,73 @@ export default function IndexPage() {
 
     if (!analyzeButton || !fileInput || !diseaseSelect) return;
 
+    // Mapping für Freitext (falls traits.json leer oder unpassend ist)
+    const diseaseMap = {
+      "alzheimer": "EFO_0000249",
+      "diabetes": "EFO_0001360",
+      "stroke": "EFO_0000712",
+      "brustkrebs": "EFO_0000305",
+      "koronare herzkrankheit": "EFO_0000616"
+    };
+
     analyzeButton.addEventListener('click', async () => {
       const file = fileInput.files[0];
-      const disease = diseaseSelect.value;
+      let disease = diseaseSelect.value.trim();
 
+      // Eingabeprüfungen
       if (!file) {
         alert('Bitte eine 23andMe-Datei auswählen.');
         return;
       }
+      if (!disease) {
+        alert('Bitte eine Krankheit auswählen.');
+        return;
+      }
 
-      resultDiv.innerHTML = `<p>Berechnung für <strong>${disease}</strong> läuft… bitte warten</p>`;
+      // Falls Freitext statt EFO-ID → mappen
+      const normalized = disease.toLowerCase();
+      if (diseaseMap[normalized]) {
+        disease = diseaseMap[normalized];
+      }
+
+      resultDiv.innerHTML = `
+        <p>Berechnung für <strong>${disease}</strong> läuft… bitte warten</p>
+        <progress id="overallProgress" max="100" value="0" style="width:100%; height:20px; margin-bottom:10px;"></progress>
+        <div id="progressDetails" style="font-size:14px;"></div>
+      `;
 
       try {
-        const allResults = await computePRS(file, (pgsId, progress, matches) => {
-          const bar = document.getElementById(`progress-${pgsId}`);
-          const label = document.getElementById(`label-${pgsId}`);
-          if (bar) bar.value = progress;
-          if (label) label.textContent = `${pgsId}: ${progress.toFixed(1)}% (${matches} Matches)`;
-        }, disease);
+        console.log("==> Aufruf computePRS mit disease:", disease);
+
+        const allResults = await computePRS(
+          file,
+          (pgsId, progress, matches, phase, completed, total) => {
+            // Gesamtfortschritt berechnen (über alle PGS)
+            const overall = document.getElementById('overallProgress');
+            const overallPct = ((completed + progress / 100) / total) * 100;
+            if (overall) overall.value = overallPct;
+
+            // Fortschrittsanzeige für jedes einzelne PGS
+            let bar = document.getElementById(`bar-${pgsId}`);
+            if (!bar) {
+              const container = document.getElementById('progressDetails');
+              const wrapper = document.createElement('div');
+              wrapper.innerHTML = `
+                <p style="margin:5px 0;">
+                  <strong>${pgsId}</strong> – <span id="label-${pgsId}">${phase}</span>
+                </p>
+                <progress id="bar-${pgsId}" max="100" value="${progress}" style="width:100%;"></progress>
+              `;
+              container.appendChild(wrapper);
+              bar = document.getElementById(`bar-${pgsId}`);
+            }
+
+            bar.value = progress;
+            const label = document.getElementById(`label-${pgsId}`);
+            if (label) label.textContent = `${phase} – ${progress.toFixed(1)}% (${matches} Matches)`;
+          },
+          disease
+        );
 
         renderSortedResults(allResults, resultDiv);
       } catch (err) {
@@ -150,7 +197,7 @@ export default function IndexPage() {
           <option>Lade Traits…</option>
         ) : (
           traits.map((t) => (
-            <option key={t.efo} value={t.efo}>
+            <option key={t.id} value={t.id}>
               {t.label} ({t.count_pgs} PGS)
             </option>
           ))
