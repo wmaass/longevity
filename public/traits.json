@@ -1,12 +1,5 @@
 [
   {
-    "id": "MONDO_0005148",
-    "label": "type 2 diabetes mellitus",
-    "description": "A type of diabetes mellitus that is characterized by insulin resistance or desensitization and increased blood glucose levels. This is a chronic disease that can develop gradually over the life of a patient and can be linked to both environmental factors and heredity. [NCIT: P378]",
-    "url": "http://purl.obolibrary.org/obo/MONDO_0005148",
-    "count_pgs": 170
-  },
-  {
     "id": "EFO_0000305",
     "label": "breast carcinoma",
     "description": "A carcinoma that arises from epithelial cells of the breast",
@@ -28,13 +21,6 @@
     "count_pgs": 119
   },
   {
-    "id": "OBA_VT0001253",
-    "label": "body height",
-    "description": "The height of a multicellular organism. [AUTO: patterns/patterns/entity_attribute]",
-    "url": "http://purl.obolibrary.org/obo/OBA_VT0001253",
-    "count_pgs": 100
-  },
-  {
     "id": "EFO_0004612",
     "label": "high density lipoprotein cholesterol measurement",
     "description": "The measurement of HDL cholesterol in blood used as a risk indicator for heart disease.",
@@ -47,13 +33,6 @@
     "description": "A carcinoma that arises from epithelial cells of the prostate gland.",
     "url": "http://www.ebi.ac.uk/efo/EFO_0001663",
     "count_pgs": 87
-  },
-  {
-    "id": "OBA_VT0005416",
-    "label": "blood protein amount",
-    "description": "The amount of a protein when measured in blood. [AUTO: patterns/patterns/entity_attribute_location]",
-    "url": "http://purl.obolibrary.org/obo/OBA_VT0005416",
-    "count_pgs": 82
   },
   {
     "id": "EFO_0004530",
@@ -91,13 +70,6 @@
     "count_pgs": 67
   },
   {
-    "id": "MONDO_0004979",
-    "label": "asthma",
-    "description": "A bronchial disease that is characterized by chronic inflammation and narrowing of the airways, which is caused by a combination of environmental and genetic factors resulting in recurring periods of wheezing (a whistling sound while breathing), chest tightness, shortness of breath, mucus production and coughing. The symptoms appear due to a variety of triggers such as allergens, irritants, respiratory infections, weather changes, exercise, stress, reflux disease, medications, foods and emotional anxiety. [EFO: 0000270]",
-    "url": "http://purl.obolibrary.org/obo/MONDO_0004979",
-    "count_pgs": 65
-  },
-  {
     "id": "EFO_0000275",
     "label": "atrial fibrillation",
     "description": "A disorder characterized by an electrocardiographic finding of a supraventricular arrhythmia characterized by the replacement of consistent P waves by rapid oscillations or fibrillatory waves that vary in size, shape and timing and are accompanied by an irregular ventricular response. (CDISC) [NCIT: P378]",
@@ -119,24 +91,52 @@
     "count_pgs": 48
   },
   {
-    "id": "MONDO_0005575",
-    "label": "colorectal cancer",
-    "description": "A primary or metastatic malignant neoplasm that affects the colon or rectum. Representative examples include carcinoma, lymphoma, and sarcoma. [NCIT: C4978]",
-    "url": "http://purl.obolibrary.org/obo/MONDO_0005575",
-    "count_pgs": 46
+    "id": "EFO_0006527",
+    "label": "smoking status measurement",
+    "description": "self-reported binary measure, used to denote whether an individual is currently or has ever been a smoker",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0006527",
+    "count_pgs": 43
   },
   {
-    "id": "MONDO_0004975",
-    "label": "Alzheimer disease",
-    "description": "A progressive, neurodegenerative disease characterized by loss of function and death of nerve cells in several areas of the brain leading to loss of cognitive function such as memory and language. [NCIT: P378]",
-    "url": "http://purl.obolibrary.org/obo/MONDO_0004975",
-    "count_pgs": 45
+    "id": "EFO_0004541",
+    "label": "HbA1c measurement",
+    "description": "A quantification of glycated A1c hemoglobin in blood used as an index for blood glucose level over several months.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004541",
+    "count_pgs": 40
   },
   {
-    "id": "OBA_1000968",
-    "label": "vitamin D amount",
-    "description": "The amount of a vitamin D. [AUTO: patterns/patterns/entity_attribute]",
-    "url": "http://purl.obolibrary.org/obo/OBA_1000968",
-    "count_pgs": 44
+    "id": "EFO_0004458",
+    "label": "C-reactive protein measurement",
+    "description": "C-reactive protein (CRP) measurement is a measurement of the level of C-reactive protein in the blood.  Levels are known to rise in response to inflammation, CRP is therefore used as a clinical measure of inflammation. The measurement is used in the process of clinical diagnosis as high levels of CRP are associated with cardiovascular disease, diabetes and hypertension and in some cancers. | is about MESH:D002097",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004458",
+    "count_pgs": 35
+  },
+  {
+    "id": "EFO_0004274",
+    "label": "gout",
+    "description": "A condition characterized by painful swelling of the joints, which is caused by deposition of urate crystals. [NCIT: C34650]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004274",
+    "count_pgs": 32
+  },
+  {
+    "id": "EFO_0000685",
+    "label": "rheumatoid arthritis",
+    "description": "A chronic, systemic autoimmune disorder characterized by inflammation in the synovial membranes and articular surfaces. It manifests primarily as a symmetric, erosive polyarthritis that spares the axial skeleton and is typically associated with the presence in the serum of rheumatoid factor. [NCIT: C2884]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000685",
+    "count_pgs": 31
+  },
+  {
+    "id": "EFO_0007986",
+    "label": "reticulocyte count",
+    "description": "The number of reticulocytes per unit volume of blood. Reticulocytes are immature red blood cells and typically compose aoubt 1% of red blood cells in the human body.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007986",
+    "count_pgs": 28
+  },
+  {
+    "id": "EFO_0002892",
+    "label": "thyroid carcinoma",
+    "description": "A carcinoma arising from the thyroid gland. It is usually an adenocarcinoma and includes the following main subtypes: follicular, papillary, medullary, poorly differentiated, and anaplastic. [NCIT: C4815]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0002892",
+    "count_pgs": 27
   }
 ]

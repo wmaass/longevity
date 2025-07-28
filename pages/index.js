@@ -1,9 +1,34 @@
-'use client';  // Client-Side Rendering
+'use client';
+
+import {
+  Chart,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  BarController,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js';
+
+// Alle Module registrieren (Skalen + Controller + Elemente)
+Chart.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  BarController,
+  Title,
+  Tooltip,
+  Legend
+);
+
+// Chart.js-Module registrieren
+Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 import { useEffect, useState } from 'react';
 import { computePRS } from '../lib/computePRS.js';
 
-// Klinische Handlungsempfehlungen nach Perzentil
+// Klinische Empfehlungen
 function getClinicalAdvice(percentile) {
   if (percentile >= 90) {
     return 'Hoher genetischer Risikobereich – Screening (Blutdruck, Cholesterin, Ultraschall) und ärztliche Betreuung empfohlen.';
@@ -14,17 +39,58 @@ function getClinicalAdvice(percentile) {
   }
 }
 
-// Perzentil-Interpretation
 function explainPercentile(percentile) {
   return `Dein Score liegt im ${percentile}. Perzentil. 
 Du hast ein höheres genetisches Risiko als ${percentile}% der Vergleichspopulation.`;
+}
+
+// Durchschnitts- und Top-Wert berechnen
+function summarizePGSResults(results) {
+  if (!results.length) return null;
+
+  const zScores = results.map(r => r.zScore || 0);
+  const avgZ = zScores.reduce((a,b)=>a+b,0) / zScores.length;
+
+  const erf = (x) => {
+    const sign = x < 0 ? -1 : 1;
+    x = Math.abs(x);
+    const t = 1 / (1 + 0.3275911 * x);
+    const tau = t *
+      Math.exp(
+        -x * x -
+          1.26551223 +
+          t *
+            (1.00002368 +
+              t *
+                (0.37409196 +
+                  t *
+                    (0.09678418 +
+                      t *
+                        (-0.18628806 +
+                          t *
+                            (0.27886807 +
+                              t *
+                                (-1.13520398 +
+                                  t *
+                                    (1.48851587 +
+                                      t *
+                                        (-0.82215223 + t * 0.17087277))))))))
+      );
+    return sign * (1 - tau);
+  };
+  const avgPercentile = Math.round(((1 + erf(avgZ / Math.sqrt(2))) / 2) * 100);
+
+  const topPGS = results.reduce((best, r) =>
+    r.percentile > (best?.percentile || 0) ? r : best, null
+  );
+
+  return { avgZ, avgPercentile, topPGS };
 }
 
 export default function IndexPage() {
   const [traits, setTraits] = useState([]);
 
   useEffect(() => {
-    // Traits laden (Dropdown)
     fetch('/traits.json')
       .then(res => res.json())
       .then(data => {
@@ -40,20 +106,10 @@ export default function IndexPage() {
 
     if (!analyzeButton || !fileInput || !diseaseSelect) return;
 
-    // Mapping für Freitext (falls traits.json leer oder unpassend ist)
-    const diseaseMap = {
-      "alzheimer": "EFO_0000249",
-      "diabetes": "EFO_0001360",
-      "stroke": "EFO_0000712",
-      "brustkrebs": "EFO_0000305",
-      "koronare herzkrankheit": "EFO_0000616"
-    };
-
     analyzeButton.addEventListener('click', async () => {
       const file = fileInput.files[0];
       let disease = diseaseSelect.value.trim();
 
-      // Eingabeprüfungen
       if (!file) {
         alert('Bitte eine 23andMe-Datei auswählen.');
         return;
@@ -63,12 +119,6 @@ export default function IndexPage() {
         return;
       }
 
-      // Falls Freitext statt EFO-ID → mappen
-      const normalized = disease.toLowerCase();
-      if (diseaseMap[normalized]) {
-        disease = diseaseMap[normalized];
-      }
-
       resultDiv.innerHTML = `
         <p>Berechnung für <strong>${disease}</strong> läuft… bitte warten</p>
         <progress id="overallProgress" max="100" value="0" style="width:100%; height:20px; margin-bottom:10px;"></progress>
@@ -76,17 +126,13 @@ export default function IndexPage() {
       `;
 
       try {
-        console.log("==> Aufruf computePRS mit disease:", disease);
-
         const allResults = await computePRS(
           file,
           (pgsId, progress, matches, phase, completed, total) => {
-            // Gesamtfortschritt berechnen (über alle PGS)
             const overall = document.getElementById('overallProgress');
             const overallPct = ((completed + progress / 100) / total) * 100;
             if (overall) overall.value = overallPct;
 
-            // Fortschrittsanzeige für jedes einzelne PGS
             let bar = document.getElementById(`bar-${pgsId}`);
             if (!bar) {
               const container = document.getElementById('progressDetails');
@@ -100,7 +146,6 @@ export default function IndexPage() {
               container.appendChild(wrapper);
               bar = document.getElementById(`bar-${pgsId}`);
             }
-
             bar.value = progress;
             const label = document.getElementById(`label-${pgsId}`);
             if (label) label.textContent = `${phase} – ${progress.toFixed(1)}% (${matches} Matches)`;
@@ -117,10 +162,61 @@ export default function IndexPage() {
   }, []);
 
   function renderSortedResults(allResults, container) {
-    allResults.sort((a, b) => (b.prs || 0) - (a.prs || 0));
-    container.innerHTML = '<h2>Ergebnisse (nach Risiko sortiert)</h2>';
+    // Sortieren
+    allResults.sort((a, b) => (b.percentile || 0) - (a.percentile || 0));
+    const summary = summarizePGSResults(allResults);
 
+    // Zusammenfassung an den Anfang einfügen (ohne Details zu löschen)
+    const summaryDiv = document.createElement('div');
+    summaryDiv.innerHTML = `
+      <h2>Zusammenfassung</h2>
+      <p><strong>Durchschnittliches Risiko (über ${allResults.length} PGS):</strong> ${summary.avgPercentile}. Perzentil</p>
+      <p><strong>Höchstes Risiko:</strong> ${summary.topPGS.id} (${summary.topPGS.percentile}. Perzentil, ${summary.topPGS.matches} Matches)</p>
+      <canvas id="pgsChart" width="400" height="200" style="margin:20px 0;"></canvas>
+      <h3>Alle PGS-Ergebnisse</h3>
+      <table border="1" cellpadding="4" style="border-collapse:collapse;width:100%">
+        <tr>
+          <th>PGS ID</th><th>Perzentil</th><th>Z-Score</th><th>Matches</th><th>Studie</th>
+        </tr>
+        ${allResults.map(r => `
+          <tr>
+            <td>${r.id}</td>
+            <td>${r.percentile}</td>
+            <td>${r.zScore.toFixed(2)}</td>
+            <td>${r.matches}</td>
+            <td>${r.doi ? `<a href="${r.doi}" target="_blank">DOI</a>` : '-'}</td>
+          </tr>
+        `).join('')}
+      </table>
+    `;
+    container.prepend(summaryDiv); // Ganz oben einfügen
+
+    // Chart zeichnen
+    const ctx = summaryDiv.querySelector('#pgsChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: allResults.map(r => r.id),
+        datasets: [{
+          label: 'Perzentil',
+          data: allResults.map(r => r.percentile),
+          backgroundColor: allResults.map(r =>
+            r.percentile >= 90 ? 'red' : r.percentile >= 75 ? 'orange' : 'green'
+          )
+        }]
+      },
+      options: { responsive: true, scales: { y: { beginAtZero: true, max: 100 } } }
+    });
+
+    // Jetzt die Details pro PGS beibehalten und darunter anhängen:
     allResults.forEach(res => {
+      const entry = document.createElement('div');
+      entry.style.border = `2px solid ${res.percentile >= 90 ? 'red' : res.percentile >= 75 ? 'orange' : 'green'}`;
+      entry.style.borderRadius = '8px';
+      entry.style.padding = '12px';
+      entry.style.marginBottom = '18px';
+      entry.style.backgroundColor = '#f9f9f9';
+
       const prs = res.prs || 0;
       const percentile = res.percentile || 50;
       const zScore = res.zScore || 0;
@@ -128,51 +224,28 @@ export default function IndexPage() {
       const trait = res.trait || 'Unbekanntes Trait';
       const topVariants = (res.topVariants || []).sort((a, b) => Math.abs(b.score) - Math.abs(a.score));
 
-      let color = 'green';
       let label = 'Unauffällig';
-      if (percentile >= 90) {
-        color = 'red';
-        label = 'Auffällig – ärztliche Analyse empfohlen';
-      } else if (percentile >= 75) {
-        color = 'orange';
-        label = 'Grenzwertig – Beobachtung empfohlen';
-      }
+      if (percentile >= 90) label = 'Auffällig – ärztliche Analyse empfohlen';
+      else if (percentile >= 75) label = 'Grenzwertig – Beobachtung empfohlen';
 
-      const variantTable = topVariants.length > 0 ? `
+      const variantTable = topVariants.length ? `
         <h4>Top 10 Varianten (größter Einfluss):</h4>
         <table border="1" cellspacing="0" cellpadding="4" style="border-collapse:collapse;width:100%">
-          <tr>
-            <th>#</th><th>Variante</th><th>SNP</th><th>Genotyp</th><th>β × z</th>
-          </tr>
-          ${topVariants.slice(0, 10).map((v, i) => {
-            const absVal = Math.abs(v.score);
-            let effectColor = absVal > 0.2 ? 'red' : absVal > 0.1 ? 'orange' : 'green';
-            const snpLink = v.rsid 
-              ? `<a href="https://www.ncbi.nlm.nih.gov/snp/${v.rsid}" target="_blank">${v.rsid}</a> 
-                 (<a href="https://www.snpedia.com/index.php/${v.rsid}" target="_blank">SNPedia</a>)` 
-              : '-';
-            return `
-              <tr style="color:${effectColor}">
-                <td>${i + 1}</td>
-                <td>${v.variant}</td>
-                <td>${snpLink}</td>
-                <td>${v.alleles}</td>
-                <td>${v.score.toFixed(3)}</td>
-              </tr>
-            `;
-          }).join('')}
+          <tr><th>#</th><th>Variante</th><th>SNP</th><th>Genotyp</th><th>β × z</th></tr>
+          ${topVariants.slice(0, 10).map((v, i) => `
+            <tr style="color:${Math.abs(v.score)>0.2?'red':Math.abs(v.score)>0.1?'orange':'green'}">
+              <td>${i+1}</td>
+              <td>${v.variant}</td>
+              <td>${v.rsid ? `<a href="https://www.ncbi.nlm.nih.gov/snp/${v.rsid}" target="_blank">${v.rsid}</a>` : '-'}</td>
+              <td>${v.alleles}</td>
+              <td>${v.score.toFixed(3)}</td>
+            </tr>
+          `).join('')}
         </table>
       ` : '';
 
-      const entry = document.createElement('div');
-      entry.style.border = `2px solid ${color}`;
-      entry.style.borderRadius = '8px';
-      entry.style.padding = '12px';
-      entry.style.marginBottom = '18px';
-      entry.style.backgroundColor = '#f9f9f9';
-
       entry.innerHTML = `
-        <h3 style="color:${color}">${trait} (PGS ${res.id})</h3>
+        <h3>${trait} (PGS ${res.id})</h3>
         <p><strong>PRS:</strong> ${prs.toFixed(3)} (Raw Score: ${res.rawScore?.toFixed(3) || 0})</p>
         <p><strong>Z‑Score:</strong> ${zScore.toFixed(2)} | <strong>Perzentil:</strong> ${percentile}</p>
         <p>${explainPercentile(percentile)}</p>
@@ -182,10 +255,10 @@ export default function IndexPage() {
         ${doi ? `<p><strong>Studie:</strong> <a href="${doi}" target="_blank">${doi}</a></p>` : ''}
         ${variantTable}
       `;
-
       container.appendChild(entry);
     });
   }
+
 
   return (
     <div>

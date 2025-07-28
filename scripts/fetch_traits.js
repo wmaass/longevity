@@ -30,9 +30,9 @@ async function fetchAndCombineTraits() {
     });
   });
 
-  // Traits mit Labels mappen
+  // Nur EFO-Traits behalten
   const combined = traits
-    .filter(t => counts[t['Ontology Trait ID']]) // nur Traits mit Scores
+    .filter(t => counts[t['Ontology Trait ID']] && t['Ontology Trait ID'].startsWith('EFO_'))
     .map(t => ({
       id: t['Ontology Trait ID'],
       label: t['Ontology Trait Label'],
@@ -41,7 +41,7 @@ async function fetchAndCombineTraits() {
       count_pgs: counts[t['Ontology Trait ID']]
     }))
     .sort((a, b) => b.count_pgs - a.count_pgs)
-    .slice(0, 20);
+    .slice(0, 20);  
 
   console.log(`==> ${combined.length} gültige Traits gefunden. Speichere in ${OUTPUT_FILE}...`);
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(combined, null, 2));
