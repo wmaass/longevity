@@ -1,0 +1,31 @@
+{
+  "name": "stroke-prs-pgs23",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "fetch:traits": "node scripts/fetch_traits.js"
+  },
+  "dependencies": {
+    "autoprefixer": "^10.4.17",
+    "csv-parse": "^5.6.0",
+    "fflate": "^0.8.2",
+    "formidable": "^3.5.4",
+    "next": "^14.2.30",
+    "node-fetch": "^3.3.2",
+    "node-llama-cpp": "^3.0.0",
+    "pako": "^2.1.0",
+    "postcss": "^8.4.31",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "tailwindcss": "^3.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "24.1.0",
+    "@types/react": "19.1.8",
+    "typescript": "5.8.3"
+  }
+}
