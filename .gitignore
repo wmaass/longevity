@@ -48,3 +48,7 @@ PGS*.txt
 .vscode/
 .idea/
 *.swp
+
+
+
+pgs_scores/

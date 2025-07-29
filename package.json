@@ -12,6 +12,7 @@
   "dependencies": {
     "autoprefixer": "^10.4.17",
     "chart.js": "^4.5.0",
+    "cheerio": "^1.1.0",
     "csv-parse": "^5.6.0",
     "fflate": "^0.8.2",
     "formidable": "^3.5.4",

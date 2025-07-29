@@ -5,11 +5,12 @@ import { computePRS } from '../lib/computePRS.js';
 import traits from '../public/traits.json' assert { type: 'json' };
 
 const MAX_PARALLEL = 5;
-const GENOME_FILE = './public/sample_genome.txt';
+//const GENOME_FILE = './public/genome_Dorothy_Wolf_v4_Full_20170525101345.txt';
+const GENOME_FILE = './public/genome_WM_v4_Full_20170614045048.txt';
 const OUTPUT_CSV = './public/batch_results.csv';
-const OUTPUT_DIR = './public/details';
+const DETAILS_CSV = './public/batch_details.csv';
 
-// CSV-Header schreiben
+// CSV-Header für die Übersicht
 function writeCSVHeader() {
   fs.writeFileSync(
     OUTPUT_CSV,
@@ -17,16 +18,16 @@ function writeCSVHeader() {
   );
 }
 
-// Zeilen in CSV schreiben + JSON speichern
-function saveResults(efoId, traitLabel, allResults) {
-  // JSON pro EFO speichern (Detaildaten)
-  if (!fs.existsSync(OUTPUT_DIR)) {
-    fs.mkdirSync(OUTPUT_DIR);
-  }
-  const jsonPath = path.join(OUTPUT_DIR, `${efoId}.json`);
-  fs.writeFileSync(jsonPath, JSON.stringify(allResults, null, 2));
+// CSV-Header für Details
+function writeDetailsHeader() {
+  fs.writeFileSync(
+    DETAILS_CSV,
+    'EFO-ID,Trait,PGS-ID,PRS,Z-Score,Perzentil,Matches,Total Variants,DOI\n'
+  );
+}
 
-  // Aggregierte CSV schreiben
+// Zeilen in batch_results.csv schreiben
+function appendCSV(efoId, traitLabel, allResults) {
   const prsValues = allResults.map(r => r.prs || 0);
   const percValues = allResults.map(r => r.percentile || 0);
   const totalVariants = allResults.reduce((a, b) => a + (b.matches || 0), 0);
@@ -47,15 +48,36 @@ function saveResults(efoId, traitLabel, allResults) {
   fs.appendFileSync(OUTPUT_CSV, row + '\n');
 }
 
-// Patch: computePRS so verwenden, dass es String-Input akzeptiert
-async function computePRSWithString(genomeText, efoId) {
-  const fakeFile = { text: async () => genomeText };
-  return computePRS(fakeFile, () => {}, efoId);
+// Alle PGS-Detailergebnisse pro Trait in batch_details.csv speichern
+function appendDetailsCSV(efoId, traitLabel, allResults) {
+  const lines = allResults.map(r => {
+    return [
+      efoId,
+      `"${traitLabel}"`,
+      r.id,
+      r.prs.toFixed(6),
+      r.zScore.toFixed(3),
+      r.percentile,
+      r.matches,
+      r.totalVariants,
+      r.doi || ''
+    ].join(',');
+  });
+
+  fs.appendFileSync(DETAILS_CSV, lines.join('\n') + '\n');
 }
 
+// computePRS so anpassen, dass es String statt File akzeptiert
+async function computePRSWithString(genomeText, progressCallback, efoId) {
+  const fakeFile = { text: async () => genomeText };
+  return computePRS(fakeFile, progressCallback, efoId);
+}
+
+// Batch Runner
 async function runBatch() {
   console.log(`==> Starte Batch-Analyse für ${traits.length} EFO-Traits...`);
   writeCSVHeader();
+  writeDetailsHeader();
 
   const genomeText = fs.readFileSync(GENOME_FILE, 'utf8');
 
@@ -71,9 +93,10 @@ async function runBatch() {
 
     console.log(`--> Starte Berechnung für ${label} (${efoId})...`);
 
-    const task = computePRSWithString(genomeText, efoId)
+    const task = computePRSWithString(genomeText, () => {}, efoId)
       .then(results => {
-        saveResults(efoId, label, results);
+        appendCSV(efoId, label, results);
+        appendDetailsCSV(efoId, label, results);
         console.log(`✓ Fertig: ${label} (${efoId})`);
       })
       .catch(err => {
@@ -97,7 +120,9 @@ async function runBatch() {
 
   await Promise.all(running);
 
-  console.log(`==> Batch-Analyse abgeschlossen. Ergebnisse in ${OUTPUT_CSV} und JSONs in ${OUTPUT_DIR}.`);
+  console.log(`==> Batch-Analyse abgeschlossen. Ergebnisse in:`);
+  console.log(`   - ${OUTPUT_CSV} (Zusammenfassung)`);
+  console.log(`   - ${DETAILS_CSV} (Alle PGS-Ergebnisse)`);
 }
 
 runBatch().catch(err => console.error('Fehler bei Batch-Analyse:', err));

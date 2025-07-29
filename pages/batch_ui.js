@@ -128,7 +128,7 @@ export default function BatchUI() {
 
   return (
     <div style={{ padding: '20px' }}>
-      <h1>Batch-Ergebnisse aller EFO-Traits</h1>
+      <h1>Ergebnisse aller EFO-Traits</h1>
       <p>Klicke auf eine EFO-ID oder einen Trait, um die Detailansicht (alle PRS) zu öffnen.</p>
 
       {/* Tabelle */}
