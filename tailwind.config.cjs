@@ -2,10 +2,10 @@ module.exports = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
-    './app/**/*.{js,ts,jsx,tsx}', // if using the App Router
+    './app/**/*.{js,ts,jsx,tsx}', // If you're using Next.js app router
   ],
   theme: {
-    extend: {}, // this preserves the default colors
+    extend: {}, // keep default theme (colors, fonts, etc.)
   },
   plugins: [],
 };

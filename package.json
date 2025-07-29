@@ -7,29 +7,33 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "fetch:traits": "node scripts/fetch_traits.js"
+    "fetch:traits": "node scripts/fetch_traits.js",
+    "tailwind:init": "tailwindcss init -p"
   },
   "dependencies": {
-    "autoprefixer": "^10.4.17",
     "chart.js": "^4.5.0",
     "cheerio": "^1.1.0",
     "csv-parse": "^5.6.0",
     "fflate": "^0.8.2",
     "formidable": "^3.5.4",
+    "lucide-react": "^0.533.0",
     "next": "^14.2.30",
     "node-fetch": "^3.3.2",
     "node-llama-cpp": "^3.0.0",
     "pako": "^2.1.0",
     "papaparse": "^5.5.3",
-    "postcss": "^8.4.31",
     "react": "18.2.0",
     "react-chartjs-2": "^5.3.0",
-    "react-dom": "18.2.0",
-    "tailwindcss": "^3.4.0"
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.11",
     "@types/node": "24.1.0",
     "@types/react": "19.1.8",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17",
+    "tailwindcss-cli": "^0.1.2",
     "typescript": "5.8.3"
   }
 }
