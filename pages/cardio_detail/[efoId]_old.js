@@ -20,7 +20,7 @@ export default function CardioDetail() {
   const { efoId, trait: traitQuery } = router.query;
 
   const [result, setResult] = useState(null);
-  const [abstracts, setAbstracts] = useState({});
+  const [summaries, setSummaries] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,17 +39,17 @@ export default function CardioDetail() {
         const fetched = {};
         for (const rsid of snps) {
           try {
-            const res = await fetch(`/api/snp-abstract?rsid=${rsid}`).then(r => r.json());
+            const res = await fetch(`/api/snp-summary?rsid=${rsid}`).then(r => r.json());
             fetched[rsid] =
               res && (res.text || res.url || res.pmid)
                 ? res
-                : { text: 'Kein Abstract verfügbar.', url: null };
+                : { text: 'Keine Zusammenfassung verfügbar.', url: null };
           } catch (err) {
-            console.error(`Fehler bei Abstract-Fetch für ${rsid}:`, err);
-            fetched[rsid] = { text: 'Fehler beim Laden des Abstracts.', url: null };
+            console.error(`Fehler bei Summary-Fetch für ${rsid}:`, err);
+            fetched[rsid] = { text: 'Fehler beim Laden der Zusammenfassung.', url: null };
           }
         }
-        setAbstracts(fetched);
+        setSummaries(fetched);
       })
       .finally(() => setLoading(false));
   }, [efoId]);
@@ -148,7 +148,7 @@ export default function CardioDetail() {
                         >
                           {v.rsid}
                         </a>
-                        {abstracts[v.rsid]?.text && (
+                        {summaries[v.rsid]?.text && (
                           <>
                             {' '}|{' '}
                             <a
@@ -156,12 +156,12 @@ export default function CardioDetail() {
                               className="text-green-600 hover:underline"
                               onClick={(e) => {
                                 e.preventDefault();
-                                const abs = abstracts[v.rsid];
+                                const summary = summaries[v.rsid];
                                 const newWin = window.open('', '_blank', 'width=700,height=500');
                                 newWin.document.write(`
                                   <html>
                                     <head>
-                                      <title>Abstract (${v.rsid})</title>
+                                      <title>Summary (${v.rsid})</title>
                                       <style>
                                         body { font-family: Arial, sans-serif; background: #f9fafb; padding: 20px; color: #1f2937; }
                                         .container { background: #fff; padding: 20px; border-radius: 12px; max-width: 650px; margin: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
@@ -173,16 +173,16 @@ export default function CardioDetail() {
                                     </head>
                                     <body>
                                       <div class="container">
-                                        <h2>Abstract für ${v.rsid}</h2>
-                                        ${abs.url ? `<p><a class="link" href="${abs.url}" target="_blank">Zur Publikation</a></p>` : ''}
-                                        <p>${abs.text}</p>
+                                        <h2>Zusammenfassung für ${v.rsid}</h2>
+                                        ${summary.url ? `<p><a class="link" href="${summary.url}" target="_blank">Zur Publikation</a></p>` : ''}
+                                        <p>${summary.text}</p>
                                       </div>
                                     </body>
                                   </html>
                                 `);
                               }}
                             >
-                              Abstract
+                              Summary
                             </a>
                           </>
                         )}

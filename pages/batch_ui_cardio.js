@@ -1,9 +1,11 @@
+'use client';
+
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Papa from "papaparse";
 import DashboardLayout from "../components/DashboardLayout";
 import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from "chart.js";
 import { Bar } from "react-chartjs-2";
-
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -11,6 +13,7 @@ export default function CardioDashboard() {
   const [data, setData] = useState([]);
   const [sortKey, setSortKey] = useState("Avg PRS");
   const [sortOrder, setSortOrder] = useState("desc");
+  const router = useRouter();
 
   useEffect(() => {
     fetch("/batch_results_cardio.csv")
@@ -31,87 +34,65 @@ export default function CardioDashboard() {
   );
 
   const barData = {
-  labels: sorted.map((d) => d.Trait),
-  datasets: [
-    {
-      label: "log10(Avg PRS)",
-      data: sorted.map((d) => d.logPRS),
-      backgroundColor: "rgba(34,197,94,0.6)", // Tailwind green-400, soft transparency
-      borderRadius: 8,                        // Rounded edges
-      borderSkipped: false,                   // Full rounding
-      hoverBackgroundColor: "rgba(34,197,94,0.8)", // Darker on hover
-      hoverBorderColor: "rgba(34,197,94,1)",
-      borderWidth: 1,
-    },
-  ],
-};
+    labels: sorted.map((d) => d.Trait),
+    datasets: [
+      {
+        label: "log10(Avg PRS)",
+        data: sorted.map((d) => d.logPRS),
+        backgroundColor: "rgba(34,197,94,0.6)",
+        borderRadius: 8,
+        borderSkipped: false,
+        hoverBackgroundColor: "rgba(34,197,94,0.8)",
+        hoverBorderColor: "rgba(34,197,94,1)",
+        borderWidth: 1,
+      },
+    ],
+  };
 
-const barOptions = {
-  indexAxis: "y",
-  responsive: true,
-  animation: {
-    duration: 400,
-    easing: "easeOutQuart",
-  },
-  plugins: {
-    legend: { display: false },
-    tooltip: {
-      backgroundColor: "#ffffff",
-      titleColor: "#111827",
-      bodyColor: "#374151",
-      borderColor: "#e5e7eb",
-      borderWidth: 1,
-      padding: 12,
-      titleFont: { size: 16, weight: "bold" },
-      bodyFont: { size: 14 },
-      callbacks: {
-        label: (ctx) => {
-          const d = sorted[ctx.dataIndex];
-          return `${d.Trait}: logPRS=${d.logPRS.toFixed(2)}, Percentile=${d["Avg Percentile"]}`;
+  const barOptions = {
+    indexAxis: "y",
+    responsive: true,
+    animation: { duration: 400, easing: "easeOutQuart" },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: "#ffffff",
+        titleColor: "#111827",
+        bodyColor: "#374151",
+        borderColor: "#e5e7eb",
+        borderWidth: 1,
+        padding: 12,
+        titleFont: { size: 16, weight: "bold" },
+        bodyFont: { size: 14 },
+        callbacks: {
+          label: (ctx) => {
+            const d = sorted[ctx.dataIndex];
+            return `${d.Trait}: logPRS=${d.logPRS.toFixed(2)}, Percentile=${d["Avg Percentile"]}`;
+          },
         },
       },
     },
-  },
-  scales: {
-    x: {
-      ticks: {
-        font: { size: 14 },
-        color: "#374151", // Tailwind gray-700
+    scales: {
+      x: {
+        ticks: { font: { size: 14 }, color: "#374151" },
+        grid: { color: "#f3f4f6", drawTicks: false },
       },
-      grid: {
-        color: "#f3f4f6", // Tailwind gray-100
-        drawTicks: false,
+      y: {
+        ticks: { font: { size: 16, weight: "500" }, color: "#111827" },
+        grid: { drawTicks: false, color: "#ffffff" },
       },
     },
-    y: {
-      ticks: {
-        font: { size: 16, weight: "500" },
-        color: "#111827", // Tailwind gray-900
-      },
-      grid: {
-        drawTicks: false,
-        color: "#ffffff", // Hide grid for cleaner look
-      },
+    layout: { padding: { top: 10, bottom: 10, left: 10, right: 10 } },
+    onHover: (event, chartElement) => {
+      event.native.target.style.cursor = chartElement.length ? "pointer" : "default";
     },
-  },
-  layout: {
-    padding: { top: 10, bottom: 10, left: 10, right: 10 },
-  },
-  onHover: (event, chartElement) => {
-    if (chartElement.length) {
-      event.native.target.style.cursor = "pointer";
-    } else {
-      event.native.target.style.cursor = "default";
-    }
-  },
-  onClick: (_, elements) => {
-    if (elements.length > 0) {
-      const idx = elements[0].index;
-      window.open(`/details/${sorted[idx]["EFO-ID"]}`, "_blank");
-    }
-  },
-};
-
+    onClick: (_, elements) => {
+      if (elements.length > 0) {
+        const idx = elements[0].index;
+        router.push(`/details/${sorted[idx]["EFO-ID"]}?trait=${encodeURIComponent(sorted[idx].Trait)}`);
+      }
+    },
+  };
 
   const toggleSort = (key) => {
     setSortKey(key);
@@ -124,7 +105,6 @@ const barOptions = {
         Kardiovaskuläre PGS-Ergebnisse
       </h2>
 
-      {/* Stat Cards - with colorful accents */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <div className="bg-white rounded-2xl shadow-lg p-6 border-t-4 border-green-400 text-center">
           <h4 className="text-sm font-medium text-gray-500">Anzahl Traits</h4>
@@ -144,7 +124,6 @@ const barOptions = {
         </div>
       </div>
 
-      {/* Table */}
       <div className="overflow-x-auto bg-white shadow-md rounded-2xl">
         <table className="min-w-full border-separate border-spacing-y-1">
           <thead className="bg-blue-50 text-gray-700">
@@ -165,7 +144,7 @@ const barOptions = {
               <tr
                 key={i}
                 className="bg-gray-50 hover:bg-blue-50 cursor-pointer rounded-lg transition-colors"
-                onClick={() => window.open(`/details/${d["EFO-ID"]}?trait=${encodeURIComponent(d.Trait)}`, "_blank")}
+                onClick={() => router.push(`/details/${d["EFO-ID"]}?trait=${encodeURIComponent(d.Trait)}`)}
               >
                 <td className="px-6 py-3">{d["EFO-ID"]}</td>
                 <td className="px-6 py-3">{d.Trait}</td>
@@ -179,7 +158,6 @@ const barOptions = {
         </table>
       </div>
 
-      {/* Chart */}
       <div className="mt-12">
         <Bar data={barData} options={barOptions} />
       </div>

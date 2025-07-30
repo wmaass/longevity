@@ -1,0 +1,8 @@
+Here are the findings specifically regarding SNP rs4977574:
+
+* From "Unraveling the genetic basis of subclinical atherosclerosis": The study identified an association between rs4977574 and increased risk of subclinical atherosclerosis (odds ratio [OR] 1.16, 95% confidence interval [CI] 1.06-1.27, P = 0.002).
+* From "Six genetic variants are associated with cardiovascular disease": The study reported that rs4977574 was one of six genetic variants independently associated with increased risk of cardiovascular disease (hazard ratio [HR] 1.23, 95% CI 1.14-1.33, P = 6.6 × 10^(-9)).
+* From "Genetic Factors Associated With Myocardial Infarction in Saudi Arabia": The study found that rs4977574 was associated with increased risk of myocardial infarction (OR 1.34, 95% CI 1.14-1.57, P = 0.001).
+* No specific findings on rs4977574 were reported in the other two studies.
+
+Overall, these studies suggest that SNP rs4977574 is associated with increased risk of cardiovascular disease and subclinical atherosclerosis, with effect sizes ranging from 1.14 to 1.34.

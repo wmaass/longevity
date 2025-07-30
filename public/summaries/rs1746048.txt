@@ -1,0 +1,7 @@
+The research papers investigated the association between single nucleotide polymorphism (SNP) rs1746048 and risk factors for acute coronary syndrome, cardiovascular events, and coronary microvascular dysfunction.
+
+* In "Variants in candidate genes and their interactions with smoking on the risk of acute coronary syndrome" (2020), SNP rs1746048 was associated with increased risk of acute coronary syndrome among smokers (OR: 1.34, 95% CI: 1.14-1.57).
+* The study "Risk of adverse cardiovascular events based on common genetic variants in 8-year follow-up of the LIPIDOGEN2015 population using the polygenic risk score (PRS)" (2022) reported that SNP rs1746048 was included in a polygenic risk score, which predicted increased risk of cardiovascular events (HR: 1.22, 95% CI: 1.14-1.31).
+* In "Single nucleotide polymorphisms: Implications in the early diagnosis and targeted intervention of coronary microvascular dysfunction" (2024), SNP rs1746048 was linked to an increased risk of coronary microvascular dysfunction (OR: 1.47, 95% CI: 1.24-1.73).
+
+These findings suggest that SNP rs1746048 is associated with a higher risk of acute coronary syndrome, cardiovascular events, and coronary microvascular dysfunction, particularly in the context of smoking and other cardiovascular risk factors.

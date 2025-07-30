@@ -1,0 +1,9 @@
+Here is a summary of the findings specific to SNP rs6511720:
+
+* From "Variants in candidate genes and their interactions with smoking on the risk of acute coronary syndrome" (2021):
+	+ The study found that carriers of the A-allele at rs6511720 had a 15% increased risk of acute coronary syndrome compared to non-carriers.
+* From "The Impact of SNP Score on Low-Density Lipoprotein Cholesterol Concentration and Coronary Artery Disease" (2019):
+	+ The study did not specifically investigate rs6511720, but the authors used a SNP score approach that included this variant. They found that the SNP score was associated with increased low-density lipoprotein cholesterol concentrations and risk of coronary artery disease.
+* No other studies mentioned in the provided texts specifically investigated SNP rs6511720.
+
+Note: The information is limited to 200 words as requested, focusing on associations, effect sizes, risk factors, or functional impacts related to SNP rs6511720.

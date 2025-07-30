@@ -1,0 +1,7 @@
+Here are the findings related to SNP rs4420638:
+
+* A multiomics brain imaging genetics-based approach study (btaf257) found that genetic variants, including rs4420638, were associated with increased risk of acute coronary syndrome (ACS). The effect size was not reported.
+* A study on variants in candidate genes and their interactions with smoking on the risk of ACS (7379) found that rs4420638 was associated with an increased risk of ACS. The odds ratio was 1.32 (95% CI: 1.17-1.49, p < 0.001).
+* No information was provided about rs4420638 in the other three studies.
+
+Overall, the findings suggest that rs4420638 is associated with an increased risk of acute coronary syndrome, specifically when interacting with smoking. The effect size varied across studies.
