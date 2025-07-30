@@ -19,22 +19,14 @@ async function fetchEuropePMCPapers(rsid) {
     let combinedText = '';
     let doiLink = null;
 
-    papers.forEach((paper, idx) => {
+    papers.forEach((paper) => {
       const title = paper.title || 'Untitled';
       const abstractRaw = (paper.abstractText || '')
         .replace(/<[^>]+>/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
       const doi = paper.doi ? `https://doi.org/${paper.doi}` : null;
-      if (!doiLink && doi) doiLink = doi; // pick first DOI for link
-
-      const firstLines = abstractRaw.split(/(?<=\. )/).slice(0, 5).join(' ');
-
-      console.log(`\n=== Europe PMC Paper ${idx + 1} ===`);
-      console.log(`Title: ${title}`);
-      if (doi) console.log(`Link: ${doi}`);
-      console.log(`First 5 lines: ${firstLines}`);
-      console.log('-------------------------');
+      if (!doiLink && doi) doiLink = doi;
 
       combinedText += `Title: ${title}\n${doi ? `Link: ${doi}\n` : ''}Abstract: ${abstractRaw}\n\n`;
     });
@@ -83,10 +75,8 @@ function loadCachedSummary(rsid) {
 // --- Main logic ---
 async function generateSummary(rsid) {
   const { combinedText, doi } = await fetchEuropePMCPapers(rsid);
-
   if (!combinedText.trim()) {
-    console.warn(`No papers found for ${rsid}. Returning placeholder.`);
-    return { text: `No Europe PMC papers available for SNP ${rsid}.`, url: null, local: false };
+    return { text: `No Europe PMC papers available for SNP ${rsid}.`, url: doi, local: false };
   }
 
   const summary =
@@ -96,18 +86,23 @@ async function generateSummary(rsid) {
   return { text: summary, url: doi, local: false };
 }
 
-// --- API handler ---
+// --- API Handler ---
 export default async function handler(req, res) {
   const { rsid } = req.query;
-  if (!rsid) return res.status(400).json({ error: 'Missing rsid parameter' });
+  if (!rsid) {
+    res.status(400).json({ error: 'Missing rsid parameter' });
+    return;
+  }
 
   try {
     const cachePath = path.join(process.cwd(), 'public', 'summaries', `${rsid}.txt`);
     let summaryText = loadCachedSummary(rsid);
+    let url = null;
     let isLocal = false;
 
-    let url = null;
     if (summaryText) {
+      const { doi } = await fetchEuropePMCPapers(rsid);
+      url = doi;
       isLocal = true;
     } else {
       const generated = await generateSummary(rsid);
@@ -115,6 +110,7 @@ export default async function handler(req, res) {
       url = generated.url;
       fs.mkdirSync(path.dirname(cachePath), { recursive: true });
       fs.writeFileSync(cachePath, summaryText, 'utf8');
+      isLocal = true;
     }
 
     res.status(200).json({

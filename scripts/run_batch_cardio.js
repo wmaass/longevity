@@ -1,69 +1,93 @@
-// scripts/run_batch_cardio_client.js
+// scripts/run_batch_cardio.js
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { computePRS } from '../lib/computePRS.js';
 
-// URLs for loading data (must be in /public folder so Next.js can serve them)
-const TRAITS_URL = '/traits.json';
-const GENOME_URL = '/genome_WM_v4_Full_20170614045048.txt';
+// __dirname für ESM erzeugen
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const MAX_PARALLEL = 5;
+// Dateipfade absolut setzen
+const TRAITS_FILE = path.resolve(__dirname, '../public/traits.json');
+const GENOME_FILE = path.resolve(__dirname, '../public/genome_WM_v4_Full_20170614045048.txt');
+const OUTPUT_CSV  = path.resolve(__dirname, '../public/batch_results_cardio.csv');
+const DETAILS_CSV = path.resolve(__dirname, '../public/batch_details_cardio.csv');
 
-// Nur diese EFOs analysieren (Cardio-relevant)
+const traits = JSON.parse(fs.readFileSync(TRAITS_FILE, 'utf8'));
+const MAX_PARALLEL = 1;
+
 const CARDIO_EFO_IDS = [
-  'EFO_0004611', // LDL cholesterol
-  'EFO_0004612', // HDL cholesterol
-  'EFO_0004530', // Triglycerides
-  'EFO_0001645', // Coronary artery disease
-  'EFO_0006335', // Systolic blood pressure
-  'EFO_0004574', // Total cholesterol
-  'EFO_0000537', // Hypertension
-  'EFO_0000275', // Atrial fibrillation
-  'EFO_0006336', // Diastolic blood pressure
-  'EFO_0004458', // CRP measurement
-  'EFO_0004541'  // HbA1c measurement
+  'EFO_0004611','EFO_0004612','EFO_0004530',
+  'EFO_0001645','EFO_0006335','EFO_0004574',
+  'EFO_0000537','EFO_0000275','EFO_0006336',
+  'EFO_0004458','EFO_0004541'
 ];
 
-// Helper: fetch text from public files
-async function fetchText(url) {
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`Failed to load ${url}: ${res.status}`);
-  return res.text();
+const cardioTraits = traits.filter(t => CARDIO_EFO_IDS.includes(t.id));
+
+function writeCSVHeader() {
+  fs.writeFileSync(
+    OUTPUT_CSV,
+    'EFO-ID,Trait,PGS Count,Avg PRS,Max PRS,Min PRS,Avg Percentile,Max Percentile,Min Percentile,Total Variants\n'
+  );
 }
 
-// Helper: trigger CSV download in browser
-function downloadCSV(filename, content) {
-  const blob = new Blob([content], { type: 'text/csv' });
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(blob);
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+function writeDetailsHeader() {
+  fs.writeFileSync(
+    DETAILS_CSV,
+    'EFO-ID,Trait,PGS-ID,PRS,Z-Score,Perzentil,Matches,Total Variants,DOI\n'
+  );
 }
 
-// Wrapper to run computePRS with a plain text genome file
+function appendCSV(efoId, traitLabel, allResults) {
+  const prsValues = allResults.map(r => r.prs || 0);
+  const percValues = allResults.map(r => r.percentile || 0);
+  const totalVariants = allResults.reduce((a, b) => a + (b.matches || 0), 0);
+
+  const row = [
+    efoId,
+    `"${traitLabel}"`,
+    allResults.length,
+    (prsValues.reduce((a, b) => a + b, 0) / prsValues.length).toFixed(3),
+    Math.max(...prsValues).toFixed(3),
+    Math.min(...prsValues).toFixed(3),
+    (percValues.reduce((a, b) => a + b, 0) / percValues.length).toFixed(1),
+    Math.max(...percValues).toFixed(1),
+    Math.min(...percValues).toFixed(1),
+    totalVariants
+  ].join(',');
+
+  fs.appendFileSync(OUTPUT_CSV, row + '\n');
+}
+
+function appendDetailsCSV(efoId, traitLabel, allResults) {
+  const lines = allResults.map(r => [
+    efoId,
+    `"${traitLabel}"`,
+    r.id,
+    r.prs.toFixed(6),
+    r.zScore.toFixed(3),
+    r.percentile,
+    r.matches,
+    r.totalVariants,
+    r.doi || ''
+  ].join(','));
+
+  fs.appendFileSync(DETAILS_CSV, lines.join('\n') + '\n');
+}
+
 async function computePRSWithString(genomeText, progressCallback, efoId) {
   const fakeFile = { text: async () => genomeText };
   return computePRS(fakeFile, progressCallback, efoId);
 }
 
-// Main batch function (client-side)
-export async function runBatchCardioClient() {
-  console.log('==> Lade Daten...');
-  const [traitsJSON, genomeText] = await Promise.all([
-    fetchText(TRAITS_URL).then(JSON.parse),
-    fetchText(GENOME_URL)
-  ]);
+async function runBatchCardio() {
+  console.log(`==> Starte Batch-Analyse für ${cardioTraits.length} Traits...`);
+  writeCSVHeader();
+  writeDetailsHeader();
 
-  const cardioTraits = traitsJSON.filter(t => CARDIO_EFO_IDS.includes(t.id));
-  console.log(`==> Analysiere ${cardioTraits.length} kardiovaskuläre Traits...`);
-
-  // Prepare CSV headers (kept like original)
-  let summaryRows = [
-    'EFO-ID,Trait,PGS Count,Avg PRS,Max PRS,Min PRS,Avg Percentile,Max Percentile,Min Percentile,Total Variants'
-  ];
-  let detailsRows = [
-    'EFO-ID,Trait,PGS-ID,PRS,Z-Score,Perzentil,Matches,Total Variants,DOI'
-  ];
+  const genomeText = fs.readFileSync(GENOME_FILE, 'utf8');
 
   let index = 0;
   let running = [];
@@ -78,42 +102,13 @@ export async function runBatchCardioClient() {
 
     const task = computePRSWithString(genomeText, () => {}, efoId)
       .then(results => {
-        // Summarize results for this trait
-        const prsVals = results.map(r => r.prs || 0);
-        const percVals = results.map(r => r.percentile || 0);
-        const totalVariants = results.reduce((a, b) => a + (b.matches || 0), 0);
-
-        summaryRows.push([
-          efoId,
-          `"${label}"`,
-          results.length,
-          (prsVals.reduce((a, b) => a + b, 0) / prsVals.length).toFixed(3),
-          Math.max(...prsVals).toFixed(3),
-          Math.min(...prsVals).toFixed(3),
-          (percVals.reduce((a, b) => a + b, 0) / percVals.length).toFixed(1),
-          Math.max(...percVals).toFixed(1),
-          Math.min(...percVals).toFixed(1),
-          totalVariants
-        ].join(','));
-
-        // Detailed per-PGS rows
-        results.forEach(r => {
-          detailsRows.push([
-            efoId,
-            `"${label}"`,
-            r.id,
-            r.prs.toFixed(6),
-            r.zScore.toFixed(3),
-            r.percentile,
-            r.matches,
-            r.totalVariants,
-            r.doi || ''
-          ].join(','));
-        });
-
+        appendCSV(efoId, label, results);
+        appendDetailsCSV(efoId, label, results);
         console.log(`✓ Fertig: ${label} (${efoId})`);
       })
-      .catch(err => console.error(`✗ Fehler bei ${label} (${efoId}): ${err.message}`))
+      .catch(err => {
+        console.error(`✗ Fehler bei ${label} (${efoId}): ${err.message}`);
+      })
       .finally(() => {
         running = running.filter(r => r !== task);
         runNext();
@@ -123,16 +118,12 @@ export async function runBatchCardioClient() {
     if (running.length < MAX_PARALLEL) runNext();
   };
 
-  // Run batch with MAX_PARALLEL
   for (let i = 0; i < MAX_PARALLEL; i++) runNext();
   await Promise.all(running);
 
-  // Download CSVs once complete
-  downloadCSV('batch_results_cardio.csv', summaryRows.join('\n'));
-  downloadCSV('batch_details_cardio.csv', detailsRows.join('\n'));
-
-  console.log('==> Batch-Analyse abgeschlossen. CSV-Dateien wurden heruntergeladen.');
+  console.log(`==> Batch-Analyse abgeschlossen. Ergebnisse in:`);
+  console.log(`   - ${OUTPUT_CSV}`);
+  console.log(`   - ${DETAILS_CSV}`);
 }
 
-// Optional: auto-run when loaded
-runBatchCardioClient().catch(err => console.error('Fehler bei Batch-Analyse:', err));
+runBatchCardio().catch(err => console.error('Fehler bei Batch-Analyse:', err));

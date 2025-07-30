@@ -15,6 +15,7 @@
     "chart.js": "^4.5.0",
     "cheerio": "^1.1.0",
     "csv-parse": "^5.6.0",
+    "express": "^5.1.0",
     "fflate": "^0.8.2",
     "formidable": "^3.5.4",
     "lucide-react": "^0.533.0",
@@ -33,9 +34,18 @@
     "@types/node": "24.1.0",
     "@types/react": "19.1.8",
     "autoprefixer": "^10.4.21",
+    "nodemon": "^3.1.10",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
     "tailwindcss-cli": "^0.1.2",
     "typescript": "5.8.3"
-  }
+  },
+  "description": "1. `npm install` 2. `npm run setup` (lädt Mistral 7B + PGS-Daten via API) 3. `npm run dev` 4. Browser öffnen: [http://localhost:3000](http://localhost:3000) 5. 23andMe-Datei hochladen → PRS für Schlaganfall → Publikationen → LLM-Zusammenfassungen",
+  "main": "postcss.config.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
 }

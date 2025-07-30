@@ -41,12 +41,12 @@ export default function CardioDetail() {
           try {
             const res = await fetch(`/api/snp-summary?rsid=${rsid}`).then(r => r.json());
             fetched[rsid] =
-              res && (res.text || res.url || res.pmid)
+              res && (res.text || res.url)
                 ? res
-                : { text: 'Keine Zusammenfassung verfügbar.', url: null };
+                : { text: null, url: null };
           } catch (err) {
             console.error(`Fehler bei Summary-Fetch für ${rsid}:`, err);
-            fetched[rsid] = { text: 'Fehler beim Laden der Zusammenfassung.', url: null };
+            fetched[rsid] = { text: null, url: null };
           }
         }
         setSummaries(fetched);
@@ -96,6 +96,35 @@ export default function CardioDetail() {
     },
   };
 
+  const openSummaryPopup = (rsid) => {
+    const summary = summaries[rsid] || { text: null, url: null };
+    if (!summary.text && !summary.url) return; // Don't open if nothing exists
+
+    const newWin = window.open('', '_blank', 'width=700,height=500');
+    newWin.document.write(`
+      <html>
+        <head>
+          <title>Zusammenfassung (${rsid})</title>
+          <style>
+            body { font-family: Arial, sans-serif; background: #f9fafb; padding: 20px; color: #1f2937; }
+            .container { background: #fff; padding: 20px; border-radius: 12px; max-width: 650px; margin: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+            h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+            p { line-height: 1.6; font-size: 1rem; white-space: pre-line; }
+            a.link { display: inline-block; margin-top: 1rem; background: #2563eb; color: #fff; padding: 8px 14px; border-radius: 6px; text-decoration: none; }
+            a.link:hover { background: #1d4ed8; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <h2>Zusammenfassung für ${rsid}</h2>
+            ${summary.url ? `<p><a class="link" href="${summary.url}" target="_blank">Zur Publikation</a></p>` : ''}
+            ${summary.text ? `<p>${summary.text}</p>` : '<p>Keine Zusammenfassung verfügbar.</p>'}
+          </div>
+        </body>
+      </html>
+    `);
+  };
+
   return (
     <div className="flex min-h-screen bg-gray-50 text-gray-900">
       {/* Sidebar */}
@@ -108,13 +137,11 @@ export default function CardioDetail() {
 
       {/* Main Content */}
       <main className="flex-1 p-10 space-y-10">
-        {/* Title */}
         <header>
           <h2 className="text-4xl font-extrabold text-gray-800">
             {displayTrait}
             <span className="block text-lg text-gray-500">(EFO-ID: {efoId})</span>
           </h2>
-
           <p className="mt-4 text-lg">
             <strong>PRS:</strong> {result.prs?.toFixed(4) || '-'}{' '}
             <span className="text-gray-600">
@@ -134,65 +161,47 @@ export default function CardioDetail() {
               </tr>
             </thead>
             <tbody>
-              {top10.map((v, i) => (
-                <tr key={i} className="odd:bg-gray-50 even:bg-gray-100 hover:bg-blue-50 transition-colors">
-                  <td className="px-4 py-2">{i + 1}</td>
-                  <td className="px-4 py-2">{v.variant}</td>
-                  <td className="px-4 py-2">
-                    {v.rsid ? (
-                      <>
-                        <a
-                          href={`https://www.ncbi.nlm.nih.gov/snp/${v.rsid}`}
-                          target="_blank"
-                          className="text-blue-600 hover:underline"
-                        >
-                          {v.rsid}
-                        </a>
-                        {summaries[v.rsid]?.text && (
-                          <>
-                            {' '}|{' '}
-                            <a
-                              href="#"
-                              className="text-green-600 hover:underline"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                const summary = summaries[v.rsid];
-                                const newWin = window.open('', '_blank', 'width=700,height=500');
-                                newWin.document.write(`
-                                  <html>
-                                    <head>
-                                      <title>Summary (${v.rsid})</title>
-                                      <style>
-                                        body { font-family: Arial, sans-serif; background: #f9fafb; padding: 20px; color: #1f2937; }
-                                        .container { background: #fff; padding: 20px; border-radius: 12px; max-width: 650px; margin: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-                                        h2 { font-size: 1.5rem; margin-bottom: 1rem; }
-                                        p { line-height: 1.6; font-size: 1rem; }
-                                        a.link { display: inline-block; margin-top: 1rem; background: #2563eb; color: #fff; padding: 8px 14px; border-radius: 6px; text-decoration: none; }
-                                        a.link:hover { background: #1d4ed8; }
-                                      </style>
-                                    </head>
-                                    <body>
-                                      <div class="container">
-                                        <h2>Zusammenfassung für ${v.rsid}</h2>
-                                        ${summary.url ? `<p><a class="link" href="${summary.url}" target="_blank">Zur Publikation</a></p>` : ''}
-                                        <p>${summary.text}</p>
-                                      </div>
-                                    </body>
-                                  </html>
-                                `);
-                              }}
-                            >
-                              Summary
-                            </a>
-                          </>
-                        )}
-                      </>
-                    ) : '-'}
-                  </td>
-                  <td className="px-4 py-2">{v.alleles}</td>
-                  <td className="px-4 py-2 font-semibold text-right">{v.score?.toFixed(3)}</td>
-                </tr>
-              ))}
+              {top10.map((v, i) => {
+                const summary = summaries[v.rsid];
+                const hasSummary = summary?.text || summary?.url;
+
+                return (
+                  <tr key={i} className="odd:bg-gray-50 even:bg-gray-100 hover:bg-blue-50 transition-colors">
+                    <td className="px-4 py-2">{i + 1}</td>
+                    <td className="px-4 py-2">{v.variant}</td>
+                    <td className="px-4 py-2">
+                      {v.rsid ? (
+                        <>
+                          <a
+                            href={`https://www.ncbi.nlm.nih.gov/snp/${v.rsid}`}
+                            target="_blank"
+                            className="text-blue-600 hover:underline"
+                          >
+                            {v.rsid}
+                          </a>
+                          {hasSummary && (
+                            <>
+                              {' '}|{' '}
+                              <a
+                                href="#"
+                                className="text-green-600 hover:underline"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  openSummaryPopup(v.rsid);
+                                }}
+                              >
+                                Zusammenfassung
+                              </a>
+                            </>
+                          )}
+                        </>
+                      ) : '-'}
+                    </td>
+                    <td className="px-4 py-2">{v.alleles}</td>
+                    <td className="px-4 py-2 font-semibold text-right">{v.score?.toFixed(3)}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
