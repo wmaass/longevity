@@ -2,9 +2,12 @@
 import fs from 'fs';
 import path from 'path';
 import { computePRS } from '../lib/computePRS.js';
-import traits from '../public/traits.json' assert { type: 'json' };
 
-const MAX_PARALLEL = 5;
+// JSON sauber laden (ohne assert)
+const traitsPath = path.resolve('./public/traits.json');
+const traits = JSON.parse(fs.readFileSync(traitsPath, 'utf8'));
+
+const MAX_PARALLEL = 2;
 const GENOME_FILE = './public/genome_WM_v4_Full_20170614045048.txt';
 
 // Ausgabedateien (nur kardiovaskuläre Traits)
@@ -26,7 +29,7 @@ const CARDIO_EFO_IDS = [
   'EFO_0004541'  // HbA1c measurement
 ];
 
-// Traits auf die Cardio-EFOs reduzieren
+// Traits auf Cardio-EFOs reduzieren
 const cardioTraits = traits.filter(t => CARDIO_EFO_IDS.includes(t.id));
 
 console.log(`==> Analysiere ${cardioTraits.length} kardiovaskuläre Traits (von insgesamt ${traits.length})`);
@@ -94,7 +97,7 @@ async function computePRSWithString(genomeText, progressCallback, efoId) {
   return computePRS(fakeFile, progressCallback, efoId);
 }
 
-// Batch Runner für Cardio-Traits
+// Batch Runner
 async function runBatchCardio() {
   console.log(`==> Starte Batch-Analyse für ${cardioTraits.length} kardiovaskuläre Traits...`);
   writeCSVHeader();

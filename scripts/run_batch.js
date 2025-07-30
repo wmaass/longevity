@@ -1,11 +1,12 @@
-// scripts/run_batch.js
 import fs from 'fs';
 import path from 'path';
 import { computePRS } from '../lib/computePRS.js';
-import traits from '../public/traits.json' assert { type: 'json' };
+
+const traitsPath = path.resolve('./public/traits.json');
+const traits = JSON.parse(fs.readFileSync(traitsPath, 'utf8'));
+
 
 const MAX_PARALLEL = 5;
-//const GENOME_FILE = './public/genome_Dorothy_Wolf_v4_Full_20170525101345.txt';
 const GENOME_FILE = './public/genome_WM_v4_Full_20170614045048.txt';
 const OUTPUT_CSV = './public/batch_results.csv';
 const DETAILS_CSV = './public/batch_details.csv';
@@ -32,16 +33,24 @@ function appendCSV(efoId, traitLabel, allResults) {
   const percValues = allResults.map(r => r.percentile || 0);
   const totalVariants = allResults.reduce((a, b) => a + (b.matches || 0), 0);
 
+  const avgPRS = prsValues.length
+    ? (prsValues.reduce((a, b) => a + b, 0) / prsValues.length).toFixed(3)
+    : 0;
+
+  const avgPerc = percValues.length
+    ? (percValues.reduce((a, b) => a + b, 0) / percValues.length).toFixed(1)
+    : 0;
+
   const row = [
     efoId,
     `"${traitLabel}"`,
     allResults.length,
-    (prsValues.reduce((a, b) => a + b, 0) / prsValues.length).toFixed(3),
-    Math.max(...prsValues).toFixed(3),
-    Math.min(...prsValues).toFixed(3),
-    (percValues.reduce((a, b) => a + b, 0) / percValues.length).toFixed(1),
-    Math.max(...percValues).toFixed(1),
-    Math.min(...percValues).toFixed(1),
+    avgPRS,
+    prsValues.length ? Math.max(...prsValues).toFixed(3) : 0,
+    prsValues.length ? Math.min(...prsValues).toFixed(3) : 0,
+    avgPerc,
+    percValues.length ? Math.max(...percValues).toFixed(1) : 0,
+    percValues.length ? Math.min(...percValues).toFixed(1) : 0,
     totalVariants
   ].join(',');
 
@@ -55,11 +64,11 @@ function appendDetailsCSV(efoId, traitLabel, allResults) {
       efoId,
       `"${traitLabel}"`,
       r.id,
-      r.prs.toFixed(6),
-      r.zScore.toFixed(3),
-      r.percentile,
-      r.matches,
-      r.totalVariants,
+      r.prs?.toFixed(6) ?? 0,
+      r.zScore?.toFixed(3) ?? 0,
+      r.percentile ?? 0,
+      r.matches ?? 0,
+      r.totalVariants ?? 0,
       r.doi || ''
     ].join(',');
   });
