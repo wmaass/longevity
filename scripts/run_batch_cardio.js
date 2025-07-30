@@ -10,7 +10,9 @@ const __dirname = path.dirname(__filename);
 
 // Dateipfade absolut setzen
 const TRAITS_FILE = path.resolve(__dirname, '../public/traits.json');
-const GENOME_FILE = path.resolve(__dirname, '../public/genome_WM_v4_Full_20170614045048.txt');
+
+
+const GENOME_FILE = path.resolve(__dirname, '../public/genome_Dorothy_Wolf_v4_Full_20170525101345.txt');
 const OUTPUT_CSV  = path.resolve(__dirname, '../public/batch_results_cardio.csv');
 const DETAILS_CSV = path.resolve(__dirname, '../public/batch_details_cardio.csv');
 
