@@ -63,7 +63,7 @@ npm install
 3. **Provide Genome Data**:
    Place your 23andMe genome file in:
    ```
-   /public/genome_YOUR_23andMe_data.txt
+   /public/genome_23andMe_data.txt
    ```
 
 ---
