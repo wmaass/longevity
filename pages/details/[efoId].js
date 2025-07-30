@@ -21,6 +21,7 @@ export default function CardioDetail() {
 
   const [result, setResult] = useState(null);
   const [summaries, setSummaries] = useState({});
+  const [activeSummary, setActiveSummary] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,12 +41,12 @@ export default function CardioDetail() {
         for (const rsid of snps) {
           try {
             const res = await fetch(`/api/snp-summary?rsid=${rsid}`).then(r => r.json());
-            // Only keep summaries that actually have content
-            if (res?.text && res.text.trim() && res.text !== 'Keine Zusammenfassung verfügbar.') {
-              fetched[rsid] = { text: res.text, url: res.url || null };
-            }
+            fetched[rsid] = res && (res.text || res.url)
+              ? res
+              : { text: 'Keine Zusammenfassung verfügbar.', url: null };
           } catch (err) {
             console.error(`Fehler bei Summary-Fetch für ${rsid}:`, err);
+            fetched[rsid] = { text: 'Fehler beim Laden der Zusammenfassung.', url: null };
           }
         }
         setSummaries(fetched);
@@ -95,47 +96,26 @@ export default function CardioDetail() {
     },
   };
 
-  const openSummaryPopup = (rsid) => {
-    const summary = summaries[rsid];
-    if (!summary) return;
-
-    const newWin = window.open('', '_blank', 'width=700,height=500');
-    newWin.document.write(`
-      <html>
-        <head>
-          <title>Zusammenfassung (${rsid})</title>
-          <style>
-            body { font-family: Arial, sans-serif; background: #f9fafb; padding: 20px; color: #1f2937; }
-            .container { background: #fff; padding: 20px; border-radius: 12px; max-width: 650px; margin: auto; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-            h2 { font-size: 1.5rem; margin-bottom: 1rem; }
-            p { line-height: 1.6; font-size: 1rem; white-space: pre-line; }
-            a.link { display: inline-block; margin-top: 1rem; background: #2563eb; color: #fff; padding: 8px 14px; border-radius: 6px; text-decoration: none; }
-            a.link:hover { background: #1d4ed8; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <h2>Zusammenfassung für ${rsid}</h2>
-            ${summary.url ? `<p><a class="link" href="${summary.url}" target="_blank">Zur Publikation</a></p>` : ''}
-            <p>${summary.text}</p>
-          </div>
-        </body>
-      </html>
-    `);
-  };
-
   return (
     <div className="flex min-h-screen bg-gray-50 text-gray-900">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r shadow-md p-4">
-        <h1 className="text-2xl font-bold text-green-600">PGS Dashboard</h1>
-        <nav className="mt-6 flex flex-col space-y-3">
+      <aside className="w-64 bg-white border-r shadow-md p-6 flex flex-col items-center">
+        {/* Logo */}
+        <a href="/" className="mb-6">
+          <img
+            src="/logo.png"
+            alt="PGS Dashboard Logo"
+            className="w-36 h-auto transition-transform duration-200 hover:scale-105"
+          />
+        </a>
+        <nav className="flex flex-col space-y-3 w-full text-center">
           <a href="/batch_ui_cardio" className="font-semibold text-green-700">← Zurück</a>
         </nav>
       </aside>
 
       {/* Main Content */}
       <main className="flex-1 p-10 space-y-10">
+        {/* Title */}
         <header>
           <h2 className="text-4xl font-extrabold text-gray-800">
             {displayTrait}
@@ -149,51 +129,81 @@ export default function CardioDetail() {
           </p>
         </header>
 
-        {/* Variants Table */}
-        <div className="bg-white p-6 rounded-xl shadow-md overflow-x-auto">
-          <table className="w-full text-sm border-separate border-spacing-y-1">
-            <thead className="bg-blue-50 text-gray-700">
-              <tr>
-                {['#', 'Variante', 'SNP', 'Genotyp', 'β × z', ''].map((col) => (
-                  <th key={col} className="px-4 py-2 text-left font-semibold">{col}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {top10.map((v, i) => (
-                <tr key={i} className="odd:bg-gray-50 even:bg-gray-100 hover:bg-blue-50 transition-colors">
-                  <td className="px-4 py-2">{i + 1}</td>
-                  <td className="px-4 py-2">{v.variant}</td>
-                  <td className="px-4 py-2">
-                    {v.rsid ? (
-                      <a
-                        href={`https://www.ncbi.nlm.nih.gov/snp/${v.rsid}`}
-                        target="_blank"
-                        className="text-blue-600 hover:underline"
-                      >
-                        {v.rsid}
-                      </a>
-                    ) : '-'}
-                  </td>
-                  <td className="px-4 py-2">{v.alleles}</td>
-                  <td className="px-4 py-2 font-semibold text-right">{v.score?.toFixed(3)}</td>
-                  <td className="px-4 py-2">
-                    {summaries[v.rsid] && (
-                      <a
-                        href="#"
-                        className="text-green-600 hover:underline"
-                        onClick={(e) => { e.preventDefault(); openSummaryPopup(v.rsid); }}
-                      >
-                        Zusammenfassung
-                      </a>
-                    )}
-                  </td>
+        {/* Table + Inline Summary Panel */}
+        <div className="flex gap-6">
+          {/* Variants Table */}
+          <div className="flex-1 bg-white p-6 rounded-xl shadow-md overflow-x-auto">
+            <table className="w-full text-sm border-separate border-spacing-y-1">
+              <thead className="bg-blue-50 text-gray-700">
+                <tr>
+                  {['#', 'Variante', 'SNP', 'Genotyp', 'β × z'].map((col) => (
+                    <th key={col} className="px-4 py-2 text-left font-semibold">{col}</th>
+                  ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {top10.map((v, i) => (
+                  <tr key={i} className="odd:bg-gray-50 even:bg-gray-100 hover:bg-blue-50 transition-colors">
+                    <td className="px-4 py-2">{i + 1}</td>
+                    <td className="px-4 py-2">{v.variant}</td>
+                    <td className="px-4 py-2">
+                      {v.rsid ? (
+                        <>
+                          <a
+                            href={`https://www.ncbi.nlm.nih.gov/snp/${v.rsid}`}
+                            target="_blank"
+                            className="text-blue-600 hover:underline"
+                          >
+                            {v.rsid}
+                          </a>
+                          {summaries[v.rsid]?.text && (
+                            <>
+                              {' '}|{' '}
+                              <button
+                                className="text-green-600 hover:underline"
+                                onClick={() => setActiveSummary({ rsid: v.rsid, ...summaries[v.rsid] })}
+                              >
+                                Zusammenfassung
+                              </button>
+                            </>
+                          )}
+                        </>
+                      ) : '-'}
+                    </td>
+                    <td className="px-4 py-2">{v.alleles}</td>
+                    <td className="px-4 py-2 font-semibold text-right">{v.score?.toFixed(3)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Summary Panel */}
+          <div className="w-1/3 bg-white p-6 rounded-xl shadow-md sticky top-10 h-fit">
+            {activeSummary ? (
+              <>
+                <h3 className="text-xl font-bold mb-4">Zusammenfassung für {activeSummary.rsid}</h3>
+                {activeSummary.url && (
+                  <p className="mb-4">
+                    <a
+                      href={activeSummary.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      Zur Publikation
+                    </a>
+                  </p>
+                )}
+                <p className="whitespace-pre-line text-gray-800">{activeSummary.text}</p>
+              </>
+            ) : (
+              <p className="text-gray-500">Wähle eine Variante aus, um die Zusammenfassung zu sehen.</p>
+            )}
+          </div>
         </div>
 
+        {/* Chart */}
         <div className="bg-white p-6 rounded-xl shadow-md">
           <Bar data={chartData} options={chartOptions} />
         </div>

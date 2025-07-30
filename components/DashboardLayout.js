@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Sun, Moon } from "lucide-react";
+import Link from "next/link";
 
 export default function DashboardLayout({ children }) {
   const [dark, setDark] = useState(false);
@@ -12,29 +13,35 @@ export default function DashboardLayout({ children }) {
     >
       {/* Sidebar */}
       <aside
-        className={`w-64 p-6 flex flex-col shadow-md ${
+        className={`w-64 p-6 flex flex-col items-center shadow-md ${
           dark
             ? "bg-gradient-to-b from-gray-800 to-gray-700"
             : "bg-gradient-to-b from-white to-gray-50"
         } rounded-r-3xl`}
       >
-        <h1 className="text-2xl font-extrabold text-blue-600 mb-12 tracking-tight">
-          PGS Dashboard
-        </h1>
+         {/* Logo */}
+        <Link href="/" className="mb-8">
+          <img
+            src="/logo.png"
+            alt="PGS Dashboard Logo"
+            className="w-36 h-auto transition-transform duration-200 hover:scale-105"
+          />
+        </Link>
 
-        <nav className="flex-1 space-y-3">
-          <a
+        {/* Navigation */}
+        <nav className="flex-1 space-y-3 w-full">
+          <Link
             href="/batch"
             className="block px-3 py-2 rounded-lg text-gray-700 hover:bg-blue-100 hover:text-blue-700 transition-colors"
           >
             Alle Traits
-          </a>
-          <a
+          </Link>
+          <Link
             href="/batch_ui_cardio"
             className="block px-3 py-2 rounded-lg bg-blue-50 text-blue-700 font-semibold hover:bg-blue-100 transition-colors"
           >
             Kardiovaskulär
-          </a>
+          </Link>
         </nav>
 
         {/* Dark Mode Toggle */}

@@ -105,6 +105,7 @@ export default function CardioDashboard() {
         Kardiovaskuläre PGS-Ergebnisse
       </h2>
 
+      {/* Stat Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         <div className="bg-white rounded-2xl shadow-lg p-6 border-t-4 border-green-400 text-center">
           <h4 className="text-sm font-medium text-gray-500">Anzahl Traits</h4>
@@ -124,40 +125,63 @@ export default function CardioDashboard() {
         </div>
       </div>
 
-      <div className="overflow-x-auto bg-white shadow-md rounded-2xl">
-        <table className="min-w-full border-separate border-spacing-y-1">
-          <thead className="bg-blue-50 text-gray-700">
-            <tr>
-              {["EFO-ID", "Trait", "PGS Count", "Avg PRS", "Avg Percentile", "Total Variants"].map((h) => (
-                <th
-                  key={h}
-                  onClick={() => toggleSort(h)}
-                  className="px-6 py-3 text-left text-sm font-semibold tracking-wide cursor-pointer hover:text-blue-600"
-                >
-                  {h}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {sorted.map((d, i) => (
-              <tr
-                key={i}
-                className="bg-gray-50 hover:bg-blue-50 cursor-pointer rounded-lg transition-colors"
-                onClick={() => router.push(`/details/${d["EFO-ID"]}?trait=${encodeURIComponent(d.Trait)}`)}
-              >
-                <td className="px-6 py-3">{d["EFO-ID"]}</td>
-                <td className="px-6 py-3">{d.Trait}</td>
-                <td className="px-6 py-3">{d["PGS Count"]}</td>
-                <td className="px-6 py-3">{d["Avg PRS"].toExponential(2)}</td>
-                <td className="px-6 py-3">{d["Avg Percentile"].toFixed(1)}%</td>
-                <td className="px-6 py-3">{d["Total Variants"]}</td>
+      {/* Table + Interpretation Panel */}
+      <div className="flex gap-6">
+        {/* Table (Top 5 visible, scroll for more) */}
+        <div className="flex-1 overflow-x-auto bg-white shadow-md rounded-2xl p-4 max-h-96 overflow-y-auto">
+          <table className="min-w-full border-separate border-spacing-y-1">
+            <thead className="bg-blue-50 text-gray-700 sticky top-0">
+              <tr>
+                {["EFO-ID", "Trait", "PGS Count", "Avg PRS", "Avg Percentile", "Total Variants"].map((h) => (
+                  <th
+                    key={h}
+                    onClick={() => toggleSort(h)}
+                    className="px-6 py-3 text-left text-sm font-semibold tracking-wide cursor-pointer hover:text-blue-600"
+                  >
+                    {h}
+                  </th>
+                ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {sorted.map((d, i) => (
+                <tr
+                  key={i}
+                  className="bg-gray-50 hover:bg-blue-50 cursor-pointer rounded-lg transition-colors"
+                  onClick={() => router.push(`/details/${d["EFO-ID"]}?trait=${encodeURIComponent(d.Trait)}`)}
+                >
+                  <td className="px-6 py-3">{d["EFO-ID"]}</td>
+                  <td className="px-6 py-3">{d.Trait}</td>
+                  <td className="px-6 py-3">{d["PGS Count"]}</td>
+                  <td className="px-6 py-3">{d["Avg PRS"].toExponential(2)}</td>
+                  <td className="px-6 py-3">{d["Avg Percentile"].toFixed(1)}%</td>
+                  <td className="px-6 py-3">{d["Total Variants"]}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Interpretation Panel */}
+        <div className="w-1/3 bg-white shadow-md rounded-2xl p-6 text-gray-800 sticky top-10 h-fit">
+          <h3 className="text-xl font-bold mb-4">Wie interpretiere ich diese Tabelle?</h3>
+          <p className="text-sm leading-relaxed">
+            Diese Tabelle zeigt die <strong>Top 10 polygenen Risiko-Scores (PGS)</strong> für die getestete Person.
+            Der <strong>"Avg Percentile"</strong>-Wert zeigt an, wo die Person im Vergleich zu einer Referenzpopulation steht:
+          </p>
+          <ul className="list-disc list-inside text-sm text-gray-700 mt-3">
+            <li><strong>50%:</strong> Durchschnittliches genetisches Risiko.</li>
+            <li><strong>Über 80%:</strong> Hohes genetisches Risiko – erhöhte Aufmerksamkeit empfohlen.</li>
+            <li><strong>Unter 20%:</strong> Niedriges genetisches Risiko für diesen Trait.</li>
+          </ul>
+          <p className="mt-4 text-sm">
+            Hohe Perzentile können auf ein erhöhtes Risiko hindeuten und sollten Anlass für <strong>präventive Maßnahmen</strong>
+            wie Lebensstiländerungen oder engmaschigere medizinische Kontrollen geben.
+          </p>
+        </div>
       </div>
 
+      {/* Chart */}
       <div className="mt-12">
         <Bar data={barData} options={barOptions} />
       </div>
