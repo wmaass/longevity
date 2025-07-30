@@ -1,159 +1,122 @@
-# Stroke-PRS-PGS23 Dashboard
+# Stroke PRS PGS23 – Commercial Polygenic Risk Score Application
 
-This project is a **Next.js web application** for analyzing **polygenic risk scores (PRS)** for traits based on the **PGS Catalog** and individual **23andMe genomic data**.  
-It includes tools to **download trait and PGS score data**, compute individual PRS values, and view results interactively via a dashboard.
+This application is a **commercial tool** for analyzing **polygenic risk scores (PRS)** using 23andMe raw genetic data and datasets from the **Polygenic Score (PGS) Catalog**.  
+It supports automated score downloads, batch PRS computation for cardiovascular traits, and interactive results visualization via a browser dashboard.
+
+> **Note:** This software is for **licensed commercial use only**.  
+> Redistribution, open-sourcing, or unlicensed deployment is prohibited.
 
 ---
 
 ## Features
-- Fetch **EFO trait definitions** and **PGS scores** from the [PGS Catalog](https://www.pgscatalog.org/).
-- Parse **23andMe raw genome files** and compute PRS for selected traits.
-- Provide **batch processing** for cardio-relevant traits (`batch_ui_cardio`).
-- Display **interactive dashboards** (tables and charts) for reviewing PRS results.
-- On trait detail pages, show **top genetic variants** with:
-  - Effect sizes (`β × z`),
-  - Links to **NCBI SNP entries**,
-  - AI-generated **summaries** from published research (via Europe PMC),
-  - DOI links for the main publication (if available).
+
+- **Automated Download** of:
+  - Trait definitions (`traits.json`),
+  - All required PGS score files (via `download_all_pgs.js`).
+- **Batch PRS Computation** for a preselected set of cardiovascular traits.
+- **Interactive Dashboard** to explore results per trait and per SNP.
+- **Scientific Context Summaries**:
+  - Fetches Europe PMC abstracts for top SNPs.
+  - Summarizes findings via **Ollama (Llama 3)** locally, with DistilBART fallback.
+  - Displays DOI links to relevant research.
 
 ---
 
-## Setup
+## Requirements
 
-### 1. Clone Repository
+- Node.js **v18+** (ES Module support).  
+- A 23andMe raw genome file (`.txt` format).  
+- Internet connectivity for downloading traits, PGS scores, and research papers.
+
+---
+
+## Installation
+
 ```bash
-git clone https://github.com/<your-username>/stroke-prs-pgs23.git
+git clone <PRIVATE_REPO_URL>
 cd stroke-prs-pgs23
-```
-
-### 2. Install Dependencies
-```bash
 npm install
-```
-
-### 3. Run the App
-For development:
-```bash
-npm run dev
-```
-
-Then open:  
-**[http://localhost:3000/batch_ui_cardio](http://localhost:3000/batch_ui_cardio)**
-
-For production:
-```bash
-npm run build
-npm start
 ```
 
 ---
 
 ## Data Preparation
 
-### Download Trait Definitions
-The PGS Catalog provides trait definitions via API. Run:
-```bash
-npm run fetch:traits
-```
-This stores `traits.json` in `public/`, which is used by the dashboard.
-
-### Download PGS Scores
-PGS scores must be manually downloaded from the [PGS Catalog FTP](https://ftp.ebi.ac.uk/pub/databases/spot/pgs/).  
-Place all `.txt.gz` or unpacked `.txt` PGS files under:
-```
-public/pgs_scores/
-```
-
-If unpacked files exist (e.g., `PGS000001_hmPOS_GRCh37.txt`), they will be used directly.
-
----
-
-## Compute PRS
-
-The core calculation uses the script `scripts/run_batch_cardio.js`, which:
-1. Loads the **user genome** (23andMe raw data).
-2. Loads **trait definitions** and **PGS scores**.
-3. Computes **PRS values per trait** (weighted sum across matched variants).
-4. Outputs **CSV summaries** for:
-   - `batch_results_cardio.csv`: per-trait summary (Avg PRS, Percentiles, Total Variants).
-   - `batch_details_cardio.csv`: per-score details (PGS IDs, PRS, matches, DOI).
-
-To run:
-```bash
-node scripts/run_batch_cardio.js
-```
-
-This generates the CSV files into `/public/` for the dashboard.
-
----
-
-## Using the Dashboard
-
-After running the computation and starting the app:
-1. Go to **[http://localhost:3000/batch_ui_cardio](http://localhost:3000/batch_ui_cardio)**.
-2. The dashboard shows:
-   - **Summary Table** of cardio traits.
-   - **Interactive bar chart** of PRS distributions.
-   - Click on a **trait** to open its **details page**.
-
-### Details Page
-For each trait (`/details/[EFO-ID]?trait=[Trait Name]`):
-- View **PRS, Z-Score, and Percentile** for the user.
-- See **top 10 contributing variants**.
-- Each variant shows:
-  - **SNP ID** (link to NCBI),
-  - **Genotype**,
-  - **Effect size (`β × z`)**,
-  - **Summary** link (if available):
-    - Opens a popup with **AI-generated research summary**,
-    - Includes **DOI link** to the primary publication (via Europe PMC).
-
----
-
-## Development Notes
-- The app is an **ESM project** (`"type": "module"` in `package.json`).
-- `pages/api/snp-summary.js` handles:
-  - Fetching papers from **Europe PMC**,
-  - Summarizing findings (Ollama + DistilBART fallback),
-  - Caching results in `public/summaries/` for faster loading.
-- Trait and PRS computations are client-driven, no server backend beyond Next.js API routes.
-
----
-
-## Requirements
-- Node.js 18+
-- [Ollama](https://ollama.com/) (for local Llama 3 summaries, optional but recommended).
-- Internet access for Europe PMC lookups (summaries will still load from cache if offline).
-
----
-
-## Typical Workflow
-
-1. **Prepare data:**
+1. **Fetch Trait Metadata** (from the PGS Catalog):
    ```bash
    npm run fetch:traits
-   # Place PGS scores into public/pgs_scores/
    ```
 
-2. **Compute PRS:**
+2. **Download All Required PGS Scores**:
    ```bash
-   node scripts/run_batch_cardio.js
+   node scripts/download_all_pgs.js
    ```
+   - Downloads `.txt.gz` PGS score files into:
+     ```
+     /public/pgs_scores
+     ```
+   - Automatically unpacks `.txt` files into:
+     ```
+     /public/pgs_scores/unpacked
+     ```
 
-3. **Run the dashboard:**
-   ```bash
-   npm run dev
-   # Visit: http://localhost:3000/batch_ui_cardio
+3. **Provide Genome Data**:
+   Place your 23andMe genome file in:
    ```
-
-4. **Click on traits** to see **details and variant-level insights**.
+   /public/genome_WM_v4_Full_20170614045048.txt
+   ```
 
 ---
 
-## Licenses and Commercial Terms
-This software is proprietary and commercial.
-Usage is restricted to licensed customers and partners.
-For licensing inquiries, contact:
+## Running the App
 
+Start the development server:
+```bash
+npm run dev
+```
+
+The dashboard is available at:
+```
+http://localhost:3000/batch_ui_cardio
+```
+
+---
+
+## How It Works
+
+1. **Batch PRS Computation**  
+   The app automatically calculates PRS for all **cardiovascular traits** listed in `CARDIO_EFO_IDS` (inside `scripts/run_batch_cardio.js`).
+
+2. **Results Output**  
+   Two CSVs are generated:
+   - `batch_results_cardio.csv` (summary per trait),
+   - `batch_details_cardio.csv` (detailed per PGS).
+
+3. **Interactive Exploration**  
+   - Navigate to `/batch_ui_cardio` to view **sortable results and charts**.
+   - Click any trait to view its **detail page**:
+     - Top 10 contributing SNPs, with effect sizes (`β × z`),
+     - Links to **dbSNP** and, if available, an **AI-generated summary** with DOI link.
+
+---
+
+## Literature Summaries
+
+- The app queries **Europe PMC** for each SNP.
+- Summaries are generated using:
+  - **Ollama (Llama 3)** (local inference),
+  - DistilBART as fallback if Ollama is unavailable.
+- Summaries and links are cached in `/public/summaries` for offline reuse.
+
+---
+
+## License & Commercial Use
+
+This software is **proprietary and for licensed commercial use only**.  
+Contact for licensing or enterprise integration:
+
+```
 Wolfgang Maaß
 wmaass@mailfence.com
+```
+
