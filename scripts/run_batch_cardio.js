@@ -8,6 +8,7 @@ import { computePRS } from '../lib/computePRS.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
 // Dateipfade absolut setzen
 const TRAITS_FILE = path.resolve(__dirname, '../public/traits.json');
 
