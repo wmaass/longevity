@@ -47,5 +47,13 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wmaass/stroke-prs-pgs23.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wmaass/stroke-prs-pgs23/issues"
+  },
+  "homepage": "https://github.com/wmaass/stroke-prs-pgs23#readme"
 }
