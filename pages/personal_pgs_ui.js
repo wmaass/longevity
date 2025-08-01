@@ -59,11 +59,20 @@ export default function PersonalPGSUI() {
       setResults([]);
       setError(null);
 
-      if (await checkExistingResults(baseName)) {
-        await copyResultsToPublic(baseName);
-        setResultsPrecomputed(true);
-        return;
-      }
+      const found = await checkExistingResults(baseName);
+
+    if (found) {
+        try {
+            await copyResultsToPublic(baseName);
+            setResultsPrecomputed(true);
+            return;
+        } catch (e) {
+            console.warn(`⚠️ Fehler beim Kopieren der Ergebnisse: ${e.message}`);
+            // -> setze nicht `return`, damit wir mit der Berechnung fortfahren
+        }
+        } else {
+            console.info(`ℹ️ Keine bestehenden Ergebnisse für ${baseName}, starte PRS-Berechnung.`);
+        }
     }
   };
 
