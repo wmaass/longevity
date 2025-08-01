@@ -3,17 +3,17 @@ import DashboardLayout from '../components/DashboardLayout';
 import { computePRS } from '../lib/computePRS.client';
 
 const CARDIO_EFO_IDS = [
-  'EFO_0004541',
-  'EFO_0004611',
-  'EFO_0004612',
-  'EFO_0004530',
-  'EFO_0001645',
-  'EFO_0006335',
-  'EFO_0004574',
-  'EFO_0000537',
-  'EFO_0000275',
-  'EFO_0006336',
-  'EFO_0004458',
+'EFO_0004541',
+'EFO_0004611',
+'EFO_0004612',
+'EFO_0004530',
+'EFO_0001645',
+'EFO_0006335',
+'EFO_0004574',
+'EFO_0000537',
+'EFO_0000275',
+'EFO_0006336',
+'EFO_0004458',
   'EFO_0004541'
 ];
 

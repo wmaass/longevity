@@ -1,82 +1,169 @@
-// scripts/download_all_pgs.js
-import fs from 'fs';
-import fetch from 'node-fetch';
-import { parse } from 'csv-parse/sync';
-import path from 'path';
+'use client';
 
-// Directory to store downloaded PGS files
-const OUTPUT_DIR = './pgs_scores';
-const SCORES_META_URL = 'https://ftp.ebi.ac.uk/pub/databases/spot/pgs/metadata/pgs_all_metadata_scores.csv';
-const MAX_SIZE_MB = 10;
+// pages/batch_ui_cardio.js
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import Papa from 'papaparse';
+import * as d3 from 'd3';
+import DashboardLayout from '../components/DashboardLayout';
+import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { Bar } from 'react-chartjs-2';
 
-// Fetch metadata and extract all PGS IDs
-async function getAllPGSIds() {
-  console.log('==> Lade PGS-Metadaten...');
-  const res = await fetch(SCORES_META_URL);
-  if (!res.ok) throw new Error(`Konnte PGS-Metadaten nicht laden: ${res.statusText}`);
-  const csv = await res.text();
-  const records = parse(csv, { columns: true, skip_empty_lines: true });
-  return records.map(r => r['Polygenic Score (PGS) ID']);
-}
+Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-// Check file size via HEAD before download
-async function isFileTooLarge(url) {
-  try {
-    const headRes = await fetch(url, { method: 'HEAD' });
-    if (!headRes.ok) return false; // if HEAD fails, let normal fetch handle it
-    const size = headRes.headers.get('content-length');
-    if (size && parseInt(size, 10) > MAX_SIZE_MB * 1024 * 1024) {
-      console.warn(`✗ Überspringe ${url} (Datei > ${MAX_SIZE_MB}MB)`);
-      return true;
+export default function CardioDashboard() {
+  const [data, setData] = useState([]);
+  const [organMap, setOrganMap] = useState({});
+  const router = useRouter();
+
+  useEffect(() => {
+    fetch('/batch_results_cardio.csv')
+      .then((res) => res.text())
+      .then((csv) => {
+        const parsed = Papa.parse(csv, { header: true, skipEmptyLines: true }).data.map((row) => ({
+          ...row,
+          'Avg PRS': parseFloat(row['Avg PRS'] || 0),
+          'Avg Percentile': parseFloat(row['Avg Percentile'] || 0),
+          logPRS: parseFloat(row['Avg PRS']) > 0 ? Math.log10(parseFloat(row['Avg PRS'])) : 0,
+        }));
+        setData(parsed);
+      });
+
+    fetch('/efo_to_organ.json')
+      .then(res => res.json())
+      .then(data => setOrganMap(data));
+  }, []);
+
+  useEffect(() => {
+    if (Object.keys(organMap).length > 0 && data.length > 0) {
+      renderBodyMap(data, organMap);
     }
-  } catch (err) {
-    console.warn(`✗ HEAD-Check fehlgeschlagen für ${url}: ${err.message}`);
-  }
-  return false;
+  }, [data, organMap]);
+
+  const barData = {
+    labels: data.map((d) => d.Trait),
+    datasets: [
+      {
+        label: 'log10(Avg PRS)',
+        data: data.map((d) => d.logPRS),
+        backgroundColor: 'rgba(34,197,94,0.6)',
+        borderRadius: 8,
+        borderSkipped: false,
+        hoverBackgroundColor: 'rgba(34,197,94,0.8)',
+        hoverBorderColor: 'rgba(34,197,94,1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const barOptions = {
+    indexAxis: 'y',
+    responsive: true,
+    animation: { duration: 400, easing: 'easeOutQuart' },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: '#ffffff',
+        titleColor: '#111827',
+        bodyColor: '#374151',
+        borderColor: '#e5e7eb',
+        borderWidth: 1,
+        padding: 12,
+        titleFont: { size: 16, weight: 'bold' },
+        bodyFont: { size: 14 },
+        callbacks: {
+          label: (ctx) => {
+            const d = data[ctx.dataIndex];
+            return `${d.Trait}: logPRS=${d.logPRS.toFixed(2)}, Percentile=${d['Avg Percentile']}`;
+          },
+        },
+      },
+    },
+    scales: {
+      x: {
+        ticks: { font: { size: 14 }, color: '#374151' },
+        grid: { color: '#f3f4f6', drawTicks: false },
+      },
+      y: {
+        ticks: { font: { size: 16, weight: '500' }, color: '#111827' },
+        grid: { drawTicks: false, color: '#ffffff' },
+      },
+    },
+    layout: { padding: { top: 10, bottom: 10, left: 10, right: 10 } },
+    onHover: (event, chartElement) => {
+      event.native.target.style.cursor = chartElement.length ? 'pointer' : 'default';
+    },
+    onClick: (_, elements) => {
+      if (elements.length > 0) {
+        const idx = elements[0].index;
+        router.push(`/details/${data[idx]['EFO-ID']}?trait=${encodeURIComponent(data[idx].Trait)}`);
+      }
+    },
+  };
+
+  return (
+    <DashboardLayout>
+      <h2 className="text-4xl font-extrabold mb-10 text-gray-800">
+        Kardiovaskuläre PGS-Ergebnisse
+      </h2>
+
+      <div id="bodymap" className="relative w-full flex justify-center my-12">
+        <img src="/images/bodymap.png" alt="Körperkarte" className="absolute max-w-full h-auto" />
+        <svg className="absolute w-full h-full" id="organsvg"></svg>
+      </div>
+
+      <div className="flex justify-center gap-4 text-sm mt-4 text-gray-700">
+        <div className="flex items-center gap-1"><div className="w-4 h-4 bg-red-500 rounded-full"></div> hohes Risiko</div>
+        <div className="flex items-center gap-1"><div className="w-4 h-4 bg-red-200 rounded-full"></div> niedriges Risiko</div>
+      </div>
+
+      <div className="mt-12">
+        <Bar data={barData} options={barOptions} />
+      </div>
+    </DashboardLayout>
+  );
 }
 
-// Download a single PGS file (gzipped), but skip if file exists or too large
-async function downloadPGS(pgsId) {
-  const filePath = path.join(OUTPUT_DIR, `${pgsId}_hmPOS_GRCh37.txt.gz`);
+function renderBodyMap(results, organMap) {
+  const svg = d3.select('#organsvg');
+  svg.selectAll('*').remove();
 
-  // Skip download if already present
-  if (fs.existsSync(filePath)) {
-    console.log(`✓ Überspringe ${pgsId} (bereits vorhanden)`);
-    return;
-  }
+  const organs = [
+    { name: 'Gehirn', x: 250, y: 60 },
+    { name: 'Lunge', x: 250, y: 180 },
+    { name: 'Herz', x: 250, y: 250 },
+    { name: 'Leber', x: 240, y: 300 },
+    { name: 'Magen', x: 260, y: 330 },
+    { name: 'Blutgefäße', x: 250, y: 270 },
+    { name: 'Niere', x: 230, y: 370 },
+    { name: 'Darm', x: 250, y: 430 },
+    { name: 'Blase', x: 250, y: 520 }
+  ];
 
-  const url = `https://ftp.ebi.ac.uk/pub/databases/spot/pgs/scores/${pgsId}/ScoringFiles/Harmonized/${pgsId}_hmPOS_GRCh37.txt.gz`;
-  if (await isFileTooLarge(url)) return;
+  organs.forEach(({ name, x, y }) => {
+    const matches = results.filter(r => organMap[r['EFO-ID']]?.organ === name);
+    const maxPercentile = d3.max(matches, m => parseFloat(m['Avg Percentile'] || 0));
+    const color = d3.interpolateReds((maxPercentile || 0) / 100);
 
-  console.log(`==> Lade PGS-Datei: ${url}`);
+    svg.append('circle')
+      .attr('cx', x)
+      .attr('cy', y)
+      .attr('r', 25)
+      .attr('fill', color)
+      .attr('stroke', 'black')
+      .on('click', () => {
+        if (matches.length > 0) {
+          const best = matches.reduce((a, b) => (a['Avg Percentile'] > b['Avg Percentile'] ? a : b));
+          window.location.href = `/details/${best['EFO-ID']}?trait=${encodeURIComponent(best.Trait)}`;
+        }
+      });
 
-  const res = await fetch(url);
-  if (!res.ok) {
-    console.error(`✗ Fehler: ${pgsId} konnte nicht geladen werden (${res.statusText})`);
-    return;
-  }
-
-  const buffer = Buffer.from(await res.arrayBuffer());
-  fs.writeFileSync(filePath, buffer);
-  console.log(`✓ Gespeichert: ${filePath}`);
+    svg.append('text')
+      .attr('x', x)
+      .attr('y', y + 40)
+      .attr('text-anchor', 'middle')
+      .attr('font-size', '12px')
+      .attr('fill', 'black')
+      .text(name);
+  });
 }
-
-// Main process
-async function run() {
-  if (!fs.existsSync(OUTPUT_DIR)) fs.mkdirSync(OUTPUT_DIR);
-
-  const allIds = await getAllPGSIds();
-  console.log(`==> ${allIds.length} PGS Scores gefunden. Starte Download (überspringe vorhandene & große Dateien)...`);
-
-  for (const id of allIds) {
-    try {
-      await downloadPGS(id);
-    } catch (err) {
-      console.error(`✗ Fehler bei ${id}: ${err.message}`);
-    }
-  }
-
-  console.log(`==> Alle PGS-Dateien (≤${MAX_SIZE_MB}MB) wurden in ${OUTPUT_DIR} gespeichert.`);
-}
-
-run().catch(err => console.error('Fehler beim Download:', err));
