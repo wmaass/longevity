@@ -7,20 +7,13 @@ import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend }
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const CARDIO_EFO_IDS = [
-  'EFO_0004530', // Triglyceride measurement
-  'EFO_0006336', // LDL cholesterol
-  'EFO_0006335', // HDL cholesterol
-  'EFO_0004541', // Total cholesterol
-  'EFO_0001645', // Heart rate
-  'EFO_0004458', // Cardiac output
-  'EFO_0004611', // Liver enzyme level
-  'EFO_0004612', // Bilirubin measurement
   'EFO_0004574'  // Liver fat percentage
 ];
 
 const CONFIG = {
   MAX_VARIANTS_ALLOWED: 100,
-  METADATA_URL: 'https://ftp.ebi.ac.uk/pub/databases/spot/pgs/metadata/pgs_all_metadata_scores.csv'
+  METADATA_URL: 'https://ftp.ebi.ac.uk/pub/databases/spot/pgs/metadata/pgs_all_metadata_scores.csv',
+  useLocalFiles: true
 };
 
 export default function PersonalPGSUI() {
@@ -31,6 +24,8 @@ export default function PersonalPGSUI() {
   const [error, setError] = useState(null);
   const [genomeFileName, setGenomeFileName] = useState('genome_webworker');
   const [summaryResults, setSummaryResults] = useState([]);
+  const [currentEfo, setCurrentEfo] = useState('');
+  const [progressState, setProgressState] = useState({ currentPGS: '', percent: 0 });
   const logRef = useRef(null);
 
   useEffect(() => {
@@ -67,8 +62,25 @@ export default function PersonalPGSUI() {
     });
 
     worker.onmessage = async (event) => {
-      const { results: resultList, log: newLog } = event.data;
-      if (newLog) setLog((prev) => [...prev, newLog]);
+      const { results: resultList, log: newLog, currentPGS, progress } = event.data;
+
+      if (newLog) {
+        setLog((prev) => [...prev, newLog]);
+        const match = newLog.match(/EFO\s+(EFO_\d+):/);
+        if (match) setCurrentEfo(match[1]);
+
+        const matchPGS = newLog.match(/Pr\u00fcfe Gr\u00f6\u00dfe von (PGS\d+)/);
+        if (matchPGS) {
+          setProgressState({ currentPGS: matchPGS[1], percent: 0 });
+        }
+      }
+
+      if (currentPGS && typeof progress === 'number') {
+        setProgressState({ currentPGS, percent: progress });
+        const progressMsg = `📊 Prüfe ${currentPGS} (${progress.toFixed(1)}%)`;
+        setLog((prev) => [...prev, progressMsg]);
+      }
+
       if (resultList) {
         setResults(resultList);
         setLoading(false);
@@ -115,7 +127,7 @@ export default function PersonalPGSUI() {
       grouped[r.efoId].push(r);
     }
     return Object.entries(grouped).map(([efoId, scores]) => {
-      const trait = scores[0]?.trait || '(unbekannt)';
+      const trait = scores[0]?.trait || scores[0]?.label || '(unbekannt)';
       const pgsCount = scores.length;
       const avgPRS = scores.reduce((sum, s) => sum + s.prs, 0) / pgsCount;
       const maxPRS = Math.max(...scores.map(s => s.prs));
@@ -174,6 +186,14 @@ export default function PersonalPGSUI() {
           {loading ? 'Analyse läuft…' : 'Analyse starten'}
         </button>
 
+        {loading && currentEfo && (
+          <p className="text-sm text-gray-600">Aktuelles EFO: <code>{currentEfo}</code></p>
+        )}
+
+        {loading && progressState.currentPGS && (
+          <p className="text-sm text-gray-600">Datei: <code>{progressState.currentPGS}</code> – {progressState.percent.toFixed(1)}%</p>
+        )}
+
         {error && <p className="text-red-600 font-medium">{error}</p>}
 
         {log.length > 0 && (
@@ -215,5 +235,3 @@ export default function PersonalPGSUI() {
         )}
       </div>
     </DashboardLayout>
-  );
-}

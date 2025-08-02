@@ -50,5 +50,4 @@ PGS*.txt
 *.swp
 
 
-
-pgs_scores/
+/public/pgs_scores/

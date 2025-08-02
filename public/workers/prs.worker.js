@@ -29,7 +29,8 @@ function computeStats(rawScore) {
 }
 
 function matchGenotype(map, chr, pos, ea) {
-  const genotype = map.get(`${chr}:${pos}`);
+  const key = `${chr}:${pos}`;
+  const genotype = map.get(key);
   if (!genotype || !/^[ACGT]{2}$/.test(genotype)) return { count: 0, genotype: null };
 
   let count = 0;
@@ -38,11 +39,78 @@ function matchGenotype(map, chr, pos, ea) {
   return { count, genotype };
 }
 
+async function getBigPGSList(maxVariants) {
+  const fileName = `bigPGS_${maxVariants}.json`;
+  const cacheUrl = `/pgs_scores/${fileName}`;
+  try {
+    const res = await fetch(cacheUrl);
+    if (res.ok) {
+      const json = await res.json();
+      return new Set(json);
+    }
+  } catch (_) {}
+
+  // Build fresh
+  const bigList = [];
+  const filesRes = await fetch('/pgs_scores/list.json');
+  const allFiles = await filesRes.json();
+
+  for (let i = 0; i < allFiles.length; i++) {
+    const file = allFiles[i];
+    const pct = ((i + 1) / allFiles.length) * 100;
+
+    const i = allFiles.indexOf(file);
+    const progress = ((i + 1) / allFiles.length) * 100;
+    self.postMessage({
+      currentPGS: file,
+      progress,
+      log: `🔎 Prüfe Größe von ${file} (${progress.toFixed(1)}%)`
+    });
+
+
+    const url = `/pgs_scores/unpacked/${file}`;
+    try {
+      const res = await fetch(url);
+      if (!res.ok) continue;
+
+      const txt = await res.text();
+      let count = 0;
+      for (let j = 0; j < txt.length; j++) {
+        if (txt.charCodeAt(j) === 10 /* \n */) {
+          count++;
+          if (count > maxVariants) {
+            bigList.push(file.split('_')[0]);
+            break;
+          }
+        }
+      }
+    } catch (_) {}
+  }
+
+
+  const listBlob = new Blob([JSON.stringify(allFiles)], { type: 'application/json' });
+  const listA = document.createElement('a');
+  listA.href = URL.createObjectURL(listBlob);
+  listA.download = 'list.json';
+  listA.click();
+
+  const blob = new Blob([JSON.stringify(bigList)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = fileName;
+  a.click();
+  return new Set(bigList);
+}
+
 self.onmessage = async (event) => {
   try {
     const { genomeTxt, efoIds, config } = event.data;
     const snps = parse23andMe(genomeTxt);
-    const genomeMap = new Map(snps.map(s => [`${s.chrom}:${s.pos}`, s.genotype.toUpperCase()]));
+    const genomeMap = new Map(snps.map(s => {
+      const chr = s.chrom.replace(/^chr/i, '').trim();
+      const pos = s.pos.trim();
+      return [`${chr}:${pos}`, s.genotype.toUpperCase()];
+    }));
 
     const metadataRes = await fetch(config.METADATA_URL);
     const csvText = await metadataRes.text();
@@ -58,8 +126,10 @@ self.onmessage = async (event) => {
     });
 
     const results = [];
+    const alreadyLogged = new Set();
+    const bigPGS = await getBigPGSList(config.MAX_VARIANTS_ALLOWED);
 
-    for (const efoId of efoIds) {
+    EFO_LOOP: for (const efoId of efoIds) {
       self.postMessage({ log: `🔍 EFO ${efoId}: Starte Analyse` });
 
       const matchedPGS = records.filter(r => {
@@ -70,37 +140,87 @@ self.onmessage = async (event) => {
 
       for (const pgs of matchedPGS) {
         const pgsId = pgs['Polygenic Score (PGS) ID'];
-        const url = `https://ftp.ebi.ac.uk/pub/databases/spot/pgs/scores/${pgsId}/ScoringFiles/Harmonized/${pgsId}_hmPOS_GRCh37.txt.gz`;
+
+        if (bigPGS.has(pgsId)) {
+          const msg = `⚠️ Überspringe ${pgsId} – bekannt als zu groß (> ${config.MAX_VARIANTS_ALLOWED})`;
+          if (!alreadyLogged.has(msg)) {
+            self.postMessage({ log: msg });
+            alreadyLogged.add(msg);
+          }
+          continue;
+        }
 
         try {
-          self.postMessage({ log: `⬇️ Lade ${pgsId}` });
-          const res = await fetch(url);
-          const buf = await res.arrayBuffer();
-          const txt = pako.inflate(new Uint8Array(buf), { to: 'string' });
+          let txt;
 
-          const lines = txt.split('\n').filter(l => l && !l.startsWith('#'));
-          if (lines.length > config.MAX_VARIANTS_ALLOWED) {
-            self.postMessage({ log: `⚠️ Überspringe ${pgsId} – zu viele Varianten (${lines.length})` });
+          if (config.useLocalFiles) {
+            const localUrl = `/pgs_scores/unpacked/${pgsId}_hmPOS_GRCh37.txt`;
+            try {
+              const res = await fetch(localUrl);
+              if (!res.ok) {
+                self.postMessage({ log: `⚠️ Lokale Datei ${localUrl} nicht gefunden (Status ${res.status})` });
+                continue;
+              }
+              txt = await res.text();
+              self.postMessage({ log: `📁 Lokale Datei geladen: ${pgsId}` });
+            } catch (err) {
+              self.postMessage({ log: `⚠️ Fehler beim Laden von ${localUrl}: ${err.message}` });
+              continue;
+            }
+          } else {
+            const url = `https://ftp.ebi.ac.uk/pub/databases/spot/pgs/scores/${pgsId}/ScoringFiles/Harmonized/${pgsId}_hmPOS_GRCh37.txt.gz`;
+            const res = await fetch(url);
+            const buf = await res.arrayBuffer();
+            txt = pako.inflate(new Uint8Array(buf), { to: 'string' });
+          }
+
+          const allLines = txt.split('\n');
+          let headerLine = null;
+          let dataStart = 0;
+
+          for (let i = 0; i < allLines.length; i++) {
+            const line = allLines[i].trim();
+            if (line.startsWith('#')) continue;
+
+            const lower = line.toLowerCase();
+            if (
+              lower.includes('effect_allele') &&
+              lower.includes('effect_weight') &&
+              (lower.includes('chr') || lower.includes('pos'))
+            ) {
+              headerLine = line;
+              dataStart = i + 1;
+              break;
+            }
+          }
+
+          if (!headerLine) {
+            self.postMessage({ log: `⚠️ Header nicht gefunden in ${pgsId}` });
             continue;
           }
 
-          const hdr = lines[0].split('\t');
+          const hdr = headerLine.split('\t');
           const idx = {
-            chr: hdr.indexOf('hm_chr'),
-            pos: hdr.indexOf('hm_pos'),
+            chr: hdr.indexOf('hm_chr') >= 0 ? hdr.indexOf('hm_chr') : hdr.indexOf('chr_name'),
+            pos: hdr.indexOf('hm_pos') >= 0 ? hdr.indexOf('hm_pos') : hdr.indexOf('pos'),
             ea: hdr.indexOf('effect_allele'),
-            oa: hdr.indexOf('other_allele'),
             weight: hdr.indexOf('effect_weight'),
-            rsid: hdr.indexOf('rsID'),
           };
+
+          if (idx.chr < 0 || idx.pos < 0 || idx.ea < 0 || idx.weight < 0) {
+            self.postMessage({ log: `⚠️ Ungültiger Header in ${pgsId} – fehlende Spalten` });
+            continue;
+          }
 
           let rawScore = 0;
           let matched = 0;
 
-          for (let i = 1; i < lines.length; i++) {
-            const cols = lines[i].split('\t');
-            const chr = cols[idx.chr];
-            const pos = cols[idx.pos];
+          for (let i = dataStart; i < allLines.length; i++) {
+            const line = allLines[i].trim();
+            if (!line || line.startsWith('#')) continue;
+            const cols = line.split('\t');
+            const chr = cols[idx.chr].replace(/^chr/i, '').trim();
+            const pos = cols[idx.pos].trim();
             const ea = cols[idx.ea]?.toUpperCase();
             const beta = parseFloat(cols[idx.weight]) || 0;
             const { count } = matchGenotype(genomeMap, chr, pos, ea);
@@ -119,6 +239,10 @@ self.onmessage = async (event) => {
             percentile,
             totalVariants: matched
           });
+
+          if (matched === 0) {
+            self.postMessage({ log: `⚠️ Keine Übereinstimmung bei ${pgsId}` });
+          }
 
           self.postMessage({ log: `✅ ${pgsId}: Score berechnet (n=${matched})` });
         } catch (err) {
