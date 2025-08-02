@@ -1,6 +1,5 @@
 'use client';
 
-// pages/batch_ui_cardio.js
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Papa from 'papaparse';
@@ -15,6 +14,7 @@ export default function CardioDashboard() {
   const [data, setData] = useState([]);
   const [organMap, setOrganMap] = useState({});
   const [traitNames, setTraitNames] = useState({});
+  const [showReferences, setShowReferences] = useState(false); // ← Toggle-Zustand
   const router = useRouter();
 
   useEffect(() => {
@@ -37,7 +37,6 @@ export default function CardioDashboard() {
         const cleaned = {};
         for (const organ in data) {
           cleaned[organ] = data[organ].map(efo => efo.trim());
-          console.log(`Organ: ${organ} -> EFOs:`, cleaned[organ]);
         }
         setOrganMap(cleaned);
       });
@@ -53,12 +52,19 @@ export default function CardioDashboard() {
     }
   }, [data, organMap, traitNames, router]);
 
+  const enrichedData = data
+    .map(d => ({
+      ...d,
+      TraitLabel: d.Trait && d.Trait !== '(unbekannt)' ? d.Trait : traitNames[d['EFO-ID']] || '(unbekannt)'
+    }))
+    .sort((a, b) => b['Avg Percentile'] - a['Avg Percentile']);
+
   const barData = {
-    labels: data.map((d) => d.Trait),
+    labels: enrichedData.map((d) => d.TraitLabel),
     datasets: [
       {
         label: 'log10(Avg PRS)',
-        data: data.map((d) => d.logPRS),
+        data: enrichedData.map((d) => d.logPRS),
         backgroundColor: 'rgba(34,197,94,0.6)',
         borderRadius: 8,
         borderSkipped: false,
@@ -86,8 +92,8 @@ export default function CardioDashboard() {
         bodyFont: { size: 14 },
         callbacks: {
           label: (ctx) => {
-            const d = data[ctx.dataIndex];
-            return `${d.Trait}: logPRS=${d.logPRS.toFixed(2)}, Percentile=${d['Avg Percentile']}`;
+            const d = enrichedData[ctx.dataIndex];
+            return `${d.TraitLabel}: logPRS=${d.logPRS.toFixed(2)}, Percentile=${d['Avg Percentile']}`;
           },
         },
       },
@@ -109,47 +115,112 @@ export default function CardioDashboard() {
     onClick: (_, elements) => {
       if (elements.length > 0) {
         const idx = elements[0].index;
-        router.push(`/details/${data[idx]['EFO-ID']}?trait=${encodeURIComponent(data[idx].Trait)}`);
+        router.push(`/details/${enrichedData[idx]['EFO-ID']}?trait=${encodeURIComponent(enrichedData[idx].TraitLabel)}`);
       }
     },
   };
 
   return (
     <DashboardLayout>
-      <h2 className="text-4xl font-extrabold mb-10 text-gray-800">
+      <h2 className="text-4xl font-extrabold mb-6 text-gray-800">
         Kardiovaskuläre PGS-Ergebnisse
       </h2>
 
-      <div className="flex flex-row justify-center gap-8">
-        <div id="bodymap" className="relative my-12 overflow-visible" style={{ width: '700px', height: '800px' }}>
-          <img
-            src="/images/bodymap.png"
-            alt="Körperkarte"
-            className="absolute"
-            style={{ width: '700px', height: '800px', objectFit: 'contain', zIndex: 0 }}
-          />
-          <svg
-            className="absolute"
-            id="organsvg"
-            viewBox="0 0 700 800"
-            preserveAspectRatio="xMidYMid meet"
-            style={{ width: '700px', height: '800px', zIndex: 10 }}
-          ></svg>
-          <div id="tooltip" className="absolute bg-white text-sm text-gray-800 border border-gray-300 px-3 py-2 rounded-lg shadow-md pointer-events-auto opacity-0 transition-opacity duration-200 z-50"></div>
+      <div className="flex flex-row gap-8">
+        {/* Linke Spalte */}
+        <div className="flex flex-col w-1/2">
+          <div id="bodymap" className="relative mb-8 overflow-visible" style={{ width: '700px', height: '800px' }}>
+            <img
+              src="/images/bodymap.png"
+              alt="Körperkarte"
+              className="absolute"
+              style={{ width: '700px', height: '800px', objectFit: 'contain', zIndex: 0 }}
+            />
+            <svg
+              className="absolute"
+              id="organsvg"
+              viewBox="0 0 700 800"
+              preserveAspectRatio="xMidYMid meet"
+              style={{ width: '700px', height: '800px', zIndex: 10 }}
+            ></svg>
+            <div id="tooltip" className="absolute bg-white text-sm text-gray-800 border border-gray-300 px-3 py-2 rounded-lg shadow-md pointer-events-auto opacity-0 transition-opacity duration-200 z-50"></div>
+          </div>
+
+          <div className="mt-6">
+            <Bar data={barData} options={barOptions} />
+          </div>
         </div>
 
-        <div className="mt-12 w-[600px]">
-          <Bar data={barData} options={barOptions} />
-        </div>
-      </div>
+        {/* Rechte Spalte */}
+        <div className="flex flex-col w-1/2">
+          <table className="mb-12 w-full text-sm text-left border border-gray-200">
+            <thead className="bg-gray-100 text-gray-700">
+              <tr>
+                <th className="py-2 px-4">EFO ID</th>
+                <th className="py-2 px-4">Trait</th>
+                <th className="py-2 px-4">Percentile</th>
+                <th className="py-2 px-4">PGS Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {enrichedData.map((row, idx) => (
+                <tr key={idx} className="border-t">
+                  <td className="py-2 px-4 font-mono text-xs text-gray-700">
+                    <a href={`/details/${row['EFO-ID']}`} className="text-blue-600 hover:underline">{row['EFO-ID']}</a>
+                  </td>
+                  <td className="py-2 px-4">
+                    <a href={`/details/${row['EFO-ID']}`} className="text-blue-700 hover:underline">{row.TraitLabel}</a>
+                  </td>
+                  <td className="py-2 px-4">{row['Avg Percentile'].toFixed(1)}</td>
+                  <td className="py-2 px-4">{row['PGS Count']}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-      <div className="flex justify-center gap-4 text-sm mt-4 text-gray-700">
-        <div className="flex items-center gap-1"><div className="w-4 h-4 bg-red-500 rounded-full"></div> hohes Risiko</div>
-        <div className="flex items-center gap-1"><div className="w-4 h-4 bg-red-200 rounded-full"></div> niedriges Risiko</div>
+          <div className="trait-interpretation text-sm">
+            <h2 className="text-lg font-semibold mb-4">Interpretation der Ergebnisse</h2>
+
+            <table className="mb-4 text-sm border border-gray-300 w-full">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="px-3 py-2 text-left">Perzentilbereich</th>
+                  <th className="px-3 py-2 text-left">Risikoeinstufung</th>
+                  <th className="px-3 py-2 text-left">Quelle</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td className="px-3 py-2">&lt; 20 %</td><td>Unterdurchschnittliches Risiko</td><td>Lewis & Vassos (2020)</td></tr>
+                <tr><td className="px-3 py-2">20–80 %</td><td>Durchschnittliches Risiko</td><td>Torkamani et al. (2018)</td></tr>
+                <tr><td className="px-3 py-2">&gt; 80 %</td><td>Erhöhtes Risiko</td><td>Inouye et al. (2018)</td></tr>
+                <tr><td className="px-3 py-2">&gt; 95 %</td><td>Stark erhöhtes Risiko</td><td>Khera et al. (2018); Inouye (2018)</td></tr>
+              </tbody>
+            </table>
+
+            <button
+              className="text-blue-700 underline text-sm mb-2"
+              onClick={() => setShowReferences(!showReferences)}
+            >
+              {showReferences ? "Referenzen ausblenden" : "Wissenschaftliche Referenzen anzeigen"}
+            </button>
+
+            {showReferences && (
+              <p className="text-gray-700 mb-4 text-sm">
+                <strong>Referenzen (APA):</strong><br />
+                Torkamani, A., Wineinger, N. E., & Topol, E. J. (2018). <i>The personal and clinical utility of polygenic risk scores.</i> Nature Reviews Genetics, 19, 581–590. <a href="https://doi.org/10.1038/s41576-018-0018-x" className="text-blue-700 underline" target="_blank">https://doi.org/10.1038/s41576-018-0018-x</a><br />
+                Lewis, C. M., & Vassos, E. (2020). <i>Polygenic risk scores: From research tools to clinical instruments.</i> Genome Medicine, 12, 44. <a href="https://doi.org/10.1186/s13073-020-00742-5" className="text-blue-700 underline" target="_blank">https://doi.org/10.1186/s13073-020-00742-5</a><br />
+                Khera, A. V., et al. (2018). <i>Genome-wide polygenic scores for common diseases identify individuals with risk equivalent to monogenic mutations.</i> Nature Genetics, 50, 1219–1224. <a href="https://doi.org/10.1038/s41588-018-0183-z" className="text-blue-700 underline" target="_blank">https://doi.org/10.1038/s41588-018-0183-z</a><br />
+                Inouye, M., et al. (2018). <i>Genomic risk prediction of coronary artery disease in 480,000 adults: implications for primary prevention.</i> JACC, 72(16), 1883–1893. <a href="https://doi.org/10.1016/j.jacc.2018.07.079" className="text-blue-700 underline" target="_blank">https://doi.org/10.1016/j.jacc.2018.07.079</a>
+              </p>
+            )}
+          </div>
+        </div>
       </div>
     </DashboardLayout>
   );
 }
+
+
 
 function renderBodyMap(results, organMap, traitNames, router) {
   const svg = d3.select('#organsvg');

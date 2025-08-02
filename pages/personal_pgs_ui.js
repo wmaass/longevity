@@ -1,17 +1,19 @@
-// pages/personal-pgs-ui.js
 import { useState, useRef, useEffect } from 'react';
 import DashboardLayout from '../components/DashboardLayout';
 import { Bar } from 'react-chartjs-2';
 import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import LogTable from '../components/LogTable';
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const CARDIO_EFO_IDS = [
-  'EFO_0004574'  // Liver fat percentage
+  'EFO_0004530', 'EFO_0006336', 'EFO_0006335',
+  'EFO_0004541', 'EFO_0001645', 'EFO_0004458',
+  'EFO_0004611', 'EFO_0004612', 'EFO_0004574'
 ];
 
 const CONFIG = {
-  MAX_VARIANTS_ALLOWED: 100,
+  MAX_VARIANTS_ALLOWED: 100_000,
   METADATA_URL: 'https://ftp.ebi.ac.uk/pub/databases/spot/pgs/metadata/pgs_all_metadata_scores.csv',
   useLocalFiles: true
 };
@@ -20,6 +22,7 @@ export default function PersonalPGSUI() {
   const [genomeText, setGenomeText] = useState('');
   const [results, setResults] = useState([]);
   const [log, setLog] = useState([]);
+  const [finalLogs, setFinalLogs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [genomeFileName, setGenomeFileName] = useState('genome_webworker');
@@ -27,6 +30,7 @@ export default function PersonalPGSUI() {
   const [currentEfo, setCurrentEfo] = useState('');
   const [progressState, setProgressState] = useState({ currentPGS: '', percent: 0 });
   const logRef = useRef(null);
+  const workerRef = useRef(null);
 
   useEffect(() => {
     if (logRef.current) {
@@ -53,7 +57,10 @@ export default function PersonalPGSUI() {
     setLoading(true);
     setError(null);
     setLog([]);
+    setFinalLogs([]);
+
     const worker = new Worker('/workers/prs.worker.js');
+    workerRef.current = worker;
 
     worker.postMessage({
       genomeTxt: genomeText,
@@ -62,7 +69,7 @@ export default function PersonalPGSUI() {
     });
 
     worker.onmessage = async (event) => {
-      const { results: resultList, log: newLog, currentPGS, progress } = event.data;
+      const { results: resultList, log: newLog, logs, currentPGS, progress } = event.data;
 
       if (newLog) {
         setLog((prev) => [...prev, newLog]);
@@ -73,6 +80,10 @@ export default function PersonalPGSUI() {
         if (matchPGS) {
           setProgressState({ currentPGS: matchPGS[1], percent: 0 });
         }
+      }
+
+      if (logs && Array.isArray(logs)) {
+        setFinalLogs(logs);
       }
 
       if (currentPGS && typeof progress === 'number') {
@@ -196,12 +207,6 @@ export default function PersonalPGSUI() {
 
         {error && <p className="text-red-600 font-medium">{error}</p>}
 
-        {log.length > 0 && (
-          <div ref={logRef} className="bg-gray-100 border border-gray-300 rounded p-2 h-48 overflow-y-auto text-sm font-mono whitespace-pre-wrap">
-            {log.map((line, idx) => <div key={idx}>{line}</div>)}
-          </div>
-        )}
-
         {results.length > 0 && (
           <div className="mt-4">
             <h2 className="text-lg font-semibold">Ergebnisse</h2>
@@ -231,7 +236,35 @@ export default function PersonalPGSUI() {
             <div className="mt-8">
               {renderSummaryChart()}
             </div>
+
+            {finalLogs.length > 0 && (
+              <div className="mt-4">
+                <button
+                  onClick={() => {
+                    const blob = new Blob([finalLogs.join('\n')], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `prs_log_${genomeFileName}.txt`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                  }}
+                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-2 rounded shadow"
+                >
+                  📄 Log-Datei speichern
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {log.length > 0 && (
+          <div className="mt-8">
+            <h2 className="text-lg font-semibold">Protokoll</h2>
+            <LogTable log={log} />
           </div>
         )}
       </div>
     </DashboardLayout>
+  );
+}

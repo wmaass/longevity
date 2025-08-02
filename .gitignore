@@ -51,3 +51,6 @@ PGS*.txt
 
 
 /public/pgs_scores/
+
+.DS_Store
+pages/.DS_Store

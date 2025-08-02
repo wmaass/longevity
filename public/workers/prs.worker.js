@@ -1,6 +1,50 @@
 // workers/prs.worker.js
 importScripts('https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js');
 
+// 🧾 Logger-Modul zur strukturierten Ausgabe
+const Logger = (() => {
+  const counters = new Map();
+  const allLogs = [];
+
+  function log(message, level = 'info', tag = null, limit = null) {
+    const key = tag || message;
+    const count = counters.get(key) || 0;
+
+    if (limit === null || count < limit) {
+      const formatted = `[${level.toUpperCase()}] ${message}`;
+      postMessage({ log: formatted });
+      allLogs.push(formatted);
+      counters.set(key, count + 1);
+    }
+  }
+
+  return {
+    info: (msg, tag = null, limit = null) => log(msg, 'info', tag, limit),
+    warn: (msg, tag = null, limit = null) => log(msg, 'warn', tag, limit),
+    error: (msg, tag = null, limit = null) => log(msg, 'error', tag, limit),
+    debug: (msg, tag = null, limit = null) => log(msg, 'debug', tag, limit),
+    reset: () => counters.clear(),
+    getAll: () => allLogs
+  };
+})();
+
+let TRAIT_LOOKUP = {};
+
+async function loadTraitLabels() {
+  try {
+    const res = await fetch('/traits.json');
+    if (!res.ok) return;
+    const traitList = await res.json();
+    for (const trait of traitList) {
+      if (trait.id && trait.label) {
+        TRAIT_LOOKUP[trait.id] = trait.label;
+      }
+    }
+  } catch (err) {
+    Logger.error(`Fehler beim Laden von traits.json: ${err.message}`);
+  }
+}
+
 function parse23andMe(text) {
   return text
     .split('\n')
@@ -39,78 +83,21 @@ function matchGenotype(map, chr, pos, ea) {
   return { count, genotype };
 }
 
-async function getBigPGSList(maxVariants) {
-  const fileName = `bigPGS_${maxVariants}.json`;
-  const cacheUrl = `/pgs_scores/${fileName}`;
+onmessage = async function (event) {
   try {
-    const res = await fetch(cacheUrl);
-    if (res.ok) {
-      const json = await res.json();
-      return new Set(json);
-    }
-  } catch (_) {}
-
-  // Build fresh
-  const bigList = [];
-  const filesRes = await fetch('/pgs_scores/list.json');
-  const allFiles = await filesRes.json();
-
-  for (let i = 0; i < allFiles.length; i++) {
-    const file = allFiles[i];
-    const pct = ((i + 1) / allFiles.length) * 100;
-
-    const i = allFiles.indexOf(file);
-    const progress = ((i + 1) / allFiles.length) * 100;
-    self.postMessage({
-      currentPGS: file,
-      progress,
-      log: `🔎 Prüfe Größe von ${file} (${progress.toFixed(1)}%)`
-    });
-
-
-    const url = `/pgs_scores/unpacked/${file}`;
-    try {
-      const res = await fetch(url);
-      if (!res.ok) continue;
-
-      const txt = await res.text();
-      let count = 0;
-      for (let j = 0; j < txt.length; j++) {
-        if (txt.charCodeAt(j) === 10 /* \n */) {
-          count++;
-          if (count > maxVariants) {
-            bigList.push(file.split('_')[0]);
-            break;
-          }
-        }
-      }
-    } catch (_) {}
-  }
-
-
-  const listBlob = new Blob([JSON.stringify(allFiles)], { type: 'application/json' });
-  const listA = document.createElement('a');
-  listA.href = URL.createObjectURL(listBlob);
-  listA.download = 'list.json';
-  listA.click();
-
-  const blob = new Blob([JSON.stringify(bigList)], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = fileName;
-  a.click();
-  return new Set(bigList);
-}
-
-self.onmessage = async (event) => {
-  try {
+    const startTime = Date.now();
     const { genomeTxt, efoIds, config } = event.data;
+    Logger.reset();
+    await loadTraitLabels();
+
     const snps = parse23andMe(genomeTxt);
     const genomeMap = new Map(snps.map(s => {
       const chr = s.chrom.replace(/^chr/i, '').trim();
       const pos = s.pos.trim();
       return [`${chr}:${pos}`, s.genotype.toUpperCase()];
     }));
+
+    Logger.info(`📋 Anzahl SNPs im Genom: ${snps.length}`);
 
     const metadataRes = await fetch(config.METADATA_URL);
     const csvText = await metadataRes.text();
@@ -125,12 +112,32 @@ self.onmessage = async (event) => {
       return record;
     });
 
-    const results = [];
-    const alreadyLogged = new Set();
-    const bigPGS = await getBigPGSList(config.MAX_VARIANTS_ALLOWED);
+    let bigPGS = [];
+    const maxVar = config.MAX_VARIANTS_ALLOWED || 100000;
+    try {
+      const bigPGSRes = await fetch(`/pgs_scores/bigPGS_${maxVar}.json`);
+      if (bigPGSRes.ok) {
+        bigPGS = await bigPGSRes.json();
+        Logger.info(`📂 ${bigPGS.length} große PGS-Dateien werden übersprungen (>${maxVar})`);
+      } else {
+        Logger.info(`⚙️ Serverseitige Erzeugung bigPGS_${maxVar}.json wird angestoßen…`);
+        const trigger = await fetch(`/api/genBigPGS?max=${maxVar}`);
+        if (trigger.ok) {
+          const retry = await fetch(`/pgs_scores/bigPGS_${maxVar}.json`);
+          if (retry.ok) {
+            bigPGS = await retry.json();
+            Logger.info(`📁 bigPGS_${maxVar}.json geladen: ${bigPGS.length} Dateien`);
+          }
+        }
+      }
+    } catch (err) {
+      Logger.warn(`Fehler beim Laden oder Erzeugen von bigPGS_${maxVar}.json: ${err.message}`);
+    }
 
-    EFO_LOOP: for (const efoId of efoIds) {
-      self.postMessage({ log: `🔍 EFO ${efoId}: Starte Analyse` });
+    const results = [];
+
+    for (const efoId of efoIds) {
+      Logger.info(`🔍 EFO ${efoId}: Starte Analyse`);
 
       const matchedPGS = records.filter(r => {
         const mapped = (r['Mapped Trait(s) (EFO ID)'] || '').split(';').map(s => s.trim());
@@ -138,125 +145,127 @@ self.onmessage = async (event) => {
         return mapped.includes(efoId) || original.includes(efoId);
       });
 
-      for (const pgs of matchedPGS) {
+      Logger.info(`📑 ${matchedPGS.length} PGS-Einträge für ${efoId} gefunden.`);
+
+      for (let i = 0; i < matchedPGS.length; i++) {
+        const pgs = matchedPGS[i];
         const pgsId = pgs['Polygenic Score (PGS) ID'];
 
-        if (bigPGS.has(pgsId)) {
-          const msg = `⚠️ Überspringe ${pgsId} – bekannt als zu groß (> ${config.MAX_VARIANTS_ALLOWED})`;
-          if (!alreadyLogged.has(msg)) {
-            self.postMessage({ log: msg });
-            alreadyLogged.add(msg);
-          }
+        if (bigPGS.includes(pgsId)) {
+          Logger.debug(`${pgsId} übersprungen – zu groß`);
           continue;
         }
 
+        const localUrl = `/pgs_scores/unpacked/${pgsId}_hmPOS_GRCh37.txt`;
+        Logger.info(`📥 Prüfe Größe von ${pgsId}`, `fetch:${pgsId}`);
+
+        let txt;
         try {
-          let txt;
-
-          if (config.useLocalFiles) {
-            const localUrl = `/pgs_scores/unpacked/${pgsId}_hmPOS_GRCh37.txt`;
-            try {
-              const res = await fetch(localUrl);
-              if (!res.ok) {
-                self.postMessage({ log: `⚠️ Lokale Datei ${localUrl} nicht gefunden (Status ${res.status})` });
-                continue;
-              }
-              txt = await res.text();
-              self.postMessage({ log: `📁 Lokale Datei geladen: ${pgsId}` });
-            } catch (err) {
-              self.postMessage({ log: `⚠️ Fehler beim Laden von ${localUrl}: ${err.message}` });
-              continue;
-            }
-          } else {
-            const url = `https://ftp.ebi.ac.uk/pub/databases/spot/pgs/scores/${pgsId}/ScoringFiles/Harmonized/${pgsId}_hmPOS_GRCh37.txt.gz`;
-            const res = await fetch(url);
-            const buf = await res.arrayBuffer();
-            txt = pako.inflate(new Uint8Array(buf), { to: 'string' });
-          }
-
-          const allLines = txt.split('\n');
-          let headerLine = null;
-          let dataStart = 0;
-
-          for (let i = 0; i < allLines.length; i++) {
-            const line = allLines[i].trim();
-            if (line.startsWith('#')) continue;
-
-            const lower = line.toLowerCase();
-            if (
-              lower.includes('effect_allele') &&
-              lower.includes('effect_weight') &&
-              (lower.includes('chr') || lower.includes('pos'))
-            ) {
-              headerLine = line;
-              dataStart = i + 1;
-              break;
-            }
-          }
-
-          if (!headerLine) {
-            self.postMessage({ log: `⚠️ Header nicht gefunden in ${pgsId}` });
+          const res = await fetch(localUrl);
+          if (!res.ok) {
+            Logger.warn(`Datei nicht gefunden: ${pgsId}`);
             continue;
           }
-
-          const hdr = headerLine.split('\t');
-          const idx = {
-            chr: hdr.indexOf('hm_chr') >= 0 ? hdr.indexOf('hm_chr') : hdr.indexOf('chr_name'),
-            pos: hdr.indexOf('hm_pos') >= 0 ? hdr.indexOf('hm_pos') : hdr.indexOf('pos'),
-            ea: hdr.indexOf('effect_allele'),
-            weight: hdr.indexOf('effect_weight'),
-          };
-
-          if (idx.chr < 0 || idx.pos < 0 || idx.ea < 0 || idx.weight < 0) {
-            self.postMessage({ log: `⚠️ Ungültiger Header in ${pgsId} – fehlende Spalten` });
-            continue;
-          }
-
-          let rawScore = 0;
-          let matched = 0;
-
-          for (let i = dataStart; i < allLines.length; i++) {
-            const line = allLines[i].trim();
-            if (!line || line.startsWith('#')) continue;
-            const cols = line.split('\t');
-            const chr = cols[idx.chr].replace(/^chr/i, '').trim();
-            const pos = cols[idx.pos].trim();
-            const ea = cols[idx.ea]?.toUpperCase();
-            const beta = parseFloat(cols[idx.weight]) || 0;
-            const { count } = matchGenotype(genomeMap, chr, pos, ea);
-            rawScore += count * beta;
-            if (count > 0) matched++;
-          }
-
-          const prs = Math.exp(rawScore);
-          const { z, percentile } = computeStats(rawScore);
-
-          results.push({
-            efoId,
-            id: pgsId,
-            rawScore,
-            prs,
-            percentile,
-            totalVariants: matched
-          });
-
-          if (matched === 0) {
-            self.postMessage({ log: `⚠️ Keine Übereinstimmung bei ${pgsId}` });
-          }
-
-          self.postMessage({ log: `✅ ${pgsId}: Score berechnet (n=${matched})` });
+          txt = await res.text();
         } catch (err) {
-          self.postMessage({ log: `❌ Fehler bei ${pgsId}: ${err.message}` });
+          Logger.warn(`Fehler beim Laden von ${pgsId}: ${err.message}`);
+          continue;
         }
+
+        const lines = txt.split('\n');
+        Logger.info(`📊 ${pgsId}: Datei geladen mit ${lines.length} Zeilen`);
+
+        let headerLine = null;
+        let dataStart = 0;
+
+        for (let j = 0; j < lines.length; j++) {
+          const line = lines[j].trim();
+          if (line.startsWith('#')) continue;
+          const lower = line.toLowerCase();
+          if (lower.includes('effect_allele') && lower.includes('effect_weight') && (lower.includes('chr') || lower.includes('pos'))) {
+            headerLine = line;
+            dataStart = j + 1;
+            Logger.debug(`${pgsId}: Header erkannt in Zeile ${j}`);
+            break;
+          }
+        }
+
+        if (!headerLine) {
+          Logger.warn(`Kein gültiger Header in ${pgsId}, breche ab`);
+          continue;
+        }
+
+        const hdr = headerLine.split('\t');
+        const idx = {
+          chr: hdr.indexOf('hm_chr') >= 0 ? hdr.indexOf('hm_chr') : hdr.indexOf('chr_name'),
+          pos: hdr.indexOf('hm_pos') >= 0 ? hdr.indexOf('hm_pos') : hdr.indexOf('pos'),
+          ea: hdr.indexOf('effect_allele'),
+          weight: hdr.indexOf('effect_weight')
+        };
+
+        if (idx.chr < 0 || idx.pos < 0 || idx.ea < 0 || idx.weight < 0) {
+          Logger.warn(`Ungültiger Header in ${pgsId}`);
+          continue;
+        }
+
+        let rawScore = 0;
+        let matched = 0;
+        let validRows = 0;
+
+        for (let j = dataStart; j < lines.length; j++) {
+          const line = lines[j].trim();
+          if (!line || line.startsWith('#')) continue;
+          validRows++;
+          const cols = line.split('\t');
+          const chr = cols[idx.chr]?.replace(/^chr/i, '').trim();
+          const pos = cols[idx.pos]?.trim();
+          const ea = cols[idx.ea]?.toUpperCase();
+          const beta = parseFloat(cols[idx.weight]) || 0;
+          const { count } = matchGenotype(genomeMap, chr, pos, ea);
+          rawScore += count * beta;
+          if (count > 0) {
+            matched++;
+            Logger.debug(
+              `🔎 Match bei ${chr}:${pos} – EA: ${ea}, Count: ${count}, Beta: ${beta.toFixed(4)}, Beitrag: ${(count * beta).toFixed(4)}`,
+              `match:${pgsId}`,
+              10
+            );
+          }
+        }
+
+        Logger.info(`🔬 ${pgsId}: Verarbeitet: ${validRows} Datenzeilen, matched: ${matched}`);
+
+        const prs = Math.exp(rawScore);
+        const { z, percentile } = computeStats(rawScore);
+
+        Logger.info(`📈 ${pgsId}: RawScore=${rawScore.toFixed(4)}, PRS=${prs.toFixed(4)}, z=${z.toFixed(2)}, Perzentil=${percentile}`);
+
+        results.push({
+          efoId,
+          trait: TRAIT_LOOKUP[efoId] || '(unbekannt)',
+          id: pgsId,
+          rawScore,
+          prs,
+          percentile,
+          totalVariants: matched
+        });
+
+        if (matched === 0) {
+          Logger.warn(`Keine Übereinstimmungen bei ${pgsId}`);
+        }
+
+        Logger.info(`✅ ${pgsId}: Analyse abgeschlossen (n=${matched})`);
       }
 
-      self.postMessage({ log: `🎯 Fertig mit ${efoId}` });
+      Logger.info(`🎯 Analyse für ${efoId} abgeschlossen`);
     }
 
-    self.postMessage({ log: `✅ Gesamtanalyse abgeschlossen`, results });
+    const duration = Math.round((Date.now() - startTime) / 1000);
+    Logger.info(`✅ Gesamtanalyse abgeschlossen in ${duration}s`);
+    postMessage({ results, logs: Logger.getAll() });
 
   } catch (err) {
     console.error('[Worker Fehler]', err);
-    self.postMessage({ error: err.message });
+    postMessage({ error: err.message });
   }
 };
