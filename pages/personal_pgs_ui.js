@@ -1,284 +1,217 @@
-import { useState } from 'react';
+// pages/personal-pgs-ui.js
+import { useState, useRef, useEffect } from 'react';
 import DashboardLayout from '../components/DashboardLayout';
-import { computePRS } from '../lib/computePRS.client';
+import { Bar } from 'react-chartjs-2';
+import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+
+Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const CARDIO_EFO_IDS = [
-  'EFO_0004541',
-  'EFO_0004611',
-  'EFO_0004612',
-  'EFO_0004530',
-  'EFO_0001645',
-  'EFO_0006335',
-  'EFO_0004574',
-  'EFO_0000537',
-  'EFO_0000275',
-  'EFO_0006336',
-  'EFO_0004458',
-  'EFO_0004541'
+  'EFO_0004530', // Triglyceride measurement
+  'EFO_0006336', // LDL cholesterol
+  'EFO_0006335', // HDL cholesterol
+  'EFO_0004541', // Total cholesterol
+  'EFO_0001645', // Heart rate
+  'EFO_0004458', // Cardiac output
+  'EFO_0004611', // Liver enzyme level
+  'EFO_0004612', // Bilirubin measurement
+  'EFO_0004574'  // Liver fat percentage
 ];
+
+const CONFIG = {
+  MAX_VARIANTS_ALLOWED: 100,
+  METADATA_URL: 'https://ftp.ebi.ac.uk/pub/databases/spot/pgs/metadata/pgs_all_metadata_scores.csv'
+};
 
 export default function PersonalPGSUI() {
   const [genomeText, setGenomeText] = useState('');
   const [results, setResults] = useState([]);
-  const [logMap, setLogMap] = useState([]);
+  const [log, setLog] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [collapseMap, setCollapseMap] = useState({});
-  const [resultsPrecomputed, setResultsPrecomputed] = useState(false);
-  const [genomeFileName, setGenomeFileName] = useState('');
+  const [genomeFileName, setGenomeFileName] = useState('genome_webworker');
+  const [summaryResults, setSummaryResults] = useState([]);
+  const logRef = useRef(null);
 
-  const checkExistingResults = async (baseName) => {
-    const head = async (path) => {
-      try {
-        const res = await fetch(path, { method: 'HEAD' });
-        return res.ok;
-      } catch {
-        return false;
-      }
-    };
-    return await head(`/results/${baseName}/batch_results_cardio.csv`) &&
-           await head(`/results/${baseName}/batch_details_cardio.csv`);
-  };
-
-  const copyResultsToPublic = async (baseName) => {
-    await fetch('/api/copy_results_cardio', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ patientFolder: baseName })
-    });
-  };
+  useEffect(() => {
+    if (logRef.current) {
+      logRef.current.scrollTop = logRef.current.scrollHeight;
+    }
+  }, [log]);
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const text = await file.text();
-      const baseName = file.name.replace(/\.txt$/, '');
-      setGenomeFileName(baseName);
-      setGenomeText(text.replace(/\0/g, '').trim());
-      setLogMap([]);
-      setResults([]);
-      setError(null);
-
-      const found = await checkExistingResults(baseName);
-
-    if (found) {
-        try {
-            await copyResultsToPublic(baseName);
-            setResultsPrecomputed(true);
-            return;
-        } catch (e) {
-            console.warn(`⚠️ Fehler beim Kopieren der Ergebnisse: ${e.message}`);
-            // -> setze nicht `return`, damit wir mit der Berechnung fortfahren
-        }
-        } else {
-            console.info(`ℹ️ Keine bestehenden Ergebnisse für ${baseName}, starte PRS-Berechnung.`);
-        }
-    }
+    if (!file) return;
+    const text = await file.text();
+    setGenomeText(text.replace(/\0/g, '').trim());
+    setGenomeFileName(file.name.replace(/\.txt$/, ''));
+    setResults([]);
+    setError(null);
   };
 
-  const initializeEfoLog = (efoId) => {
-    setLogMap((prev) => {
-      if (prev.some((entry) => entry.efoId === efoId)) return prev;
-      return [...prev, { efoId, messages: [`🔍 Analysiere ${efoId}…`] }];
-    });
-  };
-
-  const appendToEfoLog = (efoId, message, finalize = false) => {
-    setLogMap((prev) =>
-      prev.map((entry) => {
-        if (entry.efoId !== efoId) return entry;
-        if (entry.messages.includes(message)) return entry;
-        const nonTransient = entry.messages.filter((m) => m.startsWith('🔍') || m.startsWith('✅') || m.startsWith('⚠️'));
-        const recent = entry.messages.filter((m) => !m.startsWith('🔍') && !m.startsWith('✅') && !m.startsWith('⚠️')).slice(-3);
-        const newMessages = finalize ? [...nonTransient, message] : [...nonTransient, ...recent, message];
-        return { ...entry, messages: newMessages };
-      })
-    );
-  };
-
-  const runBatch = async () => {
+  const runAnalysis = () => {
     if (!genomeText) {
       setError('Bitte lade zuerst eine 23andMe-Datei hoch.');
       return;
     }
 
     setLoading(true);
-    setResults([]);
-    setLogMap([]);
     setError(null);
+    setLog([]);
+    const worker = new Worker('/workers/prs.worker.js');
 
-    const allResults = [];
-    const allDetails = [];
+    worker.postMessage({
+      genomeTxt: genomeText,
+      efoIds: CARDIO_EFO_IDS,
+      config: CONFIG
+    });
 
-    for (const efoId of CARDIO_EFO_IDS) {
-      initializeEfoLog(efoId);
+    worker.onmessage = async (event) => {
+      const { results: resultList, log: newLog } = event.data;
+      if (newLog) setLog((prev) => [...prev, newLog]);
+      if (resultList) {
+        setResults(resultList);
+        setLoading(false);
+        worker.terminate();
 
-      try {
-        const scores = await computePRS(
-          { text: async () => genomeText },
-          (efo, pgsId, level, message) => appendToEfoLog(efo, message),
-          efoId
-        );
+        if (!resultList.length) {
+          setError('Keine Ergebnisse gefunden.');
+          return;
+        }
 
-        if (!scores.length) throw new Error('Keine Scores gefunden');
+        const summary = summarizeResults(resultList);
+        setSummaryResults(summary);
 
-        const traits = scores.map(s => s.trait).filter(Boolean);
-        const pgsCount = scores.length;
-        const avgPRS = (scores.reduce((sum, s) => sum + s.prs, 0) / pgsCount).toFixed(3);
-        const maxPRS = Math.max(...scores.map(s => s.prs)).toFixed(3);
-        const minPRS = Math.min(...scores.map(s => s.prs)).toFixed(3);
-        const avgPercentile = (scores.reduce((sum, s) => sum + s.percentile, 0) / pgsCount).toFixed(1);
-        const maxPercentile = Math.max(...scores.map(s => s.percentile)).toFixed(1);
-        const minPercentile = Math.min(...scores.map(s => s.percentile)).toFixed(1);
-        const totalVariants = scores.reduce((sum, s) => sum + (s.variants || 0), 0);
-
-        allResults.push({
-            efoId,
-            trait: traits[0] ?? '',
-            pgsCount,
-            avgPRS,
-            maxPRS,
-            minPRS,
-            avgPercentile,
-            maxPercentile,
-            minPercentile,
-            totalVariants,
-            });
-
-
-        scores.forEach(score => {
-          allDetails.push({ efoId, ...score });
-        });
-
-        appendToEfoLog(efoId, `✅ ${efoId} abgeschlossen (${pgsCount} Scores)`, true);
-      } catch (err) {
-        appendToEfoLog(efoId, `⚠️ Fehler bei ${efoId}: ${err.message}`, true);
+        try {
+          const res = await fetch('/api/save_results_cardio', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              baseName: genomeFileName,
+              results: summary,
+              details: resultList
+            })
+          });
+          if (!res.ok) throw new Error(`Fehler beim Speichern: ${res.status}`);
+        } catch (e) {
+          console.error('Speichern fehlgeschlagen:', e);
+          setError('Analyse abgeschlossen, aber Speichern fehlgeschlagen.');
+        }
       }
-    }
+    };
 
-    try {
-      await fetch('/api/save_results_cardio', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          baseName: genomeFileName,
-          results: allResults,
-          details: allDetails
-        })
-      });
-    } catch (e) {
-      console.error('Fehler beim Speichern der Ergebnisse:', e);
-    }
+    worker.onerror = (err) => {
+      console.error('Worker error:', err);
+      setError('Analyse fehlgeschlagen.');
+      setLoading(false);
+    };
+  };
 
-    setResults(allResults);
-    setLoading(false);
-    setResultsPrecomputed(true);
+  const summarizeResults = (rawResults) => {
+    if (!Array.isArray(rawResults)) return [];
+    const grouped = {};
+    for (const r of rawResults) {
+      if (!grouped[r.efoId]) grouped[r.efoId] = [];
+      grouped[r.efoId].push(r);
+    }
+    return Object.entries(grouped).map(([efoId, scores]) => {
+      const trait = scores[0]?.trait || '(unbekannt)';
+      const pgsCount = scores.length;
+      const avgPRS = scores.reduce((sum, s) => sum + s.prs, 0) / pgsCount;
+      const maxPRS = Math.max(...scores.map(s => s.prs));
+      const minPRS = Math.min(...scores.map(s => s.prs));
+      const avgPercentile = scores.reduce((sum, s) => sum + s.percentile, 0) / pgsCount;
+      const maxPercentile = Math.max(...scores.map(s => s.percentile));
+      const minPercentile = Math.min(...scores.map(s => s.percentile));
+      const totalVariants = scores.reduce((sum, s) => sum + (s.totalVariants || 0), 0);
+      return {
+        efoId,
+        'EFO-ID': efoId,
+        'Trait': trait,
+        'PGS Count': pgsCount,
+        'Avg PRS': parseFloat(avgPRS.toFixed(3)),
+        'Max PRS': parseFloat(maxPRS.toFixed(3)),
+        'Min PRS': parseFloat(minPRS.toFixed(3)),
+        'Avg Percentile': parseFloat(avgPercentile.toFixed(1)),
+        'Max Percentile': parseFloat(maxPercentile.toFixed(1)),
+        'Min Percentile': parseFloat(minPercentile.toFixed(1)),
+        'Total Variants': totalVariants
+      };
+    });
+  };
+
+  const renderSummaryChart = () => {
+    if (!summaryResults.length) return null;
+    const data = {
+      labels: summaryResults.map(s => s['Trait']),
+      datasets: [{
+        label: 'Avg PRS',
+        data: summaryResults.map(s => s['Avg PRS']),
+        backgroundColor: 'rgba(54, 162, 235, 0.6)'
+      }]
+    };
+    const options = {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' },
+        title: { display: true, text: 'Durchschnittlicher PRS pro Trait' }
+      },
+      scales: {
+        x: { ticks: { autoSkip: false, maxRotation: 90, minRotation: 45 } }
+      }
+    };
+    return <Bar data={data} options={options} className="max-w-4xl mx-auto" />;
   };
 
   return (
     <DashboardLayout>
       <div className="p-4 space-y-4">
-        <h1 className="text-xl font-bold text-gray-800">Persönliche PGS-Analyse (Kardiovaskulär)</h1>
+        <h1 className="text-xl font-bold text-gray-800">Persönliche PGS-Analyse (WebWorker)</h1>
 
-        <input
-          type="file"
-          onChange={handleFileChange}
-          accept=".txt"
-          className="block text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-        />
+        <input type="file" onChange={handleFileChange} accept=".txt" className="block text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
 
-        <button
-          onClick={runBatch}
-          disabled={loading || !genomeText || resultsPrecomputed}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        <button onClick={runAnalysis} disabled={loading || !genomeText} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow disabled:opacity-50 disabled:cursor-not-allowed">
           {loading ? 'Analyse läuft…' : 'Analyse starten'}
         </button>
 
         {error && <p className="text-red-600 font-medium">{error}</p>}
 
-        {resultsPrecomputed && (
-          <div className="bg-green-100 text-green-800 p-4 rounded shadow">
-            Ergebnisse bereits vorhanden –{' '}
-            <a
-              href="/batch_ui_cardio"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline font-medium"
-            >
-              zur Auswertung
-            </a>
+        {log.length > 0 && (
+          <div ref={logRef} className="bg-gray-100 border border-gray-300 rounded p-2 h-48 overflow-y-auto text-sm font-mono whitespace-pre-wrap">
+            {log.map((line, idx) => <div key={idx}>{line}</div>)}
           </div>
         )}
 
-        <div className="bg-gray-100 p-4 rounded shadow-inner">
-          <h2 className="font-semibold text-gray-800 mb-2">🔍 Analyseverlauf</h2>
-          {logMap.map(({ efoId, messages }) => {
-            const isOpen = collapseMap[efoId] ?? true;
-            const toggle = () =>
-              setCollapseMap((prev) => ({ ...prev, [efoId]: !prev[efoId] }));
-
-            return (
-              <div key={efoId} className="mb-4 rounded border border-gray-300 bg-white shadow-sm">
-                <button
-                  className="w-full text-left px-3 py-2 flex items-center justify-between bg-gray-200 hover:bg-gray-300 rounded-t"
-                  onClick={toggle}
-                >
-                  <span className="font-medium text-blue-800">{efoId}</span>
-                  <svg
-                    className={`w-4 h-4 transform transition-transform duration-200 ${isOpen ? 'rotate-90' : ''}`}
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    viewBox="0 0 24 24"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                  </svg>
-                </button>
-                {isOpen && (
-                  <ul className="ml-5 py-2 text-sm list-disc text-gray-700">
-                    {messages.map((line, i) => (
-                      <li key={i} className="leading-snug">{line}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            );
-          })}
-        </div>
-
         {results.length > 0 && (
-          <>
-            <table className="min-w-full table-auto border mt-4 text-sm">
+          <div className="mt-4">
+            <h2 className="text-lg font-semibold">Ergebnisse</h2>
+            <table className="min-w-full table-auto border mt-2 text-sm">
               <thead>
                 <tr>
                   <th className="border px-2 py-1">EFO-ID</th>
-                  <th className="border px-2 py-1"># Scores</th>
-                  <th className="border px-2 py-1">Durchschnittlicher PRS</th>
+                  <th className="border px-2 py-1">PGS-ID</th>
+                  <th className="border px-2 py-1">RawScore</th>
+                  <th className="border px-2 py-1">PRS</th>
+                  <th className="border px-2 py-1">Percentile</th>
                 </tr>
               </thead>
               <tbody>
-                {results.map((r) => (
-                  <tr key={r.efoId}>
+                {results.map((r, i) => (
+                  <tr key={i}>
                     <td className="border px-2 py-1">{r.efoId}</td>
-                    <td className="border px-2 py-1">{r.pgsCount}</td>
-                    <td className="border px-2 py-1">{r.avgPRS}</td>
+                    <td className="border px-2 py-1">{r.id}</td>
+                    <td className="border px-2 py-1">{r.rawScore.toFixed(3)}</td>
+                    <td className="border px-2 py-1">{r.prs.toFixed(3)}</td>
+                    <td className="border px-2 py-1">{r.percentile}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
 
-            <div className="mt-4">
-              <a
-                href="/batch_ui_cardio"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block bg-green-600 text-white font-semibold px-4 py-2 rounded shadow hover:bg-green-700"
-              >
-                → Ergebnisse im PGS Dashboard ansehen
-              </a>
+            <div className="mt-8">
+              {renderSummaryChart()}
             </div>
-          </>
+          </div>
         )}
       </div>
     </DashboardLayout>
