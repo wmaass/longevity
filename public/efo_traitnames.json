@@ -7,5 +7,10 @@
   "EFO_0004458": "Cardiac output",
   "EFO_0004611": "Liver enzyme level",
   "EFO_0004612": "Bilirubin measurement",
-  "EFO_0004574": "Liver fat percentage"
+  "EFO_0004574": "Liver fat percentage",
+  "EFO_0004314": "Forced expiratory volume (FEV1)",
+  "EFO_0003892": "Pulmonary function measurement",
+  "EFO_0003884": "Chronic kidney disease (CKD)",
+  "EFO_0006829": "GFR change measurement",
+  "EFO_0009690": "Urinary system disease"
 }

@@ -40,13 +40,12 @@ async function fetchAndCombineTraits() {
       url: t['Ontology URL'],
       count_pgs: counts[t['Ontology Trait ID']]
     }))
-    .sort((a, b) => b.count_pgs - a.count_pgs)
-    .slice(0, 20);  
+    .sort((a, b) => b.count_pgs - a.count_pgs); // Kein .slice()
 
-  console.log(`==> ${combined.length} gültige Traits gefunden. Speichere in ${OUTPUT_FILE}...`);
-  fs.writeFileSync(OUTPUT_FILE, JSON.stringify(combined, null, 2));
-  console.log('==> Fertig! traits.json erstellt.');
-}
+    console.log(`==> ${combined.length} gültige Traits gefunden. Speichere in ${OUTPUT_FILE}...`);
+    fs.writeFileSync(OUTPUT_FILE, JSON.stringify(combined, null, 2));
+    console.log('==> Fertig! traits.json erstellt.');
+  }
 
 fetchAndCombineTraits().catch(err => {
   console.error('Fehler beim Erstellen von traits.json:', err);

@@ -138,5 +138,2903 @@
     "description": "A carcinoma arising from the thyroid gland. It is usually an adenocarcinoma and includes the following main subtypes: follicular, papillary, medullary, poorly differentiated, and anaplastic. [NCIT: C4815]",
     "url": "http://www.ebi.ac.uk/efo/EFO_0002892",
     "count_pgs": 27
+  },
+  {
+    "id": "EFO_0004509",
+    "label": "hemoglobin measurement",
+    "description": "Hemoglobin measurement is a measure of the quantity of the metallo protein hemoglobin in blood often used in the diagnosis of anaemia.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004509",
+    "count_pgs": 26
+  },
+  {
+    "id": "EFO_0004309",
+    "label": "platelet count",
+    "description": "The number of PLATELETS per unit volume in a sample of venous BLOOD.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004309",
+    "count_pgs": 25
+  },
+  {
+    "id": "EFO_0004305",
+    "label": "erythrocyte count",
+    "description": "The number of red blood cells per unit volume in a sample of venous blood.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004305",
+    "count_pgs": 23
+  },
+  {
+    "id": "EFO_0003884",
+    "label": "chronic kidney disease",
+    "description": "Impairment of the renal function secondary to chronic kidney damage persisting for three or more months. [NCIT: C80078]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003884",
+    "count_pgs": 22
+  },
+  {
+    "id": "EFO_0004468",
+    "label": "glucose measurement",
+    "description": "Is any quantification of glucose.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004468",
+    "count_pgs": 22
+  },
+  {
+    "id": "EFO_0005091",
+    "label": "monocyte count",
+    "description": "quantification of monocytes in the blood",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005091",
+    "count_pgs": 22
+  },
+  {
+    "id": "EFO_0000712",
+    "label": "stroke",
+    "description": "A sudden loss of neurological function secondary to hemorrhage or ischemia in the brain parenchyma due to a vascular event. [NCIT: C3390]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000712",
+    "count_pgs": 22
+  },
+  {
+    "id": "EFO_0007800",
+    "label": "body fat percentage",
+    "description": "Quantification of the amount of body fat as a percentage of total body mass, calculated as either total mass of fat divided by total body mass or one of a number of more complex weighted equations. Body fat includes essential body fat and storage body fat.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007800",
+    "count_pgs": 21
+  },
+  {
+    "id": "EFO_0009270",
+    "label": "heel bone mineral density",
+    "description": "Quantification of the mineral density of the heel bone",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009270",
+    "count_pgs": 21
+  },
+  {
+    "id": "EFO_0003893",
+    "label": "ovarian neoplasm",
+    "description": "A benign, borderline, or malignant neoplasm involving the ovary. [NCIT: C4984]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003893",
+    "count_pgs": 21
+  },
+  {
+    "id": "EFO_0000676",
+    "label": "psoriasis",
+    "description": "An autoimmune condition characterized by red, well-delineated plaques with silvery scales that are usually on the extensor surfaces and scalp. They can occasionally present with these manifestations: pustules; erythema and scaling in intertriginous areas, and erythroderma, that are often distributed on extensor surfaces and scalp. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000676",
+    "count_pgs": 21
+  },
+  {
+    "id": "EFO_0004193",
+    "label": "basal cell carcinoma",
+    "description": "A carcinoma involving the basal cells. [NCIT: C156767]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004193",
+    "count_pgs": 20
+  },
+  {
+    "id": "EFO_0004705",
+    "label": "hypothyroidism",
+    "description": "Abnormally low levels of thyroid hormone. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004705",
+    "count_pgs": 20
+  },
+  {
+    "id": "EFO_0003767",
+    "label": "inflammatory bowel disease",
+    "description": "A spectrum of small and large bowel inflammatory diseases of unknown etiology. It includes Crohn's disease, ulcerative colitis, and colitis of indeterminate type. [NCIT: C3138]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003767",
+    "count_pgs": 20
+  },
+  {
+    "id": "EFO_0004995",
+    "label": "lean body mass",
+    "description": "The weight of all organs and tissue in an individual less the weight of the individual's body fat.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004995",
+    "count_pgs": 20
+  },
+  {
+    "id": "EFO_0004620",
+    "label": "vitamin B12 measurement",
+    "description": "is a quantification of Vitamin B12, vitamin B12 or vitamin B-12, is a water-solublevitamin with a key role in the normal functioning of the brain and nervous system, and for the formation of blood. It is one of the eight B vitamins. It is normally involved in themetabolism of every cell of the human body, especially affecting DNA synthesis and regulation, but also fatty acid synthesis and energy production. It is the largest and most structurally complicated vitamin and can be produced industrially only through bacterial fermentation-synthesis.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004620",
+    "count_pgs": 20
+  },
+  {
+    "id": "EFO_0003913",
+    "label": "angina pectoris",
+    "description": "The symptom of paroxysmal pain consequent to MYOCARDIAL ISCHEMIA usually of distinctive character, location and radiation. It is thought to be provoked by a transient stressful situation during which the oxygen requirements of the MYOCARDIUM exceed that supplied by the CORONARY CIRCULATION.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003913",
+    "count_pgs": 19
+  },
+  {
+    "id": "EFO_1001951",
+    "label": "colorectal carcinoma",
+    "description": "A malignant epithelial neoplasm that arises from the colon or rectum and invades through the muscularis mucosa into the submucosa. The vast majority are adenocarcinomas. [NCIT: C2955]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1001951",
+    "count_pgs": 19
+  },
+  {
+    "id": "EFO_0004842",
+    "label": "eosinophil count",
+    "description": "Is a quantification of eosinphils in blood. | The number of granulocytes (polymorphonuclear leukocytes) in a specified volume of blood, usually 1 cubic millimeter.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004842",
+    "count_pgs": 19
+  },
+  {
+    "id": "EFO_0001071",
+    "label": "lung carcinoma",
+    "description": "A carcinoma that arises from epithelial cells of the lung",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0001071",
+    "count_pgs": 19
+  },
+  {
+    "id": "EFO_0009188",
+    "label": "Red cell distribution width",
+    "description": "Red blood cell distribution width (RDW or RDW-CV or RCDW and RDW-SD) is a measure of the range of variation of red blood cell (RBC) volume that is reported as part of a standard complete blood count. Usually red blood cells are a standard size of about 6-8 μm in diameter. Certain disorders, however, cause a significant variation in cell size. Higher RDW values indicate greater variation in size. Normal reference range of RDW-CV in human red blood cells is 11.5-14.5%.[1] If anemia is observed, RDW test results are often used together with mean corpuscular volume (MCV) results to determine the possible causes of the anemia. It is mainly used to differentiate an anemia of mixed causes from an anemia of a single cause.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009188",
+    "count_pgs": 19
+  },
+  {
+    "id": "EFO_0005035",
+    "label": "hippocampal volume",
+    "description": "Measurement of the volume of the hippocampus",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005035",
+    "count_pgs": 18
+  },
+  {
+    "id": "EFO_0004587",
+    "label": "lymphocyte count",
+    "description": "A quantification of lymphocytes in blood.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004587",
+    "count_pgs": 18
+  },
+  {
+    "id": "EFO_0000612",
+    "label": "myocardial infarction",
+    "description": "Gross necrosis of the myocardium, as a result of interruption of the blood supply to the area, as in coronary thrombosis. [NCIT: C27996]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000612",
+    "count_pgs": 18
+  },
+  {
+    "id": "EFO_0001075",
+    "label": "ovarian carcinoma",
+    "description": "A malignant neoplasm originating from the surface ovarian epithelium. It accounts for the greatest number of deaths from malignancies of the female genital tract and is the fifth leading cause of cancer fatalities in women. It is predominantly a disease of older white women of northern European extraction, but it is seen in all ages and ethnic groups. Adenocarcinomas constitute the vast majority of ovarian carcinomas. The pattern of metastatic spread in ovarian carcinoma is similar regardless of the microscopic type. The most common sites of involvement are the contralateral ovary, peritoneal cavity, para-aortic and pelvic lymph nodes, and liver. Lung and pleura are the most common sites of extra-abdominal spread. The primary form of therapy is surgical. The overall prognosis of ovarian carcinoma remains poor, a direct result of its rapid growth rate and the lack of early symptoms. --2002 [NCIT: C4908]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0001075",
+    "count_pgs": 18
+  },
+  {
+    "id": "EFO_0004531",
+    "label": "urate measurement",
+    "description": "A urate measurement is the quantification of some urate in body fluid",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004531",
+    "count_pgs": 18
+  },
+  {
+    "id": "EFO_0008111",
+    "label": "diet measurement",
+    "description": "quantification of some aspect of diet, including diet patterns, balance of nutrient consumption and glycemic load",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0008111",
+    "count_pgs": 17
+  },
+  {
+    "id": "EFO_0004527",
+    "label": "mean corpuscular hemoglobin",
+    "description": "The MCH is  the average mass of hemoglobin per red blood cell in a sample of blood and is calculated by dividing the total mass of hemoglobin by the RBC count",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004527",
+    "count_pgs": 17
+  },
+  {
+    "id": "EFO_0004703",
+    "label": "age at menarche",
+    "description": "The age of onset of (human) menarche, the beginning of the first menstrual cycle in an individual",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004703",
+    "count_pgs": 16
+  },
+  {
+    "id": "EFO_0004617",
+    "label": "cystatin C measurement",
+    "description": "is a quantification of serum cystatin C C (formerly gamma trace, post-gamma-globulin or neuroendocrine basic polypeptide),[1] a protein encoded by the CST3 gene, is mainly used as a biomarker of kidney function and kidney disease.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004617",
+    "count_pgs": 16
+  },
+  {
+    "id": "EFO_0004713",
+    "label": "FEV/FVC ratio",
+    "description": "",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004713",
+    "count_pgs": 16
+  },
+  {
+    "id": "EFO_0005106",
+    "label": "body composition measurement",
+    "description": "measurement of the percentages of fat, bone and muscle in human bodies",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005106",
+    "count_pgs": 15
+  },
+  {
+    "id": "EFO_0000373",
+    "label": "congestive heart failure",
+    "description": "Failure of the heart to pump a sufficient amount of blood to meet the needs of the body tissues, resulting in tissue congestion and edema. Signs and symptoms include shortness of breath, pitting edema, enlarged tender liver, engorged neck veins, and pulmonary rales. [NCIT: C3080]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000373",
+    "count_pgs": 15
+  },
+  {
+    "id": "EFO_0003877",
+    "label": "sleep apnea",
+    "description": "A disorder characterized by multiple cessations of respirations during sleep that induce partial arousals and interfere with the maintenance of sleep. [MESH: D012891]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003877",
+    "count_pgs": 15
+  },
+  {
+    "id": "EFO_0004731",
+    "label": "eye measurement",
+    "description": "Is a quantification of some eye structure or property of an eye structure, such as corneal thickness.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004731",
+    "count_pgs": 14
+  },
+  {
+    "id": "EFO_0004348",
+    "label": "hematocrit",
+    "description": "The volume of packed RED BLOOD CELLS in a blood specimen. The volume is measured by centrifugation in a tube with graduated markings, or with automated blood cell counters. It is an indicator of erythrocyte status in disease. For example, ANEMIA shows a low value; POLYCYTHEMIA, a high value.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004348",
+    "count_pgs": 14
+  },
+  {
+    "id": "EFO_0004279",
+    "label": "suntan",
+    "description": "An induced skin pigment ( MELANIN) darkening after exposure to SUNLIGHT or ULTRAVIOLET RAYS. The degree of tanning depends on the intensity and duration of UV exposure, and genetic factors.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004279",
+    "count_pgs": 14
+  },
+  {
+    "id": "EFO_0004514",
+    "label": "bone quantitative ultrasound measurement",
+    "description": "A bone quantitative ultrasound measurement is the output of a an ultrasound process in which bones are assayed using ultrasound and information about bone density, cortical thickness, elasticity and microarchitecture may be returned.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004514",
+    "count_pgs": 13
+  },
+  {
+    "id": "EFO_0000319",
+    "label": "cardiovascular disease",
+    "description": "A disease involving the cardiovascular system.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000319",
+    "count_pgs": 13
+  },
+  {
+    "id": "EFO_0008328",
+    "label": "chronotype measurement",
+    "description": "quantification of some aspect of chronotype such as ease of getting up in the morning",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0008328",
+    "count_pgs": 13
+  },
+  {
+    "id": "EFO_0004698",
+    "label": "insomnia",
+    "description": "A sleep disorder characterized by difficulty in falling asleep and/or remaining asleep. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004698",
+    "count_pgs": 13
+  },
+  {
+    "id": "EFO_0006925",
+    "label": "lipoprotein A measurement",
+    "description": "quantification of some lipoprotein A in a sample",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0006925",
+    "count_pgs": 13
+  },
+  {
+    "id": "EFO_0007660",
+    "label": "neuroticism measurement",
+    "description": "Quantification of some aspect of neuroticism or neurotic behaviour, such as severity or frequency of neurotic behaviour. This is usually assessed via a standardised questionnaire.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007660",
+    "count_pgs": 13
+  },
+  {
+    "id": "EFO_0004833",
+    "label": "neutrophil count",
+    "description": "The number of granulocytes (polymorphonuclear leukocytes) in a specified volume of blood, usually 1 cubic millimeter.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004833",
+    "count_pgs": 13
+  },
+  {
+    "id": "EFO_0009259",
+    "label": "skin carcinoma",
+    "description": "A carcinoma that arises from epithelial cells of the zone of skin",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009259",
+    "count_pgs": 13
+  },
+  {
+    "id": "EFO_0004312",
+    "label": "vital capacity",
+    "description": "The volume of air that is exhaled by a maximal expiration following a maximal inspiration.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004312",
+    "count_pgs": 13
+  },
+  {
+    "id": "EFO_0004570",
+    "label": "bilirubin measurement",
+    "description": "A bilirubin measurement is a quantification of bilirubin typically measured in serum.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004570",
+    "count_pgs": 12
+  },
+  {
+    "id": "EFO_0009394",
+    "label": "hippocampal CA1 volume",
+    "description": "Volume of hippocampal CA1, which is the part of hippocampus proper bounded by CA2 and the subiculum, characterized by pyramidal neurons that receive projections from pyramidal neurons of CA3 via the Schaffer collaterals.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009394",
+    "count_pgs": 12
+  },
+  {
+    "id": "EFO_0009395",
+    "label": "hippocampal CA3 volume",
+    "description": "Volume of hippocampal CA3, which is the part of hippocampus proper bounded by the hilus of the dentate gyrus and area CA2, characterized by large pyramidal cells and a dense projection from dentate gyrus granule cell mossy fibers.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009395",
+    "count_pgs": 12
+  },
+  {
+    "id": "EFO_0009396",
+    "label": "hippocampal CA4 volume",
+    "description": "Volume of hippocampal CA4.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009396",
+    "count_pgs": 12
+  },
+  {
+    "id": "EFO_0003882",
+    "label": "osteoporosis",
+    "description": "A condition of reduced bone mass, with decreased cortical thickness and a decrease in the number and size of the trabeculae of cancellous bone (but normal chemical composition), resulting in increased fracture incidence. Osteoporosis is classified as primary (Type 1, postmenopausal osteoporosis; Type 2, age-associated osteoporosis; and idiopathic, which can affect juveniles, premenopausal women, and middle-aged men) and secondary osteoporosis (which results from an identifiable cause of bone mass loss). [NCIT: C3298]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003882",
+    "count_pgs": 12
+  },
+  {
+    "id": "EFO_0000707",
+    "label": "squamous cell carcinoma",
+    "description": "A carcinoma arising from squamous epithelial cells. Morphologically, it is characterized by the proliferation of atypical, often pleomorphic squamous cells. Squamous cell carcinomas are graded by the degree of cellular differentiation as well, moderately, or poorly differentiated. Well differentiated carcinomas are usually associated with keratin production and the presence of intercellular bridges between adjacent cells. Representative examples are lung squamous cell carcinoma, skin squamous cell carcinoma, and cervical squamous cell carcinoma. [NCIT: C2929]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000707",
+    "count_pgs": 12
+  },
+  {
+    "id": "EFO_0004736",
+    "label": "aspartate aminotransferase measurement",
+    "description": "Is a quantification of aspartate aminotransferase, and is commonly used as a marker for liver function.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004736",
+    "count_pgs": 11
+  },
+  {
+    "id": "EFO_0007825",
+    "label": "balding measurement",
+    "description": "quantification of the amount of balding in an individual",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007825",
+    "count_pgs": 11
+  },
+  {
+    "id": "EFO_0004324",
+    "label": "body weights and measures",
+    "description": "Measurements of the height, weight, length, area, etc., of the human and animal body or its parts.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004324",
+    "count_pgs": 11
+  },
+  {
+    "id": "EFO_0001060",
+    "label": "celiac disease",
+    "description": "An autoimmune genetic disorder with an unknown pattern of inheritance that primarily affects the digestive tract. It is caused by intolerance to dietary gluten. Consumption of gluten protein triggers an immune response which damages small intestinal villi and prevents adequate absorption of nutrients. Clinical signs include abdominal cramping, diarrhea or constipation and weight loss. If untreated, the clinical course may progress to malnutrition, anemia, osteoporosis and an increased risk of intestinal malignancies. However, the prognosis is favorable with successful avoidance of gluten in the diet. [NCIT: C26714]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0001060",
+    "count_pgs": 11
+  },
+  {
+    "id": "EFO_0011015",
+    "label": "educational attainment",
+    "description": "A measure of academic performance through educational benchmarks such as national exams and curriculum assessments.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0011015",
+    "count_pgs": 11
+  },
+  {
+    "id": "EFO_0004697",
+    "label": "estradiol measurement",
+    "description": "Is a quantification of circulating estradiol a circulating steriod sex hormone.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004697",
+    "count_pgs": 11
+  },
+  {
+    "id": "EFO_0005088",
+    "label": "testicular carcinoma",
+    "description": "A primary or metastatic malignant neoplasm that affects the testis. Representative examples include seminoma, embryonal carcinoma, sarcoma, leukemia, and lymphoma. [NCIT: C7251]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005088",
+    "count_pgs": 11
+  },
+  {
+    "id": "EFO_0004286",
+    "label": "venous thromboembolism",
+    "description": "Occlusion of the lumen of a vein by a thrombus that has migrated from a distal site via the blood stream. [NCIT: C99537]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004286",
+    "count_pgs": 11
+  },
+  {
+    "id": "EFO_0000400",
+    "label": "diabetes mellitus",
+    "description": "A metabolic disorder characterized by abnormally high blood sugar levels due to diminished production of insulin or insulin resistance/desensitization. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000400",
+    "count_pgs": 10
+  },
+  {
+    "id": "EFO_0002618",
+    "label": "pancreatic carcinoma",
+    "description": "A carcinoma that arises from epithelial cells of the exocrine pancreas",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0002618",
+    "count_pgs": 10
+  },
+  {
+    "id": "EFO_0004682",
+    "label": "QT interval",
+    "description": "The QT interval is a measure of the time between the start of the Q wave and the end of the T wave in the heart's electrical cycle",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004682",
+    "count_pgs": 10
+  },
+  {
+    "id": "EFO_0004343",
+    "label": "waist-hip ratio",
+    "description": "The waist circumference measurement divided by the hip circumference measurement. For both men and women, a waist-to-hip ratio (WHR) of 1.0 or higher is considered \"at risk\" for undesirable health consequences, such as heart disease and ailments associated with OVERWEIGHT. A healthy WHR is 0.90 or less for men, and 0.80 or less for women. (National Center for Chronic Disease Prevention and Health Promotion, 2004)",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004343",
+    "count_pgs": 10
+  },
+  {
+    "id": "EFO_0004533",
+    "label": "alkaline phosphatase measurement",
+    "description": "Alkaline phosphatase measurement is a quantification of alkaline phosphatase in blood. AP is a marker for bone and liver disease.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004533",
+    "count_pgs": 9
+  },
+  {
+    "id": "EFO_0003898",
+    "label": "ankylosing spondylitis",
+    "description": "An autoimmune chronic inflammatory disorder characterized by inflammation in the vertebral joints of the spine and sacroiliac joints. It predominantly affects young males. Patients present with stiffness and pain in the spine. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003898",
+    "count_pgs": 9
+  },
+  {
+    "id": "EFO_0005140",
+    "label": "autoimmune disease",
+    "description": "Autoimmune disease or disorder is a disease characterized by an immune response of an organism against parts of itself causing pathology e.g. Graves' disease.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005140",
+    "count_pgs": 9
+  },
+  {
+    "id": "EFO_0005090",
+    "label": "basophil count",
+    "description": "The number of granulocytes (polymorphonuclear leukocytes) in a specified volume of blood, usually 1 cubic millimeter. | quantification of basophils in the blood",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005090",
+    "count_pgs": 9
+  },
+  {
+    "id": "EFO_0000341",
+    "label": "chronic obstructive pulmonary disease",
+    "description": "A chronic and progressive lung disorder characterized by the loss of elasticity of the bronchial tree and the air sacs, destruction of the air sacs wall, thickening of the bronchial wall, and mucous accumulation in the bronchial tree. The pathologic changes result in the disruption of the air flow in the bronchial airways. Signs and symptoms include shortness of breath, wheezing, productive cough, and chest tightness. The two main types of chronic obstructive pulmonary disease are chronic obstructive bronchitis and emphysema. [NCIT: C3199]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000341",
+    "count_pgs": 9
+  },
+  {
+    "id": "EFO_0007991",
+    "label": "eosinophil percentage of leukocytes",
+    "description": "A calculated measurement in which the number of eosinophil granulocytes is divided by the number of all white blood cells in a specified sample of peripheral venous blood, and the result presented as a ratio, fraction, quotient or percentage. An eosinophil is a granular leukocyte having a nucleus with two lobes connected by a thread of chromatin, and cytoplasm containing coarse, round granules of uniform size that stain readily with eosin and other acid dyes.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007991",
+    "count_pgs": 9
+  },
+  {
+    "id": "EFO_1000650",
+    "label": "estrogen-receptor negative breast cancer",
+    "description": "A subtype of breast cancer that is estrogen-receptor negative [EFO: 1000650]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1000650",
+    "count_pgs": 9
+  },
+  {
+    "id": "EFO_1000649",
+    "label": "estrogen-receptor positive breast cancer",
+    "description": "A subtype of breast cancer that is estrogen-receptor positive [EFO: 1000649]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1000649",
+    "count_pgs": 9
+  },
+  {
+    "id": "EFO_0009885",
+    "label": "frailty measurement",
+    "description": "Quantification of some aspect of frailty.  Frailty is usually described as clinical state of heightened vulnerability to poor resolution of homeostasis after a stressor event, which thereby increases the risk of adverse outcomes, including falls, delirium, disability and mortality.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009885",
+    "count_pgs": 9
+  },
+  {
+    "id": "EFO_0007993",
+    "label": "lymphocyte percentage of leukocytes",
+    "description": "A calculated measurement in which the number of lymphocytes in a specified sample of blood is divided by the total number of white blood cells in the sample, and the result presented as a ratio, fraction, quotient or percentage.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007993",
+    "count_pgs": 9
+  },
+  {
+    "id": "EFO_0007989",
+    "label": "monocyte percentage of leukocytes",
+    "description": "A calculated measurement in which the number of monocytes in a specified sample of blood is divided by the total number of white blood cells in the sample, and the result presented as a ratio, fraction, quotient or percentage.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007989",
+    "count_pgs": 9
+  },
+  {
+    "id": "EFO_0007990",
+    "label": "neutrophil percentage of leukocytes",
+    "description": "A calculated measurement in which the number of neutrophil granulocytes is divided by the number of all white blood cells in a specified sample of peripheral venous blood, and the result presented as a ratio, fraction, quotient or percentage. A neutrophil is, or is in the process of becoming, a granular leucocyte having a nucleus with three to five lobes connected by threads of chromatin, cytoplasm containing very fine granules, and which is readily stainable with neutral dyes.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007990",
+    "count_pgs": 9
+  },
+  {
+    "id": "EFO_0007984",
+    "label": "platelet component distribution width",
+    "description": "Measure of variation in platelet size. | The determination of the amount of platelet shape changes present in a sample. [ NCI ]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007984",
+    "count_pgs": 9
+  },
+  {
+    "id": "EFO_0007985",
+    "label": "platelet crit",
+    "description": "The proportion of blood volume that is occupied by platelets, expressed as a percentage.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007985",
+    "count_pgs": 9
+  },
+  {
+    "id": "EFO_0000095",
+    "label": "chronic lymphocytic leukemia",
+    "description": "B-cell chronic lymphocytic leukemia (B-CLL) is a type of B-cell non-Hodgkin lymphoma, and the most common form of leukemia in Western countries, affecting elderly adults (mean age of 67 and 72 years) with a slight male predominance (1.7:1), and characterized by a highly variable clinical presentation that can include asymptomatic disease or non-specific B-symptoms such as unintentional weight loss, severe fatigue, fever (without evidence of infection), and night sweats as well as cervical lymphadenopathy, splenomegaly and frequent infections. Some patients can also develop autoimmune complications such as autoimmune hemolytic anemia or immune thrombocytopenia. The clinical course is extremely heterogeneous with survival ranging from a few months to several decades. [Orphanet: 67038]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000095",
+    "count_pgs": 8
+  },
+  {
+    "id": "EFO_0000407",
+    "label": "dilated cardiomyopathy",
+    "description": "Cardiomyopathy which is characterized by dilation and contractile dysfunction of the left and right ventricles. It may be idiopathic, or it may result from a myocardial infarction, myocardial infection, or alcohol abuse. It is a cause of congestive heart failure. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000407",
+    "count_pgs": 8
+  },
+  {
+    "id": "EFO_0004314",
+    "label": "forced expiratory volume",
+    "description": "Measure of the maximum amount of air that can be expelled in a given number of seconds during aÂ FORCED VITAL CAPACITYÂ determination . It is usually given asÂ FEVÂ followed by a subscript indicating the number of seconds over which the measurement is made, although it is sometimes given as a percentage of forced vital capacity.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004314",
+    "count_pgs": 8
+  },
+  {
+    "id": "EFO_0009102",
+    "label": "number of children ever born measurement",
+    "description": "A measurement of the number of children born",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009102",
+    "count_pgs": 8
+  },
+  {
+    "id": "EFO_0000684",
+    "label": "respiratory system disease",
+    "description": "A non-neoplastic or neoplastic disorder that affects the respiratory system. Representative examples include pneumonia, chronic obstructive pulmonary disease, pulmonary failure, lung adenoma, lung carcinoma, and tracheal carcinoma. [NCIT: C26871]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000684",
+    "count_pgs": 8
+  },
+  {
+    "id": "EFO_0000701",
+    "label": "skin disease",
+    "description": "Any deviation from the normal structure or function of the skin or subcutaneous tissue that is manifested by a characteristic set of symptoms and signs. [NCIT: C3371]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000701",
+    "count_pgs": 8
+  },
+  {
+    "id": "EFO_1000627",
+    "label": "thyroid disease",
+    "description": "A disease involving the thyroid gland.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1000627",
+    "count_pgs": 8
+  },
+  {
+    "id": "EFO_0004536",
+    "label": "total blood protein measurement",
+    "description": "A total blood protein measurement is a quantification of protein in a blood sample. It is used as a marker for disease and nutrition. It is performed in the liquid portion of blood and typically measures albumin and globulin.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004536",
+    "count_pgs": 8
+  },
+  {
+    "id": "EFO_0011005",
+    "label": "urea measurement",
+    "description": "Quantification of urea in a sample.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0011005",
+    "count_pgs": 8
+  },
+  {
+    "id": "EFO_0004329",
+    "label": "alcohol drinking",
+    "description": "Behaviors associated with the ingesting of alcoholic beverages, including social drinking.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004329",
+    "count_pgs": 7
+  },
+  {
+    "id": "EFO_0006525",
+    "label": "cigarettes per day measurement",
+    "description": "the quantification of the number of cigarettes that a subject smoked on average per day",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0006525",
+    "count_pgs": 7
+  },
+  {
+    "id": "EFO_1001950",
+    "label": "colon carcinoma",
+    "description": "A carcinoma that arises from epithelial cells of the colon",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1001950",
+    "count_pgs": 7
+  },
+  {
+    "id": "EFO_1001512",
+    "label": "endometrial carcinoma",
+    "description": "A malignant tumor arising from the epithelium that lines the cavity of the uterine body. The vast majority of endometrial carcinomas are adenocarcinomas; squamous cell and adenosquamous carcinomas represent a minority of the cases. Endometrioid adenocarcinoma is the most frequently seen variant of endometrial adenocarcinoma. Uterine bleeding is an initial clinical sign. The prognosis depends on the stage of the tumor, the depth of myometrial wall invasion, and the degree of differentiation. [NCIT: C7558]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1001512",
+    "count_pgs": 7
+  },
+  {
+    "id": "EFO_0006941",
+    "label": "grip strength measurement",
+    "description": "quantification of the force applied by the hand to pull on or suspend from objects",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0006941",
+    "count_pgs": 7
+  },
+  {
+    "id": "EFO_0003144",
+    "label": "heart failure",
+    "description": "Inability of the heart to pump blood at an adequate rate to meet tissue metabolic requirements. Clinical symptoms of heart failure include: unusual dyspnea on light exertion, recurrent dyspnea occurring in the supine position, fluid retention or rales, jugular venous distension, pulmonary edema on physical exam, or pulmonary edema on chest x-ray presumed to be cardiac dysfunction. [EFO: 0003144]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003144",
+    "count_pgs": 7
+  },
+  {
+    "id": "EFO_0004695",
+    "label": "intraocular pressure measurement",
+    "description": "Is a quantification of intraocular pressure. Increased intraocular pressure is a heritable risk factor for primary open angle glaucoma.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004695",
+    "count_pgs": 7
+  },
+  {
+    "id": "EFO_0010701",
+    "label": "mean reticulocyte volume",
+    "description": "Mean volume of reticulocyte cells",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010701",
+    "count_pgs": 7
+  },
+  {
+    "id": "EFO_0004346",
+    "label": "neuroimaging measurement",
+    "description": "Non-invasive methods of visualizing and measuring the CENTRAL NERVOUS SYSTEM, especially the brain, by various imaging modalities e.g. CT scan | is about MESH:D059906",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004346",
+    "count_pgs": 7
+  },
+  {
+    "id": "EFO_0001073",
+    "label": "obesity",
+    "description": "A disorder involving an excessive amount of body fat.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0001073",
+    "count_pgs": 7
+  },
+  {
+    "id": "EFO_0004462",
+    "label": "PR interval",
+    "description": "A PR interval is an  electrocardiography measurement which measures from the beginning of the P wave to the beginning of the QRS complex in the heart's electrical cycle",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004462",
+    "count_pgs": 7
+  },
+  {
+    "id": "EFO_0004532",
+    "label": "serum gamma-glutamyl transferase measurement",
+    "description": "Serum gamma-glutamyl transferase level measurement is the quantification of gamma-glutamyl transferase in blood. Gamma-glutamyl transferase is used as a marker for liver/bile duct problems and alcohol abuse.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004532",
+    "count_pgs": 7
+  },
+  {
+    "id": "EFO_0009805",
+    "label": "whole body water mass",
+    "description": "The weight of an individual's body water, i.e. the water content of a body that is contained in the tissues, the blood, the bones and elsewhere. The percentages of body water contained in various fluid compartments add up to total body water (TBW).",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009805",
+    "count_pgs": 7
+  },
+  {
+    "id": "EFO_0004214",
+    "label": "Abdominal Aortic Aneurysm",
+    "description": "Enlargement and ballooning of the vessel that supplies arterial blood to the abdomen, pelvis and legs. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004214",
+    "count_pgs": 6
+  },
+  {
+    "id": "EFO_0001365",
+    "label": "age-related macular degeneration",
+    "description": "Age-related loss of vision in the central portion of the retina (macula), secondary to retinal degeneration. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0001365",
+    "count_pgs": 6
+  },
+  {
+    "id": "EFO_0004302",
+    "label": "anthropometric measurement",
+    "description": "Anthropometry is a measurement of the size, weight, and proportions of the human or other primate body.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004302",
+    "count_pgs": 6
+  },
+  {
+    "id": "EFO_0001061",
+    "label": "cervical carcinoma",
+    "description": "A carcinoma arising from either the exocervical squamous epithelium or the endocervical glandular epithelium. The major histologic types of cervical carcinoma are: squamous carcinoma, adenocarcinoma, adenosquamous carcinoma, adenoid cystic carcinoma and undifferentiated carcinoma. [NCIT: C9039]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0001061",
+    "count_pgs": 6
+  },
+  {
+    "id": "EFO_0009552",
+    "label": "hemorrhoid",
+    "description": "Dilated veins in the anal canal. [NCIT: C26792]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009552",
+    "count_pgs": 6
+  },
+  {
+    "id": "EFO_0009401",
+    "label": "hippocampal amigdala transition area volume",
+    "description": "Volume of hippocampal amigdala transition area.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009401",
+    "count_pgs": 6
+  },
+  {
+    "id": "EFO_0004337",
+    "label": "intelligence",
+    "description": "The ability to learn and to deal with new situations and to deal effectively with tasks involving abstractions.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004337",
+    "count_pgs": 6
+  },
+  {
+    "id": "EFO_0004528",
+    "label": "mean corpuscular hemoglobin concentration",
+    "description": "The mean corpuscular hemoglobin concentration is a measure of the concentration of hemoglobin in a given volume of packed red blood cell",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004528",
+    "count_pgs": 6
+  },
+  {
+    "id": "EFO_0001378",
+    "label": "multiple myeloma",
+    "description": "A bone marrow-based plasma cell neoplasm characterized by a serum monoclonal protein and skeletal destruction with osteolytic lesions, pathological fractures, bone pain, hypercalcemia, and anemia. Clinical variants include non-secretory myeloma, smoldering myeloma, indolent myeloma, and plasma cell leukemia. (WHO, 2001) [NCIT: C3242]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0001378",
+    "count_pgs": 6
+  },
+  {
+    "id": "EFO_1000786",
+    "label": "osteoarthritis, hip",
+    "description": "Noninflammatory degenerative disease of the hip joint which usually appears in late middle or old age. It is characterized by growth or maturational disturbances in the femoral neck and head, as well as acetabular dysplasia. A dominant symptom is pain on weight-bearing or motion. [MESH: D015207]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1000786",
+    "count_pgs": 6
+  },
+  {
+    "id": "EFO_0004616",
+    "label": "osteoarthritis, knee",
+    "description": "Noninflammatory degenerative disease of the knee joint consisting of three large categories: conditions that block normal synchronous movement, conditions that produce abnormal pathways of motion, and conditions that cause stress concentration resulting in changes to articular cartilage. (Crenshaw, Campbell's Operative Orthopaedics, 8th ed, p2019) [MESH: D020370]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004616",
+    "count_pgs": 6
+  },
+  {
+    "id": "EFO_0011011",
+    "label": "sitting height measurement",
+    "description": "Quantification of some aspect of height, when assuming a sitting position.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0011011",
+    "count_pgs": 6
+  },
+  {
+    "id": "EFO_0007869",
+    "label": "wellbeing measurement",
+    "description": "quantification of some aspect of wellbeing such as life satisfaction or emotional wellbeing, usually self-reported and quantified through the use of a structured questionnaire",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007869",
+    "count_pgs": 6
+  },
+  {
+    "id": "EFO_0009749",
+    "label": "age at first sexual intercourse measurement",
+    "description": "A measurement of the age at which a person has the first sexual intercourse.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009749",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0004704",
+    "label": "age at menopause",
+    "description": "The age of onset of (human) menopause, the beginning of the first menstrual cycle in an individual",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004704",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0000274",
+    "label": "atopic eczema",
+    "description": "A common chronic pruritic inflammatory skin disease with a strong genetic component. Onset typically occurs during the first 2 years of life. [OMIM: 603165]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000274",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0007992",
+    "label": "basophil percentage of leukocytes",
+    "description": "A calculated measurement in which the number of basophil granulocytes is divided by the number of all white blood cells in a specified sample of peripheral venous blood, and the result presented as a ratio, fraction, quotient or percentage. A basophil is a granular leukocyte with an irregularly shaped, relatively pale-staining nucleus that is partially constricted into two lobes, and with cytoplasm containing coarse granules of variable size that stain bluish-black when exposed to basic dyes.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007992",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0004344",
+    "label": "birth weight",
+    "description": "The mass or quantity of heaviness of an individual at BIRTH. It is expressed by units of pounds or kilograms.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004344",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0000389",
+    "label": "cutaneous melanoma",
+    "description": "A primary melanoma arising from atypical melanocytes in the skin. Precursor lesions include acquired and congenital melanocytic nevi, and dysplastic nevi. Several histologic variants have been recognized, including superficial spreading melanoma, acral lentiginous melanoma, nodular melanoma, and lentigo maligna melanoma. [NCIT: C3510]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000389",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0000493",
+    "label": "family history",
+    "description": "Family history is a form of clinicaly history specifically about relevant aspects of genetic preconditions or family member's clinical history.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000493",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0009724",
+    "label": "health satisfaction measurement",
+    "description": "Quantification of health satisfaction.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009724",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0007652",
+    "label": "health trait",
+    "description": "The characteristics in health that a certain person has.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007652",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0000183",
+    "label": "Hodgkins lymphoma",
+    "description": "Hodgkin lymphoma (HL) is a heterogeneous group of malignant lymphoid neoplasms of B-cell origin characterized histologically by the presence of Hodgkin and Reed-Sternberg (HRS) cells in the vast majority of cases. There are two distinct subtypes: nodular lymphocyte predominant Hodgkin lymphoma and classical Hodgkin lymphoma. Hodgkin lymphoma involves primarily lymph nodes. [NCIT: C9357] [Orphanet: 98293]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000183",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0004627",
+    "label": "IGF-1 measurement",
+    "description": "Is the quantification of Insulin-like growth factor 1 (IGF-1), also called somatomedin C. IGF-1 is a hormone similar in molecular structure to insulin. It plays an important role in childhood growth and continues to have anabolic effects in adults. Levels of IGF-1 are known to increase in some cancers.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004627",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_1001870",
+    "label": "late-onset Alzheimer's disease",
+    "description": "This is the most common form of the disease, which happens to people age 65 and older. It may or may not run in families. So far, researchers haven’t found a particular gene that causes it. No one knows for sure why some people get it and others don’t.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1001870",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0010724",
+    "label": "lifestyle measurement",
+    "description": "Quantification of some aspect of a subject's lifestyle.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010724",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0005952",
+    "label": "non-Hodgkins lymphoma",
+    "description": "Distinct from Hodgkin lymphoma both morphologically and biologically, non-Hodgkin lymphoma (NHL) is characterized by the absence of Reed-Sternberg cells, can occur at any age, and usually presents as a localized or generalized lymphadenopathy associated with fever and weight loss. The clinical course varies according to the morphologic type. NHL is clinically classified as indolent, aggressive, or having a variable clinical course. NHL can be of B-or T-/NK-cell lineage. [NCIT: C3211]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005952",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0003918",
+    "label": "obstructive sleep apnea",
+    "description": "Cessation of air flow during sleep due to upper airway obstruction. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003918",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0004190",
+    "label": "open-angle glaucoma",
+    "description": "Chronic outflow obstruction of the eye's drainage canals that can lead to increased internal eye pressure and optic nerve damage. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004190",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0008002",
+    "label": "physical activity measurement",
+    "description": "quantification of some aspect of physical activity such as frequency or intensity",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0008002",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0010733",
+    "label": "polyunsaturated fatty acid measurement",
+    "description": "The determination of the amount of polyunsaturated fatty acids present in a sample.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010733",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0002890",
+    "label": "renal carcinoma",
+    "description": "A carcinoma arising from the epithelium of the renal parenchyma or the renal pelvis. The majority are renal cell carcinomas. Kidney carcinomas usually affect middle aged and elderly adults. Hematuria, abdominal pain, and a palpable mass are common symptoms. [NCIT: C9384]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0002890",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0004319",
+    "label": "smoking cessation",
+    "description": "Discontinuation of the habit of smoking, the inhaling and exhaling of tobacco smoke.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004319",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0005670",
+    "label": "smoking initiation",
+    "description": "initation of the habit of smoking, the inhaling and exhaling of tobacco smoke.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005670",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0010729",
+    "label": "sun exposure measurement",
+    "description": "Quantification of some aspect of exposure to incident light from the sun.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010729",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0000729",
+    "label": "ulcerative colitis",
+    "description": "An inflammatory bowel disease involving the mucosal surface of the large intestine and rectum. It may present with an acute or slow onset and follows an intermittent or continuous course. Signs and symptoms include abdominal pain, diarrhea, fever, weight loss, and intestinal hemorrhage. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000729",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0008385",
+    "label": "visual acuity measurement",
+    "description": "quantification of visual acuity",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0008385",
+    "count_pgs": 5
+  },
+  {
+    "id": "EFO_0021784",
+    "label": "age at initiation of smoking",
+    "description": "Age of initation of the habit of smoking, the inhaling and exhaling of tobacco smoke.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0021784",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0009458",
+    "label": "alcohol use disorder measurement",
+    "description": "A quantitative measure of alcohol use disorder, e.g. using the Alcohol Use Disorders Identification Test.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009458",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0004615",
+    "label": "apolipoprotein B measurement",
+    "description": "The measurement of ApoB in blood. Apolipoprotein B is a major protein constituent of chylomicrons (apo B-48), LDL (apo B-100) and VLDL (apo B-100). Apo B-100 functions as a recognition signal for the cellular binding and internalization of LDL particles by the apoB/E receptor, and is upregulated in response to enterovirus 71.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004615",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0007788",
+    "label": "BMI-adjusted waist-hip ratio",
+    "description": "waist-hip ratio that has been adjusted by subjects’ body mass index",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007788",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0004338",
+    "label": "body weight",
+    "description": "The mass or quantity of heaviness of an individual. It is expressed by units of pounds or kilograms.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004338",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0004838",
+    "label": "calcium measurement",
+    "description": "Is a quantification of calcium, typically in serum. Calcium (Ca2+) plays a pivotal role in the physiology and biochemistry of organisms and the cell. It plays an important role in signal transduction pathways, where it acts as a second messenger, in neurotransmitter release from neurons, contraction of all muscle cell types, and fertilization. Many enzymes require calcium ions as a cofactor, those of the blood-clotting cascade being notable examples. Extracellular calcium is also important for maintaining the potential difference across excitable cell membranes, as well as proper bone formation.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004838",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0007585",
+    "label": "Cannabis use",
+    "description": "The consumption of the recreational drug cannabis (also known as marijuna and a number of other colloquial names). Cannabis use is illegal in some countries but not in others.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007585",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0004799",
+    "label": "cholelithiasis",
+    "description": "The presence of calculi in the gallbladder. [NCIT: C122822]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004799",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0000352",
+    "label": "clinical history",
+    "description": "Is an information entity about the material's (i.e., the patient's) medical record as background information relevant to the experiment.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000352",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0006781",
+    "label": "coffee consumption measurement",
+    "description": "the quantification of some coffee consumption or coffee consumption-related behaviour, usually self-reported via a questionnaire",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0006781",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0007006",
+    "label": "depressive symptom measurement",
+    "description": "quantification of the existence and severity of depressive symptoms, usually via a questionnaire such as the Center for Epidemiological Studies Depression Scale (CES-D)",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007006",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0003770",
+    "label": "diabetic retinopathy",
+    "description": "A chronic, pathological complication associated with diabetes mellitus, where retinal damages are incurred due to microaneurysms in the vasculature of the retina, progressively leading to abnormal blood vessel growth, and swelling and leaking of fluid from blood vessels, resulting in vision loss or blindness. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003770",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0009959",
+    "label": "diverticular disease",
+    "description": "A complex disorder characterised by mucosal outpouchings (diverticulae) of the colonic wall which can become infected and inflamed leading to diverticulitis, perforation and bleeding.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009959",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0011014",
+    "label": "health-related quality of life measurement",
+    "description": "A measure to assess health-related quality of life (HRQOL), which domains include physical health, emotional health, cognitive functioning, fatigue and pain.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0011014",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0000538",
+    "label": "hypertrophic cardiomyopathy",
+    "description": "A condition in which the myocardium is hypertrophied without an obvious cause. The hypertrophy is generally asymmetric and may be associated with obstruction of the ventricular outflow tract. [NCIT: C34449]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000538",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_1000999",
+    "label": "joint disease",
+    "description": "Any disorder of the joints. [NCIT: C35760]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1000999",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0004289",
+    "label": "lymphoid leukemia",
+    "description": "A malignant lymphocytic neoplasm of B-cell or T-cell lineage involving primarily the bone marrow and the peripheral blood. This category includes precursor or acute lymphoblastic leukemias and chronic leukemias. [NCIT: C7539]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004289",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0002571",
+    "label": "medical procedure",
+    "description": "An activity that produces an effect, or that is intended to alter the course of a disease in a patient or population. This is a general term that encompasses the medical, social, behavioral, and environmental acts that can have preventive, therapeutic, or palliative effects.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0002571",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0000589",
+    "label": "metabolic disease",
+    "description": "A congenital disorder (due to inherited enzyme abnormality) or acquired (due to failure of a metabolically important organ) disorder resulting from an abnormal metabolic process. [NCIT: C3235]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000589",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0007794",
+    "label": "nicotine metabolite ratio",
+    "description": "quantification of the ratio of 3’-trans-hydroxycotinine to cotinine in a sample, typically in a urine or blood sample",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007794",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0003095",
+    "label": "non-alcoholic fatty liver disease",
+    "description": "Metabolic dysfunction-associated steatotic liver disease (MASLD, formerly known as nonalcoholic fatty liver disease or NAFLD) is a type of liver disease that is not caused by alcohol. It typically does not cause symptoms in the early stages, but it can cause health problems due to fat accumulation, inflammation, and scarring in the liver.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003095",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0010968",
+    "label": "phosphate measurement",
+    "description": "Quantification of phosphate levels in a sample.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010968",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0003778",
+    "label": "psoriatic arthritis",
+    "description": "Joint inflammation associated with psoriasis. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003778",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0003827",
+    "label": "pulmonary embolism",
+    "description": "The obstruction of the pulmonary artery or one of its branches by an embolus, sometimes associated with infarction of the lung. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003827",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0004696",
+    "label": "sex hormone-binding globulin measurement",
+    "description": "Is a quantification of sex hormone binding globulin. In men the test is used in when investigating testosterone deficiency.  The SHBG glycoprotein binds to circulating estradiol and testosterone, low levels of SHBG may be implicated in breast cancer etiology.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004696",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0009470",
+    "label": "soft tissue disease",
+    "description": "A disease affecting tissues that connect, support, or surround other structures and organs of the body, not being hard tissue such as bone. Soft tissue includes tendons, ligaments, fascia, skin, fibrous tissues, fat, and synovial membranes (which are connective tissue), and muscles, nerves and blood vessels (which are not connective tissue).",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009470",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0004908",
+    "label": "testosterone measurement",
+    "description": "is a quantification of testosterone, typically in serum. Testosterone is a steroid hormone.Testosterone measurement is used in the diagnosis of precocious or delayed puberty, infertility (in men and women), ovarian tumours, adrenal tumours and pituitary disorders.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004908",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0005537",
+    "label": "triple-negative breast cancer",
+    "description": "An invasive breast carcinoma which is negative for expression of estrogen receptor (ER), progesterone receptor (PR), and human epidermal growth factor receptor 2 (HER2). [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005537",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0007778",
+    "label": "urinary albumin to creatinine ratio",
+    "description": "quantification of the ratio of albumin to creatinine in a urine sample",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007778",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0010967",
+    "label": "urinary microalbumin measurement",
+    "description": "The quantification of microalbumin in urine.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010967",
+    "count_pgs": 4
+  },
+  {
+    "id": "EFO_0009101",
+    "label": "age at first birth measurement",
+    "description": "A measurement of the age at which a woman gave birth to her first live child",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009101",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_1000802",
+    "label": "alcoholic liver cirrhosis",
+    "description": "A disorder of the liver characterized by the presence of fibrotic scar tissue instead of healthy liver tissue. This condition is attributed to excessive consumption of alcoholic beverages. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1000802",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0004614",
+    "label": "apolipoprotein A 1 measurement",
+    "description": "Is a quantification of apolipoprotein A 1 in a sample. It is encoded in humans by the APOA1 gene and is the major protein component of high density lipoprotein (HDL) in plasma. Apolipoprotein A 1 relates to lower observational risk of coronary artery disease.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004614",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0007149",
+    "label": "appendicitis",
+    "description": "Acute inflammation of the vermiform appendix. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007149",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0005856",
+    "label": "arthritis",
+    "description": "An inflammatory process affecting a joint. Causes include infection, autoimmune processes, degenerative processes, and trauma. Signs and symptoms may include swelling around the affected joint and pain. [NCIT: C2883]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005856",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0000284",
+    "label": "benign prostatic hyperplasia",
+    "description": "A non-cancerous nodular enlargement of the prostate gland. It is characterized by the presence of epithelial cell nodules, and stromal nodules containing fibrous and smooth muscle elements. It is the most common urologic disorder in men, causing blockage of urine flow. [NCIT: C2897]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000284",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0001422",
+    "label": "cirrhosis of liver",
+    "description": "A disorder characterized by replacement of the liver parenchyma with fibrous tissue and regenerative nodules. It is usually caused by alcoholism, hepatitis B, and hepatitis C. Complications include the development of ascites, esophageal varices, bleeding, and hepatic encephalopathy. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0001422",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0007934",
+    "label": "creatinine clearance measurement",
+    "description": "The clearance rate of creatinine, that is, the volume of plasma that is cleared of creatinine by the kidneys per unit time. Creatinine clearance is calculated using the level of creatinine in a sample of urine, usually one collected over a period of 24 hours, the corresponding plasma creatinine level, and the volume of urine excreted. It is used as an approximation of the glomerular filtration rate (GFR).",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007934",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0000384",
+    "label": "Crohn's disease",
+    "description": "A gastrointestinal disorder characterized by chronic inflammation involving all layers of the intestinal wall, noncaseating granulomas affecting the intestinal wall and regional lymph nodes, and transmural fibrosis. Crohn disease most commonly involves the terminal ileum; the colon is the second most common site of involvement. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000384",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0003907",
+    "label": "deep vein thrombosis",
+    "description": "The formation or presence of a blood clot (THROMBUS) within a deep vein in the lower extremity",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003907",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0008561",
+    "label": "diaphragmatic hernia",
+    "description": "A congenital or acquired weakness or opening in the diaphragm which allows abdominal contents to protrude into the chest cavity; congenital diaphragmatic hernias are caused when the embryonic diaphragm fails to fuse. [ NCI ]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0008561",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0004229",
+    "label": "Dupuytren Contracture",
+    "description": "A fibromatosis of the palmar fascia characterized by thickening and contracture of the fibrous bands on the palmar surfaces of the hand and fingers. It arises most commonly in men between the ages of 30 and 50.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004229",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0001065",
+    "label": "endometriosis",
+    "description": "The growth of functional endometrial tissue in anatomic sites outside the uterine body. It most often occurs in the pelvic organs. [NCIT: C3014]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0001065",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0009631",
+    "label": "fall",
+    "description": "A sudden movement downward, usually resulting in injury. [ NCI ]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009631",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0009695",
+    "label": "household income",
+    "description": "A demographic parameter indicating the amount of earning made by a family.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009695",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0009431",
+    "label": "intestinal disease",
+    "description": "A non-neoplastic or neoplastic disorder that affects the small or large intestine. [NCIT: C26801]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009431",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_1002048",
+    "label": "kidney failure",
+    "description": "An acute or chronic condition that is characterized by the inability of the kidneys to adequately filter the blood. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1002048",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0009507",
+    "label": "knee injury",
+    "description": "Injury to a knee.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009507",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0008373",
+    "label": "left ventricular ejection fraction measurement",
+    "description": "quantification of the volumetric fraction of blood pumped out of the left ventricle",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0008373",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0001421",
+    "label": "liver disease",
+    "description": "A disease involving the liver.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0001421",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0010821",
+    "label": "liver fat measurement",
+    "description": "A quantification of the fat content of the liver such as liver fat fraction, typically assessed by MRI.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010821",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0000571",
+    "label": "lung adenocarcinoma",
+    "description": "A carcinoma that arises from the lung and is characterized by the presence of malignant glandular epithelial cells. There is a male predilection with a male to female ratio of 2:1. Usually lung adenocarcinoma is asymptomatic and is identified through screening studies or as an incidental radiologic finding. If clinical symptoms are present they include shortness of breath, cough, hemoptysis, chest pain, and fever. Tobacco smoke is a known risk factor. [NCIT: C3512]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000571",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0007355",
+    "label": "male reproductive organ cancer",
+    "description": "A primary or metastatic malignant neoplasm involving the male reproductive system. Representative examples include prostate carcinoma, penile carcinoma, testicular seminoma, and testicular embryonal carcinoma. [NCIT: C8561]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007355",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_1000354",
+    "label": "Malignant Laryngeal Neoplasm",
+    "description": "A primary or metastatic malignant neoplasm involving the larynx. The majority are carcinomas. [NCIT: C7484]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1000354",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0009718",
+    "label": "peak expiratory flow",
+    "description": "The maximum rate of gas flow, beginning at the point of peak inspiratory capacity, that can be sustained during forced exhalation for a defined period of time. | The maximum rate of gas flow, beginning at the point of peak inspiratory capacity, that can be sustained during forced exhalation for a defined period of time. This test is most often used in combination with other studies of lung function to diagnose and monitor obstructive and restrictive lung disease(s). [ NCI ]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009718",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0008518",
+    "label": "polymyalgia rheumatica",
+    "description": "A syndrome characterized by pain, stiffness, and tenderness of the proximal muscle groups including the shoulder, pelvic girdle and the neck. There is no muscle atrophy and muscle biopsies do not reveal pathologic changes. Additional signs and symptoms include low grade fever, fatigue and depression. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0008518",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0000668",
+    "label": "preeclampsia",
+    "description": "Preeclampsia is a hypertensive disorder of pregnancy that is characterized by new-onset hypertension with proteinuria presenting after 20 weeks of gestation, and depending on mild or severe forms may initially present with severe headache, visual disturbances, and hyperreflexia. [Orphanet: 275555]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000668",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0007814",
+    "label": "refractive error measurement",
+    "description": "quantification of some aspect of refractive errors, which occur when the shape of the eye prevents light from focusing directly on the retina. The length of the eyeball (longer or shorter), changes in the shape of the cornea, or aging of the lens can cause refractive errors. Quantification of an individual's refractive error allows the establishemnt of a number of corrective parameters such as spherical equivalent, lens decentration and transposition",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007814",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0000681",
+    "label": "renal cell carcinoma",
+    "description": "A carcinoma that arises from glandular epithelial cells of the kidney [MONDO: DesignPattern]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000681",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0005773",
+    "label": "retinal detachment",
+    "description": "An eye emergency condition which may lead to blindness if left untreated. It is characterized by the separation of the inner retina layers from the underlying pigment epithelium. Causes include trauma, advanced diabetes mellitus, high myopia, and choroid tumors. Symptoms include sudden appearance of floaters, sudden light flushes, and blurred vision. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005773",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0008579",
+    "label": "risk-taking behaviour",
+    "description": "The tendency to take risks. Risk-taking behaviour is a characteristic of several psychiatric disorders such as ADHD and bipolar disorder, as well as problem behaviours such as smoking and drug abuse.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0008579",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0008568",
+    "label": "Sleep Disorder",
+    "description": "A change from the patient's baseline sleeping pattern, in the hours slept and/or an alteration/dysfunction in the stages of sleep. [NCIT: C3376]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0008568",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0008341",
+    "label": "snoring measurement",
+    "description": "quantification of some aspect of snoring such as frequency or severity",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0008341",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0009592",
+    "label": "social interaction measurement",
+    "description": "Quantification, typically by a questionnaire, of some aspect of social interaction, such as engagement in social activities,  or degree of contact with friends and family.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009592",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0009190",
+    "label": "Thyrotoxicosis",
+    "description": "A hypermetabolic syndrome caused by the elevation of thyroid hormone levels in the serum. Signs and symptoms include tachycardia, palpitations, tremor, weight loss, warm weather intolerance, and moist skin. Causes include Graves disease, toxic nodular goiter, toxic thyroid nodule, and lymphocytic thyroiditis. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009190",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0005654",
+    "label": "velocity of sound measurement",
+    "description": "quantification of the speed at which sound travels through bone as an indicator of the physical and structural properties of the bone",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005654",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0004208",
+    "label": "Vitiligo",
+    "description": "Generalized well circumscribed patches of leukoderma that are generally distributed over symmetric body locations and is due to autoimmune destruction of melanocytes. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004208",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0009589",
+    "label": "worry measurement",
+    "description": "Quantification of whether an individual feels or felt worried.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009589",
+    "count_pgs": 3
+  },
+  {
+    "id": "EFO_0008583",
+    "label": "acute myocardial infarction",
+    "description": "Necrosis of the myocardium, as a result of interruption of the blood supply to the area. It is characterized by a severe and rapid onset of symptoms that may include chest pain, often radiating to the left arm and left side of the neck, dyspnea, sweating, and palpitations. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0008583",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0005782",
+    "label": "age-related hearing impairment",
+    "description": "Bilateral hearing loss caused by progressive degeneration of cochlear structures and central auditory pathways, typically associated with the aging process. [NCIT: C116367]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005782",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0007835",
+    "label": "alcohol dependence measurement",
+    "description": "quantification of some aspect of alcohol dependence or misuse, eg using a cummulative symptom score to determine the severity of a case of alcohol dependence",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007835",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0006788",
+    "label": "anxiety disorder",
+    "description": "A category of psychiatric disorders which are characterized by anxious feelings or fear often accompanied by physical symptoms associated with anxiety. [NCIT: C2878]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0006788",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0020865",
+    "label": "aortic measurement",
+    "description": "Measurement of some parts of the aorta, including ascending aorta distensibility and area.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0020865",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0004517",
+    "label": "arterial stiffness measurement",
+    "description": "An Arterial stiffness measurement is the information output of a non invasive pulse wave velocity assay. Arterial stiffness is a predictor of cardiovascular mortality",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004517",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0007013",
+    "label": "aspirin use measurement",
+    "description": "quantification of some aspect of aspirin use",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007013",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0003888",
+    "label": "attention deficit hyperactivity disorder",
+    "description": "A disorder characterized by a marked pattern of inattention and/or hyperactivity-impulsivity that is inconsistent with developmental level and clearly interferes with functioning in at least two settings (e.g. at home and at school). When present, the symptoms of hyperactivity are most often present before the age of 7 years. There are three recognized presentations or subtypes from most to least common: combined type, inattentive/distractible type, hyperactive/impulsive type. [NCIT: C97160]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003888",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0003756",
+    "label": "autism spectrum disorder",
+    "description": "A spectrum of developmental disorders that includes autism, and Asperger syndrome. Signs and symptoms include poor communication skills, defective social interactions, and repetitive behaviors. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003756",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0007777",
+    "label": "base metabolic rate measurement",
+    "description": "quantification of an individual's base metabolic rate, the minimum amount of energy required to sustain life while at complete rest, including the body being in a post-absorptive state (ie the digestive system is inactive). BMR differs from RMR because BMR measurements must meet total physiological equilibrium whereas RMR conditions of measurement can be altered and defined by the contextual limitations.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007777",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0009534",
+    "label": "biliary tract disease",
+    "description": "A disease involving the biliary tree.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009534",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0003931",
+    "label": "bone fracture",
+    "description": "Breaks in bones. [MESH: D050723]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003931",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0003870",
+    "label": "brain aneurysm",
+    "description": "A congenital or acquired aneurysm within the cranium. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003870",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0010811",
+    "label": "carbohydrate intake measurement",
+    "description": "Quantification of the carbohydrate intake of an individual.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010811",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0003035",
+    "label": "cellulitis",
+    "description": "Inflammation of the dermis and subcutaneous tissues caused by a bacterial infection. Symptoms include erythema, edema, and pain to the affected area. [NCIT: C26715]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003035",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0000326",
+    "label": "central nervous system cancer",
+    "description": "A malignant neoplasm involving the central nervous system",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000326",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0009819",
+    "label": "comparative body size at age 10, self-reported",
+    "description": "Description of an individual's body size at age 10 compared to average, as reported by the individual.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009819",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_1001986",
+    "label": "connective tissue disease",
+    "description": "A disease involving the connective tissue.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1001986",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0010066",
+    "label": "corneal hysteresis",
+    "description": "A measure of the biomechanical properties of the cornea. Low corneal hysteresis may be indicative of keratoconus.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010066",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0010067",
+    "label": "corneal resistance factor",
+    "description": "A measure of the biomechanical properties of the cornea. Low corneal resistance factor may be indicative of keratoconus.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010067",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0009519",
+    "label": "device complication",
+    "description": "Any problem arising from the use of a medical device. [ NCI ]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009519",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0000403",
+    "label": "diffuse large B-cell lymphoma",
+    "description": "Diffuse large B-cell lymphoma is the most common subtype of non-Hodgkin lymphoma (NHL) in adults characterized by a median age of presentation in the sixth decade of life (but also rarely occurring in adolescents and children) with the initial presentation being single or multiple rapidly growing masses (that may or may not be painful) in nodal or extranodal sites (such as thyroid, skin, breast, gastrointestinal tract, testes, bone, or brain) and that can be accompanied by symptoms of fever, night sweats and weight loss. DLBCL has an aggressive disease course, with the elderly having a poorer prognosis than younger patients, and with relapses being common. [Orphanet: 544]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000403",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_1000218",
+    "label": "Digestive System Carcinoma",
+    "description": "A malignant neoplasm that arises from the epithelium of any part of the digestive system. Representative examples include colorectal carcinoma, esophageal carcinoma, and pancreatic carcinoma. [NCIT: C96963]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1000218",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0000405",
+    "label": "digestive system disease",
+    "description": "A disease or disorder that involves the digestive system. [MONDO: design_pattern]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000405",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0009542",
+    "label": "disorder of appendix",
+    "description": "A disease or disorder that involves the vermiform appendix. [MONDO: patterns/location]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009542",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0004315",
+    "label": "drinking behavior",
+    "description": "Behaviors associated with the ingesting of water and other liquids; includes rhythmic patterns of drinking (time intervals - onset and duration), frequency and satiety.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004315",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0009482",
+    "label": "drug allergy",
+    "description": "Immunologically mediated adverse reactions to medicinal substances used legally or illegally. [MESH: D004342]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009482",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0009786",
+    "label": "encounter with health service",
+    "description": "Reason by which a person encounters a health service; useful to classify cases when the encounter is due to circumstances other than a disease or injury. This may happen (a) when a person who may or may not be sick encounters the health services for some specific purpose, such as to receive limited care or service for a current condition, to donate an organ or tissue, to receive prophylactic vaccination (immunization), or to discuss a problem which is in itself not a disease or injury; or (b) when some circumstance or problem is present which influences the person's health status but is not in itself a current illness or injury.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009786",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_1000243",
+    "label": "Epidermal Inclusion Cyst",
+    "description": "Epidermal inclusion cyst (EIC), also known as sebaceous cyst and epidermoid cyst, is the most common cyst of the skin. It ranges in size from a few millimeters to a few centimeters and originates from the follicular infundibulum. Its contents are a cheesy, malodorous mixture of degraded lipid and keratin. It often ruptures, with associated pain and inflammation. (http://www.medicinenet.com/image-collection/epidermal_inclusion_cyst_eic_picture/picture.htm)",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1000243",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0000474",
+    "label": "epilepsy",
+    "description": "A brain disorder characterized by episodes of abnormally increased neuronal discharge resulting in transient episodes of sensory or motor neurological dysfunction, or psychic dysfunction. These episodes may or may not be associated with loss of consciousness or convulsions. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000474",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0002916",
+    "label": "esophageal carcinoma",
+    "description": "Esophageal carcinoma (EC) is a tumor arising in the epithelial cells lining the esophagus and can be divided into two subtypes: esophageal squamous cell carcinoma (ESCC) and esophageal adenocarcinoma (EAC). [Orphanet: 70482]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0002916",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0009544",
+    "label": "esophageal disease",
+    "description": "A non-neoplastic or neoplastic disorder that affects the esophagus. Representative examples of non-neoplastic disorders include esophagitis and esophageal ulcer. Representative examples of neoplastic disorders include carcinomas, lymphomas, and melanomas. [NCIT: C3027]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009544",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0004210",
+    "label": "gallstones",
+    "description": "Solid crystalline precipitates in the biliary tract, usually formed in the gallbladder, resulting in the condition of cholelithiasis. Gallstones, derived from the bile, consist mainly of calcium, cholesterol, or bilirubin. [MESH: D042882]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004210",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0000217",
+    "label": "gastritis",
+    "description": "Inflammation of the stomach. [NCIT: C26780]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000217",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0003948",
+    "label": "gastroesophageal reflux disease",
+    "description": "A chronic disorder characterized by reflux of the gastric and/or duodenal contents into the distal esophagus. It is usually caused by incompetence of the lower esophageal sphincter. Symptoms include heartburn and acid indigestion. It may cause injury to the esophageal mucosa. [NCIT: C26781]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003948",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0005543",
+    "label": "glioma",
+    "description": "A benign or malignant brain and spinal cord tumor that arises from glial cells (astrocytes, oligodendrocytes, ependymal cells). Tumors that arise from astrocytes are called astrocytic tumors or astrocytomas. Tumors that arise from oligodendrocytes are called oligodendroglial tumors. Tumors that arise from ependymal cells are called ependymomas. [NCIT: C3059]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005543",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0005420",
+    "label": "grey matter volume measurement",
+    "description": "quantification of the volume of grey matter in the brain, usuallly through an MRI scan. Grey matter volume is associated with schizophrenia.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005420",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0009550",
+    "label": "headache disorder",
+    "description": "Various conditions with the symptom of headache. Headache disorders are classified into major groups, such as primary headache disorders (based on characteristics of their headache symptoms) and secondary headache disorders (based on their etiologies). (International Classification of Headache Disorders, 2nd ed. Cephalalgia 2004: suppl 1) [MESH: D020773]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009550",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0003777",
+    "label": "heart disease",
+    "description": "A disease involving the heart and/or pericardium.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003777",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0004503",
+    "label": "hematological measurement",
+    "description": "A measurement quantifying some blood cell, or component.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004503",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0000768",
+    "label": "idiopathic pulmonary fibrosis",
+    "description": "Idiopathic pulmonary fibrosis (IPF) is a nonneoplastic pulmonary disease that is characterized by the formation of scar tissue within the lungs in the absence of any known cause. [Orphanet: 2032]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000768",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0007876",
+    "label": "insomnia measurement",
+    "description": "quantification of insomnia such as how often it occurs and its severity",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007876",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_1001800",
+    "label": "Intervertebral Disc Displacement",
+    "description": "An INTERVERTEBRAL DISC in which the nucleus pulposus has protruded through surrounding fibrocartilage. This occurs most frequently in the lower lumbar region.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1001800",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0005669",
+    "label": "intracerebral hemorrhage",
+    "description": "Bleeding into one or both cerebral hemispheres including the basal ganglia and the cerebral cortex. It is often associated with hypertension and craniocerebral trauma. [MESH: D002543]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005669",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0000677",
+    "label": "mental or behavioural disorder",
+    "description": "A disease that has its basis in the disruption of mental process. [MONDO: patterns/basis_in_disruption_of_process]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000677",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0009558",
+    "label": "mononeuropathy",
+    "description": "Disease or trauma involving a single peripheral nerve in isolation, or out of proportion to evidence of diffuse peripheral nerve dysfunction. Mononeuropathy multiplex refers to a condition characterized by multiple isolated nerve injuries. Mononeuropathies may result from a wide variety of causes, including ischemia; traumatic injury; compression; connective tissue diseases; cumulative trauma disorders; and other conditions. [MESH: D020422]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009558",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_1000391",
+    "label": "Nasal Cavity Polyp",
+    "description": "A soft and painless polypoid mass that arises from the mucosa in the nasal cavity. It is usually the result of an inflammatory process. It may recur following surgical resection. [NCIT: C3256]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1000391",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0004253",
+    "label": "nephrolithiasis",
+    "description": "The presence of a calculus in the pelvis of the kidney; this is most often composed of mineral salts and proteins. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004253",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0003768",
+    "label": "nicotine dependence",
+    "description": "Physical and psychological dependence on nicotine. [NCIT: C54203]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003768",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0005570",
+    "label": "oral cavity cancer",
+    "description": "A primary or metastatic malignant neoplasm involving the oral cavity. The majority are squamous cell carcinomas. [NCIT: C9314]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005570",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0004213",
+    "label": "otosclerosis",
+    "description": "Formation of spongy bone in the labyrinth capsule which can progress toward the stapes (stapedial fixation) or anteriorly toward the cochlea leading to conductive, sensorineural, or mixed hearing loss. Several genes are associated with familial otosclerosis with varied clinical signs. [MESH: D010040]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004213",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_1001516",
+    "label": "ovarian serous carcinoma",
+    "description": "serous carcinoma located in the ovary",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1001516",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0004265",
+    "label": "peripheral arterial disease",
+    "description": "A disorder of the arteries supplying the upper and lower extremity and the visceral organs. This includes the mesenteric arteries, the renal arteries and the aorta and excludes cerebrovascular arterial disease. Patients experience cramping and pain usually in the calves and thighs while walking. The symptoms subside with rest. [NCIT: C84496]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004265",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0009387",
+    "label": "peripheral nervous system disease",
+    "description": "A disease involving the peripheral nervous system.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009387",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0003875",
+    "label": "peripheral vascular disease",
+    "description": "Any disorder affecting blood flow through the veins or arteries outside of the heart. [NCIT: C35136]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003875",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0600085",
+    "label": "PP interval",
+    "description": "An interval measured from the onset of the P wave in one PQRST wave complex to the onset of the P wave in the following PQRST wave complex.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0600085",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0005763",
+    "label": "pulse pressure measurement",
+    "description": "quantification of the difference between systolic blood pressure and diastolic blood pressure. Higher PP is associated with left ventricle hypertrophy and the increased intimal thickness of the carotid artery, which represent early target organ damage in cardiovascular diseases",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005763",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0005094",
+    "label": "P wave duration",
+    "description": "measurement of the time from start to finish of the P wave, in the electrocardiograph illustrating the initial deflection of the cardiac cycle, representing the excitation of the atria.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005094",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0003839",
+    "label": "retinopathy",
+    "description": "Any disease or disorder of the retina. [NCIT: C62601]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003839",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_1001159",
+    "label": "Rh isoimmunization",
+    "description": "The mother develops antibodies against red blood cell Rhesus antigens. This may lead to potential fetal adverse outcomes such as anemia. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1001159",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0004831",
+    "label": "RR interval",
+    "description": "A RR interval is an  electrocardiography measurement  - R wave to R wave interval (RR interval) and is the inverse of the heart rate.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004831",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0005584",
+    "label": "seborrheic keratosis",
+    "description": "A common benign skin neoplasm usually affecting older individuals. The lesions usually are multiple and arise in the face, chest, and shoulders. They appear as black or brown, slightly elevated skin lesions. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005584",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_1000767",
+    "label": "skin sarcoidosis",
+    "description": "Formation of non-necrotizing granulomas in the skin. It may be a manifestation of systemic sarcoidosis or may also arise in isolation. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1000767",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0009282",
+    "label": "sodium measurement",
+    "description": "A quantitative measurement of the amount of sodium present in a sample.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009282",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0600081",
+    "label": "time spent outdoors measurement",
+    "description": "Quantification of time an individual spends outside.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0600081",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0009115",
+    "label": "tobacco smoke exposure measurement",
+    "description": "Quantification of some aspect of tobacco smoke exposure.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009115",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0004761",
+    "label": "uric acid measurement",
+    "description": "Is a quantification of uric acid, typically in blood. Uric acid is associated with gout, insulin resistance and cardivascular disease.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004761",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0009690",
+    "label": "urinary system disease",
+    "description": "A disease involving the renal system.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009690",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0000731",
+    "label": "uterine fibroid",
+    "description": "A benign smooth muscle neoplasm arising from the body of the uterus. It is characterized by the presence of spindle cells with cigar-shaped nuclei, interlacing fascicles, and a whorled pattern. [NCIT: C3434]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000731",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0004264",
+    "label": "vascular disease",
+    "description": "A general term used to describe any disease affecting blood vessels]. It includes vascular abnormalities caused by degenerative, metabolic and inflammatory conditions, embolic diseases, coagulative disorders, and functional disorders such as posteri or reversible encephalopathy syndrome.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004264",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0007928",
+    "label": "ventricular rate measurement",
+    "description": "quantification in an electrocardiogram of the number of QRS complexes per minute",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007928",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0009116",
+    "label": "vitamin supplement exposure measurement",
+    "description": "Quantification of some aspect of the consumption of dietry vitamin supplements.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009116",
+    "count_pgs": 2
+  },
+  {
+    "id": "EFO_0009460",
+    "label": "ACPA-negative rheumatoid arthritis",
+    "description": "A subtype of rheumatoid arthritis defined by the absence of autoantibodies that are directed against citrullinated peptides and proteins.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009460",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009459",
+    "label": "ACPA-positive rheumatoid arthritis",
+    "description": "A subtype of rheumatoid arthritis defined by the presence of autoantibodies that are directed against citrullinated peptides and proteins.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009459",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0000220",
+    "label": "acute lymphoblastic leukemia",
+    "description": "Leukemia with an acute onset, characterized by the presence of lymphoblasts in the bone marrow and the peripheral blood. It includes the acute B lymphoblastic leukemia and acute T lymphoblastic leukemia. [NCIT: C3167]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000220",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0004347",
+    "label": "addictive behaviour",
+    "description": "The observable, measurable, and often pathological activity of an organism that portrays its inability to overcome a habit resulting in an insatiable craving for a substance or for performing certain acts. The addictive behavior includes the emotional and physical overdependence on the object of habit in increasing amount or frequency.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004347",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009531",
+    "label": "aortic valve disease",
+    "description": "A disease involving the aortic valve.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009531",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0007848",
+    "label": "apolipoprotein A-IV measurement",
+    "description": "quantification of serum lipoprotein A-IV. Apolipoprotein A-IV, encoded in humans by the APOA4 gene,  a 376-residue mature O-linked glycoprotein.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007848",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0600086",
+    "label": "appendectomy",
+    "description": "Procedure to remove the appendix.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0600086",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0010934",
+    "label": "aspartate aminotransferase to alanine aminotransferase ratio",
+    "description": "The ratio between the levels of aspartate aminotransferase (AST) and alanine aminotransferase (ALT).",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010934",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0003911",
+    "label": "atrial flutter",
+    "description": "A disorder characterized by an electrocardiographic finding of an organized, regular atrial rhythm with atrial rate of 240-340 beats per minute. Multiple P waves typically appear in the inferior leads in a saw tooth-like pattern between the QRS complexes. (CDISC) [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003911",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0006946",
+    "label": "behavioural disinhibition measurement",
+    "description": "quantification of some aspect of behavioural disinhibition, including risky and impulsive behaviours. Behavioural disinhibition can be a marker for certain kinds of mental or behavioural disorders.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0006946",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0004670",
+    "label": "beta-amyloid 1-42 measurement",
+    "description": "Is the quantification of Beta-amyloid 1-42 in cerebrospinal fluid typically used as a biomarker for Alzheimer's Disease",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004670",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009963",
+    "label": "bipolar I disorder",
+    "description": "A bipolar disorder that is characterized by at least one manic or mixed episode.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009963",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009964",
+    "label": "bipolar II disorder",
+    "description": "A bipolar disorder that is characterized by at least one hypomanic episode and at least one major depressive episode; with this disorder, depressive episodes are more frequent and more intense than manic episodes.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009964",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009314",
+    "label": "blood coagulation disease",
+    "description": "A condition in which there is a deviation from or interruption of the normal coagulation properties of the blood. [NCIT: C2902]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009314",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0008036",
+    "label": "BMI-adjusted fasting blood glucose measurement",
+    "description": "fasting blood glucose measurement that has been adjusted for subjects' body mass index",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0008036",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0008037",
+    "label": "BMI-adjusted fasting blood insulin measurement",
+    "description": "fasting insulin measurement that has been adjusted for subjects' body mass index",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0008037",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0003833",
+    "label": "brain neoplasm",
+    "description": "A neoplasm (disease) that involves the brain. [MONDO: patterns/location]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003833",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0000318",
+    "label": "cardiomyopathy",
+    "description": "A disease of the heart muscle or myocardium proper. Cardiomyopathies may be classified as either primary or secondary, on the basis of etiology, or on the pathophysiology of the lesion: hypertrophic, dilated, or restrictive. [NCIT: C34830]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000318",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0003763",
+    "label": "cerebrovascular disorder",
+    "description": "A disorder resulting from inadequate blood flow in the vessels that supply the brain. Representative examples include cerebrovascular ischemia, cerebral embolism, and cerebral infarction. [NCIT: C2938]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003763",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009662",
+    "label": "common wart",
+    "description": "A wart caused by human papillomavirus. It can appear anywhere on the skin. [NCIT: C27087]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009662",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009518",
+    "label": "complication",
+    "description": "Any disease or disorder that occurs during the course of, or because of, another disease, treatment, or procedure. [ NCI ]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009518",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009464",
+    "label": "corneal disease",
+    "description": "A non-neoplastic or neoplastic disorder that affects the cornea. Representative examples include keratitis, bullous keratopathy, and squamous cell carcinoma. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009464",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0004723",
+    "label": "coronary artery calcification",
+    "description": "Calcification of the coronary artery, used as a measure of coronary atherosclerosis, a risk factor for myocardial infarction.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004723",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0010078",
+    "label": "dentures",
+    "description": "Dentures (also known as false teeth) are prosthetic devices constructed to replace missing teeth, and are supported by the surrounding soft and hard tissues of the oral cavity. Conventional dentures are removable (removable partial denture or complete denture). However, there are many denture designs, some which rely on bonding or clasping onto teeth or dental implants (fixed prosthodontics).",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010078",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0007704",
+    "label": "depressive episode measurement",
+    "description": "quantification of some aspect, eg frequency or severity, of depressive episodes in patients with mental or behavioural disorders such as bipolar disorder or clinical depression",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007704",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009486",
+    "label": "diabetic eye disease",
+    "description": "A group of disorders affecting the eye in patients with diabetes mellitus. It includes cataract, glaucoma, retinopathy, and blindness. [ NCI ]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009486",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0000408",
+    "label": "disease",
+    "description": "A disease is a disposition to undergo pathological processes that exists in an organism because of one or more disorders in that organism. [OGMS: 0000031]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000408",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0007010",
+    "label": "drug use measurement",
+    "description": "quantification of some aspect of drug use, such as whether drug use occured, over what period of time it occured and what dosage was used",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007010",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0004607",
+    "label": "duodenal ulcer",
+    "description": "An ulcer in the duodenal wall. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004607",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009817",
+    "label": "ease of getting up in the morning, self-reported",
+    "description": "Ease of getting up in the morning, as reported by an individual.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009817",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0005203",
+    "label": "eating disorder",
+    "description": "A broad group of psychological disorders with abnormal eating behaviors leading to physiological effects from overeating or insufficient food intake. [NCIT: C89332]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005203",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0007803",
+    "label": "emotional symptom measurement",
+    "description": "quantification of some aspect of emotional problem symptoms, such as their existence and severity, usually via a standardised questionnaire such as the emotional symptoms subscale of the Strengths and Difficulties Questionnaire or interview with a qualified mental health professional",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007803",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0000464",
+    "label": "emphysema",
+    "description": "A subcategory of chronic obstructive pulmonary disease (COPD). It occurs in people who smoke and suffer from chronic bronchitis. It is characterized by inflation of the alveoli, alveolar wall damage, and reduction in the number of alveoli, resulting in difficulty breathing. [NCIT: C3348]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000464",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009732",
+    "label": "enthesitis-related juvenile idiopathic arthritis",
+    "description": "Enthesitis-related juvenile idiopathic arthritis is a subtype of juvenile idiopathic arthritis that is characterized by both arthritis and inflammation of an enthesitis site (the point at which a ligament, tendon, or joint capsule attaches to the bone). Signs and symptoms generally develop in late childhood or early adolescence and include pain, tenderness, and swelling in joints and at the enthesis. The knee and the back of the ankle (at the Achilles tendon) are the most commonly affected parts of the body. The underlying cause of enthesitis-related juvenile idiopathic arthritis is currently unknown (idiopathic). It is very rare for more than one member of a family to have juvenile arthritis; however, research suggests that having a family member with juvenile arthritis or any autoimmune disease may increase the risk of having juvenile arthritis, in general. Treatment usually involves different types of medications to help manage symptoms and/or physical therapy.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009732",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_1001317",
+    "label": "Epiphyses, Slipped",
+    "description": "One of the most common adolescent hip disorders and represents a unique type of instability of the proximal femoral growth plate. Four separate clinical groups are seen: Pre-slip (wide epiphyseal line without slippage), acute form (10-15% - slippage occurs suddenly, normally spontaneous), acute-on-chronic (slippage occurs acutely where there is already existing chronic slip) and chronic (85% - steadily progressive slippage, the most common form).",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1001317",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009271",
+    "label": "Epstein Barr virus nuclear antigen-1 seropositivity",
+    "description": "The result of a measurement of circulating Epstein Barr virus nuclear antigen-1 antibodies used in the diagnosis of latent Epstein-Barr virus infection",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009271",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0000478",
+    "label": "esophageal adenocarcinoma",
+    "description": "A malignant tumor with glandular differentiation arising predominantly from Barrett mucosa in the lower third of the esophagus. Rare examples of esophageal adenocarcinoma deriving from ectopic gastric mucosa in the upper esophagus have also been reported. Grossly, esophageal adenocarcinomas are similar to esophageal squamous cell carcinomas. Microscopically, adenocarcinomas arising in the setting of Barrett esophagus are typically papillary and/or tubular. The prognosis is poor. [NCIT: C4025]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000478",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009332",
+    "label": "executive function measurement",
+    "description": "Quantification of executive function in an individual, for example using the Behavioural Rating Inventory of Executive Function (BRIEF). Tests of executive function may be performed as part of a more comprehensive assessment to diagnose neurological and psychiatric disorders.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009332",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0004630",
+    "label": "factor VIII measurement",
+    "description": "Is a quantification of factor VIII in serum, Factor VIII (FVIII) is an essential blood clotting protein, also known as anti-hemophilic factor (AHF). In humans, Factor VIII is encoded by the F8 gene.[1][2] Defects in this gene results in hemophilia A.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004630",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009268",
+    "label": "family history of Alzheimer’s disease",
+    "description": "A reported family history of Alzheimer’s disease in one or more family members.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009268",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0005606",
+    "label": "family history of breast cancer",
+    "description": "A reported family history of breast cancer in one or more family members.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005606",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0006953",
+    "label": "family history of lung cancer",
+    "description": "A reported family history of lung cancer in one or more family members.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0006953",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0600083",
+    "label": "family history of prostate cancer",
+    "description": "A reported family history of prostate cancer in one or more family members.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0600083",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009712",
+    "label": "father's age at death",
+    "description": "The age of a person's father at which father's death occurred.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009712",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009599",
+    "label": "feeling emotionally hurt measurement",
+    "description": "Quantification of whether an individual feels or felt emotionally hurt.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009599",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009597",
+    "label": "feeling nervous measurement",
+    "description": "Quantification of whether an individual feels or felt nervous or \"suffered from nerves\".",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009597",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0004459",
+    "label": "ferritin measurement",
+    "description": "A ferritin measurement a is measurement of ferritin level  in serum as an indicator of iron metabolism",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004459",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009432",
+    "label": "fibroblastic disorder",
+    "description": "A disorder that affects fibroblasts.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009432",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0010139",
+    "label": "fish consumption measurement",
+    "description": "Quantification of some fish consumption or fish consumption-related behaviour, usually self-reported via a questionnaire.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010139",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_1001329",
+    "label": "Follicular Cyst",
+    "description": "Cyst due to the occlusion of the duct of a follicle or small gland.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1001329",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009725",
+    "label": "friendship satisfaction measurement",
+    "description": "Quantification of friendship satisfaction.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009725",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0005112",
+    "label": "gestational age",
+    "description": "The age of the conceptus, beginning from the time of FERTILIZATION. In clinical obstetrics, the gestational age is often estimated as the time from the last day of the last MENSTRUATION which is about 2 weeks before OVULATION and fertilization.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005112",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0004593",
+    "label": "gestational diabetes",
+    "description": "Carbohydrate intolerance first diagnosed during pregnancy. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004593",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0006829",
+    "label": "GFR change measurement",
+    "description": "A quantification of the variation in an individual's glomerular filtration rate (GFR) over a period of time used in assessment of kidney function and diagnosis of kidney disease.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0006829",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0004307",
+    "label": "glucose tolerance test",
+    "description": "Quantification of the ability of an individual to maintain homeostasis of blood glucose, via a test procedure including measuring blood glucose levels in a fasting state, and at prescribed intervals before and after oral glucose intake (75 or 100 g) or intravenous infusion (0.5 g/kg).",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004307",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009902",
+    "label": "handedness",
+    "description": "A better, faster, or more precise performance or individual preference for use of a hand, known as the dominant hand; the less capable or less preferred hand is called the non-dominant hand. Dominance typically applies to all tasks, but in rare cases may be task-specific (known as cross-handedness or mixed-dominance) Ambidexterity is the ability to do any task equally well with either hand.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009902",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0000181",
+    "label": "head and neck squamous cell carcinoma",
+    "description": "A squamous cell carcinoma that arises from any of the following anatomic sites: lip and oral cavity, nasal cavity, paranasal sinuses, pharynx, larynx, and salivary glands. [NCIT: C34447]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000181",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0004238",
+    "label": "hearing loss",
+    "description": "A partial or complete loss of hearing in one or both ears. It is classified as conductive, sensory, or central. [NCIT: C35731]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004238",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0005803",
+    "label": "hematologic disease",
+    "description": "A disease involving the hematopoietic system.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005803",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009780",
+    "label": "HER2 negative breast carcinoma",
+    "description": "A biologic subset of breast carcinoma defined by absence of HER2.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009780",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_1000294",
+    "label": "HER2 Positive Breast Carcinoma",
+    "description": "A biologic subset of breast carcinoma defined by high expression of HER2, GRB7, and TRAP100, and by lack of expression of estrogen receptor (ER). [NCIT: C53556]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1000294",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0006510",
+    "label": "Herpes Zoster",
+    "description": "A common dermal and neurologic disorder caused by reactivation of the varicella-zoster virus that has remained dormant within dorsal root ganglia, often for decades, after the patient's initial exposure to the virus in the form of varicella (chickenpox). It is characterized by severe neuralgic pain along the distribution of the affected nerve and crops of clustered vesicles over the area. [NCIT: C71079]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0006510",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_1001958",
+    "label": "high grade ovarian serous adenocarcinoma",
+    "description": "A rapidly growing serous adenocarcinoma that arises from the ovary. It is characterized by the presence of high grade cytologic features and frequent mitotic figures.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1001958",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0004469",
+    "label": "HOMA-B",
+    "description": "The HOMA-B measurement employs the homeostatic model assessment (HOMA)  to quantify beta-cell function.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004469",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0004501",
+    "label": "HOMA-IR",
+    "description": "The HOMA-IR measurement employs the homeostatic model assessment (HOMA)  to quantify insulin resistance.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004501",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0002614",
+    "label": "insulin resistance",
+    "description": "diminished effectiveness of insulin in lowering plasma glucose levels",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0002614",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0008473",
+    "label": "insulin response measurement",
+    "description": "Quantification of some aspect of insulin response, typically measuring insulin levels in the blood following a glucose challenge",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0008473",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0004471",
+    "label": "insulin sensitivity measurement",
+    "description": "An insulin sensitivity measurement is a measurement of insulin metabolism, which can be measured in a number of ways, for example using the HOMA model or via a glucose tolerance test.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004471",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0600082",
+    "label": "insulin use measurement",
+    "description": "Quantification of some aspect of the use of insulin.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0600082",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0004244",
+    "label": "interstitial lung disease",
+    "description": "A diverse group of lung diseases that affect the lung parenchyma. They are characterized by an initial inflammation of pulmonary alveoli that extends to the interstitium and beyond leading to diffuse pulmonary fibrosis. Interstitial lung diseases are classified by their etiology (known or unknown causes), and radiological-pathological features. [MESH: D017563]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004244",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_1000997",
+    "label": "iritis",
+    "description": "Inflammation of the iris. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1000997",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0002609",
+    "label": "juvenile idiopathic arthritis",
+    "description": "Juvenile idiopathic arthritis (JIA) is the term used to describe a group of inflammatory articular disorders of unknown cause that begin before the age of 16 and last over 6 weeks. The term juvenile idiopathic arthritis was chosen to signify the absence of any known mechanism underlying the disorder and to highlight the necessity of excluding other types of arthritis occurring in well defined diseases (in particular arthritis occurring in association with infectious, inflammatory and haematooncologic diseases). [Orphanet: 92]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0002609",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0010176",
+    "label": "keratinocyte carcinoma",
+    "description": "A skin cancer arising from the keratin-producing cells of the epidermis. The term encompasses both basal cell carcinoma and squamous cell carcinoma.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010176",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009290",
+    "label": "left ventricular mass index",
+    "description": "The left ventricular mass divided by the subject's body surface area",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009290",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0010555",
+    "label": "left ventricular stroke volume measurement",
+    "description": "Quantification of the volume of blood pumped from the left ventricle of the heart with each beat, calculated by subtracting the volume of blood in the ventricle at the end of a beat (end-systolic volume) from the volume of blood just prior to the beat (end-diastolic volume).",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010555",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0008206",
+    "label": "left ventricular systolic function measurement",
+    "description": "quantification of some aspect of the systolic function of the left cardiac ventricle such as ventricular fractional shortening or systolic dysfunction",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0008206",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0007865",
+    "label": "loneliness measurement",
+    "description": "Quantification of some aspect of loneliness, such as severity or presence/absence, generally through administration of a standardised questionnaire such as the 3-Item Leave Behind Questionnaire (LBQ).",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007865",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009606",
+    "label": "macular degeneration",
+    "description": "Loss of vision in the central portion of the retina (macula), secondary to retinal degeneration. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009606",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_1000630",
+    "label": "marginal zone B-cell lymphoma",
+    "description": "A usually indolent mature B-cell lymphoma, arising from the marginal zone of lymphoid tissues. It is characterized by the presence of small to medium sized atypical lymphocytes. It comprises three entities, according to the anatomic sites involved: extranodal marginal zone B-cell lymphoma of mucosa-associated lymphoid tissue, which affects extranodal sites (most often stomach, lung, skin, and ocular adnexa); nodal marginal zone B-cell lymphoma, which affects lymph nodes without evidence of extranodal disease; and splenic marginal zone B-cell lymphoma, which affects the spleen and splenic hilar lymph nodes, bone marrow, and often the peripheral blood. [NCIT: C4341]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1000630",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0006340",
+    "label": "mean arterial pressure",
+    "description": "The mean pressure of the blood within the arterial circulation. The arterial pressure may be directly measured by insertion of an intra-arterial catheter connected to a transducer. The mean arterial pressure (MAP) can be calculated by subsequent analysis of the waveform. MAP can be approximated without an invasive procedure using the following formula: diastolic pressure plus 1/3 of the pulse pressure, where pulse pressure is systolic pressure - diastolic pressure.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0006340",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0010906",
+    "label": "merkel cell virus seropositivity",
+    "description": "The result of a measurement of circulating merkel cell virus-specific antibodies.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010906",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0005115",
+    "label": "metabolic rate measurement",
+    "description": "a quantification of metabolic rate",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005115",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0000195",
+    "label": "metabolic syndrome",
+    "description": "A cluster of metabolic risk factors for CARDIOVASCULAR DISEASES and TYPE 2 DIABETES MELLITUS. The major components of metabolic syndrome X include excess ABDOMINAL FAT; atherogenic DYSLIPIDEMIA; HYPERTENSION; HYPERGLYCEMIA; INSULIN RESISTANCE; a proinflammatory state; and a prothrombotic (THROMBOSIS) state. (from AHA/NHLBI/ADA Conference Proceedings, Circulation 2004; 109:551-556)",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000195",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009556",
+    "label": "mineral metabolism disease",
+    "description": "Abnormal levels of minerals in the blood.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009556",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0007783",
+    "label": "mosaic loss of chromosome Y measurement",
+    "description": "",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007783",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_1001375",
+    "label": "Myocardial Ischemia",
+    "description": "A disorder of cardiac function caused by insufficient blood flow to the muscle tissue of the heart. The decreased blood flow may be due to narrowing of the coronary arteries (coronary artery disease), to obstruction by a thrombus (coronary thrombosis), or less commonly, to diffuse narrowing of arterioles and other small vessels within the heart. Severe interruption of the blood supply to the myocardial tissue may result in necrosis of cardiac muscle (myocardial infarction). [MESH: D017202]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1001375",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009818",
+    "label": "nap during day, self-reported",
+    "description": "Having a nap during the day, as reported by an individual.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009818",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0004252",
+    "label": "nasopharyngeal neoplasm",
+    "description": "A benign or malignant neoplasm affecting the nasopharynx. Representative examples of benign neoplasms include angiofibroma and squamous papilloma. Representative examples of malignant neoplasms include keratinizing squamous cell carcinoma and nonkeratinizing carcinoma. [NCIT: C3257]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004252",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0004255",
+    "label": "nephrotic syndrome",
+    "description": "A collection of symptoms that include severe edema, proteinuria, and hypoalbuminemia; it is indicative of renal dysfunction. [NCIT: C34845]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004255",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0000621",
+    "label": "neuroblastoma",
+    "description": "Neuroblastoma (NB) is the most common solid, extracranial childhood tumor. It is an aggressive pediatric cancer that originates from neural crest tissues of the sympathetic nervous system. [PMID: 32903387]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000621",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0008421",
+    "label": "non-alcoholic fatty liver disease severity measurement",
+    "description": "Quantification of the severity of non-alcoholic fatty liver disease, typically by a histological grading.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0008421",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0005689",
+    "label": "non-high density lipoprotein cholesterol measurement",
+    "description": "The quantification of NHDL cholesterol in blood, calculated by subtracting the amount of cholesterol in the HDL fraction from total cholesterol and used as an indicator for cardiovascular disease risk",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005689",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009260",
+    "label": "non-melanoma skin carcinoma",
+    "description": "Any skin carcinoma that is not melanoma, with the most common types being basal cell carcinoma and squamous cell carcinoma",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009260",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0008586",
+    "label": "Non-ST Elevation Myocardial Infarction",
+    "description": "An electrocardiographic finding of a myocardial infarction that does not produce elevations in the ST segment of the EKG. [ NCI ]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0008586",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0007012",
+    "label": "NSAID use measurement",
+    "description": "quantification of some aspect of NSAID use",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007012",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009800",
+    "label": "number of cancers, self-reported",
+    "description": "Number of cancer occurrences in an individual, as reported by the individual.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009800",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009801",
+    "label": "number of non-cancer illnesses, self-reported",
+    "description": "Number of non-cancer illness occurrences in an individual, as reported by the individual.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009801",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009803",
+    "label": "number of treatments or medications taken, self-reported",
+    "description": "Number of treatments undergone by an individual (including medications taken), as reported by the individual.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009803",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009677",
+    "label": "occlusion precerebral artery",
+    "description": "Occlusion of a precerebral artery.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009677",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_1002019",
+    "label": "oligoarticular juvenile idiopathic arthritis",
+    "description": "Oligoarticular juvenile arthritis is the most common form of juvenile idiopathic arthritis (JIA), representing nearly 50% of cases. [Orphanet: 85410]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1002019",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009605",
+    "label": "pancreas disease",
+    "description": "A non-neoplastic or neoplastic disorder that affects the pancreas. Representative examples of non-neoplastic disorders include pancreatitis and pancreatic insufficiency. Representative examples of neoplastic disorders include cystadenomas, carcinomas, lymphomas, and neuroendocrine neoplasms. [NCIT: C26842]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009605",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0003860",
+    "label": "pancreatic neoplasm",
+    "description": "A benign or malignant neoplasm involving the pancreas. [NCIT: C3305]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003860",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0004710",
+    "label": "pelvic organ prolapse",
+    "description": "Abnormal descent of a pelvic organ resulting in the protrusion of the organ beyond its normal anatomical confines. Symptoms often include vaginal discomfort, dyspareunia; urinary stress incontinence; and fecal incontinence. [MESH: D056887]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004710",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_1002020",
+    "label": "polyarticular juvenile idiopathic arthritis, rheumatoid factor negative",
+    "description": "Rheumatoid factor-negative polyarthritis is a term used to describe a group of poorly defined heterogenous conditions that incorporates forms of rheumatoid factor-negative polyarthritis and forms of oligoarticular arthritis that become extensive in less than 6 months after onset. [Orphanet: 85408]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_1002020",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0002429",
+    "label": "polycythemia vera",
+    "description": "Polycythemia vera (PV) is an acquired myeloproliferative disorder characterized by an elevated absolute red blood cell mass caused by uncontrolled red blood cell production, frequently associated with uncontrolled white blood cell and platelet production. [Orphanet: 729]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0002429",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0010907",
+    "label": "polyomavirus 2 seropositivity",
+    "description": "The result of a measurement of circulating polyomavirus 2-specific antibodies.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010907",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0010814",
+    "label": "proinsulin measurement",
+    "description": "Measurement of proinsulin, an insulin precursor that is processed into mature insulin and C-peptide.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010814",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0000673",
+    "label": "prostate adenocarcinoma",
+    "description": "A carcinoma that arises from glandular epithelial cells of the prostate gland",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000673",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009602",
+    "label": "prostate disease",
+    "description": "A disease involving the prostate gland.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009602",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009448",
+    "label": "pulmonary fibrosis",
+    "description": "Chronic progressive interstitial lung disorder characterized by the replacement of the lung tissue by connective tissue, leading to progressive dyspnea, respiratory failure, or right heart failure. Causes include chronic inflammatory processes, exposure to environmental irritants, radiation therapy, autoimmune disorders, certain drugs, or it may be idiopathic (no identifiable cause). [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009448",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0003957",
+    "label": "radius fracture",
+    "description": "Traumatic or pathological injury to the radius bone in which the continuity of the bone is broken. [EFO: 0003957]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003957",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0007460",
+    "label": "reactive arthritis",
+    "description": "Reactive arthritis (ReA) is an autoimmune disorder belonging to the group of seronegative spondyloarthropathies and is characterized by the classic triad of arthritis, urethritis and conjunctivitis. [Orphanet: 29207]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007460",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0007462",
+    "label": "REM sleep behavior disorder",
+    "description": "A disorder characterized by episodes of vigorous and often violent motor activity during rem sleep (sleep, rem). The affected individual may inflict self injury or harm others, and is difficult to awaken from this condition. Episodes are usually followed by a vivid recollection of a dream that is consistent with the aggressive behavior. This condition primarily affects adult males. (From Adams et al., Principles of Neurology, 6th ed, p393) [MESH: D020187]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007462",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0007766",
+    "label": "response to beta blocker",
+    "description": "Any process that results in a change in state or activity of a cell or an organism (in terms of movement, secretion, enzyme production, gene expression, etc.) as a result of a beta blocker stimulus",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007766",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0005767",
+    "label": "rheumatoid factor measurement",
+    "description": "quantification of rheumatoid factors, antibodies in the serum of individuals with rheumatoid arthritis that react with antigenic determinants or immunoglobulins that enhance agglutination of suspended particles coated with pooled human gamma -globulin. Rheumatoid factors also occur in other autoimmune and certain infectious diseases.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005767",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0003956",
+    "label": "seasonal allergic rhinitis",
+    "description": "Allergic rhinitis caused by outdoor allergens. [NCIT: C92188]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003956",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009820",
+    "label": "seeing a general practitioner for nerves, anxiety, tension or depression, self-reported",
+    "description": "Seeing a general practitioner for nerves, anxiety, tension or depression, as reported by an individual.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009820",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0003941",
+    "label": "sex hormone-binding globulin",
+    "description": "A glycoprotein migrating as a beta-globulin. Its molecular weight, 52,000 or 95,000-115,000, indicates that it exists as a dimer. The protein binds testosterone, dihydrotestosterone, and estradiol in the plasma. Sex hormone-binding protein has the same amino acid sequence as ANDROGEN-BINDING PROTEIN. They differ by their sites of synthesis and post-translational oligosaccharide modifications.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003941",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0000699",
+    "label": "Sjogren syndrome",
+    "description": "An autoimmune disorder in which immune cells attack and destroy the glands that produce tears and saliva. Sjögren syndrome is also associated with rheumatic disorders such as rheumatoid arthritis or systemic lupus erythematosus. The hallmark symptoms of Sjögren syndrome are dry mouth and dry eyes. In addition, Sjogren syndrome may cause skin, nose, and vaginal dryness. It also may affect other organs of the body including the kidneys, blood vessels, lungs, liver, pancreas, and brain",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000699",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0005422",
+    "label": "skin aging",
+    "description": "The gradual irreversible changes in structure of skin that occur as a result of the passage of time.. In humans, skin aging can be precipitated as a result of weather and sun exposure, and expresses through the appearance of wrinkles and localised changes in skin pigmentation",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0005422",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0000706",
+    "label": "spondyloarthropathy",
+    "description": "A group of inflammatory rheumatic diseases associated with arthritis and enthesitis, and often involving the axial skeleton. The most common form of spondyloarthritis is ankylosing spondylitis. Other forms include axial spondyloarthritis, peripheral spondyloarthritis, reactive arthritis, psoriatic arthritis/spondylitis and enteropathic arthritis/spondylitis. [NCIT: C116778]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000706",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0010820",
+    "label": "spontaneous coronary artery dissection",
+    "description": "The spontaneous occurrence of a dissection of the coronary artery. The clinical recognition of this phenomenon has increased as coronary angiography is becoming more commonly used in the treatment of acute coronary syndrome. The etiology of the condition has not been fully elucidated, but the mean age of presentation is 30-45 years, more than 70% are women, and 30% of cases occur in the peripartum period.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010820",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0000708",
+    "label": "squamous cell lung carcinoma",
+    "description": "A carcinoma arising from squamous bronchial epithelial cells. It may be keratinizing or non-keratinizing. Keratinizing squamous cell carcinoma is characterized by the presence of keratinization, pearl formation, and/or intercellular bridges. Non-keratinizing squamous cell carcinoma is characterized by the absence of keratinization, pearl formation, and intercellular bridges. Cigarette smoking and arsenic exposure are strongly associated with squamous cell lung carcinoma. [NCIT: C3493]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000708",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0010158",
+    "label": "sugar consumption measurement",
+    "description": "Quantification of some aspect of sugar consumption such as frequency or quantity.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010158",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0003958",
+    "label": "sunburn",
+    "description": "An inflammatory reaction from ultraviolet radiation characterized by transient redness, tenderness and occasional blistering. [NCIT: P378]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003958",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0000717",
+    "label": "systemic scleroderma",
+    "description": "A chronic disorder, possibly autoimmune, marked by excessive production of collagen which results in hardening and thickening of body tissues. The two types of systemic scleroderma, limited cutaneous and diffuse cutaneous are classified with focus on the extent of affected skin. A relationship exists between the extent of skin area affected and degree of internal organ/system involvement. Systemic scleroderma can manifest itself in pulmonary fibrosis, Raynaud's syndrome, digestive system telangiectasias, renal hypertension and/or pulmonary hypertension. [NCIT: C72070]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0000717",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0010091",
+    "label": "tea consumption measurement",
+    "description": "Quantification of some tea consumption or tea consumption-related behaviour, usually self-reported via a questionnaire.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0010091",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0004281",
+    "label": "testicular neoplasm",
+    "description": "Tumors or cancer of the TESTIS. Germ cell tumors ( GERMINOMA) of the testis constitute 95% of all testicular neoplasms.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004281",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009933",
+    "label": "Thyroid preparation use measurement",
+    "description": "Quantification of some aspect of the use of thyroid preparations.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009933",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0007946",
+    "label": "tiredness measurement",
+    "description": "Quantification an individual's level of tiredness, generally via a standardised questionnaire or structured interview.",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007946",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0003871",
+    "label": "tongue neoplasm",
+    "description": "A neoplasm (disease) that involves the tongue. [MONDO: patterns/location]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0003871",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009514",
+    "label": "upper extremity fracture",
+    "description": "A traumatic break in one or more of the bones in the arm, forearm, or hand. [ NCI ]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009514",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0002919",
+    "label": "uterine carcinoma",
+    "description": "A carcinoma involving a uterus. [MONDO: patterns/carcinoma]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0002919",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0007532",
+    "label": "uterine corpus cancer",
+    "description": "A malignant neoplasm involving the body of uterus. [MONDO: DesignPattern]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0007532",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009340",
+    "label": "Varicella zoster virus seropositivity",
+    "description": "The result of a measurement of circulating Varicella zoster virus-specific antibodies",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009340",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0004718",
+    "label": "vascular dementia",
+    "description": "A degenerative vascular disorder affecting the brain. It is caused by the blockage of the blood supply to the brain. It is manifested with decline of memory and cognitive functions. [NCIT: C34525]",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0004718",
+    "count_pgs": 1
+  },
+  {
+    "id": "EFO_0009441",
+    "label": "Waldenstrom macroglobulinemia",
+    "description": "",
+    "url": "http://www.ebi.ac.uk/efo/EFO_0009441",
+    "count_pgs": 1
   }
 ]

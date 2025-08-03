@@ -6,10 +6,38 @@ import LogTable from '../components/LogTable';
 
 Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const CARDIO_EFO_IDS = [
-  'EFO_0004530', 'EFO_0006336', 'EFO_0006335',
-  'EFO_0004541', 'EFO_0001645', 'EFO_0004458',
-  'EFO_0004611', 'EFO_0004612', 'EFO_0004574'
+const EFO_IDS = [
+  // Bestehende Traits (Metabolites & Lipids)
+  'EFO_0004530', // Triglyceride measurement
+  'EFO_0006336', // LDL cholesterol
+  'EFO_0006335', // HDL cholesterol
+  'EFO_0004541', // Total cholesterol
+  'EFO_0001645', // Heart rate
+  'EFO_0004458', // Cardiac output
+  'EFO_0004611', // Liver enzyme level
+  'EFO_0004612', // Bilirubin measurement
+  'EFO_0004574', // Liver fat percentage
+
+  // Erweiterte organbezogene Traits
+  'EFO_0003833', // Brain neoplasm (Gehirntumor)
+  'EFO_0003777', // Heart disease (Herzerkrankung)
+  'EFO_0000319', // Cardiovascular disease (Herz-Kreislauf-System, Blutgefäße)
+  'EFO_0004314', // Forced expiratory volume (FEV1) – Lungenfunktion
+  'EFO_0003892', // Pulmonary function measurement – allgemeine Lungenfunktion
+  'EFO_0001421', // Liver disease – Lebererkrankung
+  'EFO_0010821', // Liver fat measurement – Leberfettanteil (z. B. per MRI)
+  'EFO_0004582', // Liver enzyme measurement – Leberenzyme (AST/ALT)
+
+  // Niere
+  'EFO_0003884', // Chronic kidney disease – chronische Nierenfunktion (CKD) :contentReference[oaicite:1]{index=1}
+  'EFO_0006829', // GFR change measurement – Variabilität der glomerulären Filtrationsrate (Nierenfunktion) :contentReference[oaicite:2]{index=2}
+
+  // Blase
+  'EFO_0009690', // Urinary system disease – Erkrankung des Harntrakts (inkl. Blase) :contentReference[oaicite:3]{index=3}
+
+  // Darm/Magen
+  // → EFO benennt keine generischen Messwerte für Magen oder Darm.
+  // Für Krankheiten/Zustände wie Colitis, Gastric cancer etc. müssten spezifische IDs hinzugefügt werden.
 ];
 
 const CONFIG = {
@@ -38,6 +66,22 @@ export default function PersonalPGSUI() {
     }
   }, [log]);
 
+  useEffect(() => {
+    const clearOldDetails = async () => {
+      try {
+        const res = await fetch('/api/clearEfoDetails', { method: 'POST' });
+        const json = await res.json();
+        console.log('🧨 clearEfoDetails API aufgerufen');
+        console.log(json.message);
+      } catch (err) {
+        console.error('❌ Fehler beim Löschen alter Detail-Dateien:', err);
+      }
+    };
+
+    clearOldDetails();  // ✅ Jetzt korrekt innerhalb von useEffect
+  }, []);
+
+
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -64,7 +108,7 @@ export default function PersonalPGSUI() {
 
     worker.postMessage({
       genomeTxt: genomeText,
-      efoIds: CARDIO_EFO_IDS,
+      efoIds: EFO_IDS,
       config: CONFIG
     });
 

@@ -157,18 +157,36 @@ onmessage = async function (event) {
         }
 
         const localUrl = `/pgs_scores/unpacked/${pgsId}_hmPOS_GRCh37.txt`;
-        Logger.info(`📥 Prüfe Größe von ${pgsId}`, `fetch:${pgsId}`);
+        Logger.info(`📥 Prüfe lokale Datei für ${pgsId}`, `fetch:${pgsId}`);
 
         let txt;
         try {
           const res = await fetch(localUrl);
           if (!res.ok) {
-            Logger.warn(`Datei nicht gefunden: ${pgsId}`);
-            continue;
+            Logger.warn(`📂 ${pgsId} nicht lokal gefunden, versuche Download vom FTP`, `fetch:${pgsId}`);
+
+            const ftpUrl = `https://ftp.ebi.ac.uk/pub/databases/spot/pgs/scores/${pgsId}/ScoringFiles/Harmonized/${pgsId}_hmPOS_GRCh37.txt.gz`;
+
+            // Anfrage an eigene API zum Herunterladen und Entpacken
+            const unpackRes = await fetch(`/api/fetchAndUnpackPGS?id=${pgsId}`);
+            if (!unpackRes.ok) {
+              Logger.warn(`❌ ${pgsId} konnte nicht vom FTP geladen werden (API-Rückgabe: ${unpackRes.status})`);
+              continue;
+            }
+
+            // Danach erneut versuchen, lokal zu laden
+            const retry = await fetch(localUrl);
+            if (!retry.ok) {
+              Logger.warn(`❌ ${pgsId} nach Download nicht auffindbar`);
+              continue;
+            }
+
+            txt = await retry.text();
+          } else {
+            txt = await res.text();
           }
-          txt = await res.text();
         } catch (err) {
-          Logger.warn(`Fehler beim Laden von ${pgsId}: ${err.message}`);
+          Logger.warn(`Fehler beim Zugriff auf ${pgsId}: ${err.message}`);
           continue;
         }
 
@@ -240,15 +258,59 @@ onmessage = async function (event) {
 
         Logger.info(`📈 ${pgsId}: RawScore=${rawScore.toFixed(4)}, PRS=${prs.toFixed(4)}, z=${z.toFixed(2)}, Perzentil=${percentile}`);
 
-        results.push({
-          efoId,
-          trait: TRAIT_LOOKUP[efoId] || '(unbekannt)',
-          id: pgsId,
-          rawScore,
-          prs,
-          percentile,
-          totalVariants: matched
-        });
+        try {
+          // Neue Top-Variantenerfassung
+          const variants = [];
+
+          for (let j = dataStart; j < lines.length; j++) {
+            const line = lines[j].trim();
+            if (!line || line.startsWith('#')) continue;
+
+            const cols = line.split('\t');
+            const chr = cols[idx.chr]?.replace(/^chr/i, '').trim();
+            const pos = cols[idx.pos]?.trim();
+            const ea = cols[idx.ea]?.toUpperCase();
+            const beta = parseFloat(cols[idx.weight]) || 0;
+            const { count, genotype } = matchGenotype(genomeMap, chr, pos, ea);
+            if (count > 0) {
+              variants.push({
+                variant: `Chr${chr}.${pos}:g.${ea}`,
+                rsid: cols.find(c => c?.startsWith('rs')) || null,
+                beta,
+                z: count,
+                score: count * beta,
+                alleles: genotype || null
+              });
+            }
+          }
+
+          // Top 3 Varianten nach Score
+          const topVariants = variants
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 3);  // kannst du auch auf 5 oder 10 erweitern
+
+          const detail = {
+            id: pgsId,
+            trait: `PGS für ${efoId}`,
+            rawScore,
+            prs,
+            zScore: z,
+            percentile,
+            matches: matched,
+            totalVariants: validRows,
+            topVariants
+          };
+
+          await fetch('/api/saveEfoDetail', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ efoId, detail })
+          });
+          Logger.info(`💾 Detaildatei für ${pgsId} gespeichert.`);
+        } catch (saveErr) {
+          Logger.warn(`❌ Fehler beim Speichern von ${pgsId}: ${saveErr.message}`);
+        }
+
 
         if (matched === 0) {
           Logger.warn(`Keine Übereinstimmungen bei ${pgsId}`);
