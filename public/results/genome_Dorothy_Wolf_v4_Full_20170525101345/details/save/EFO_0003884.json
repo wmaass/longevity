@@ -1,0 +1,614 @@
+[
+  {
+    "id": "PGS005113",
+    "trait": "chronic kidney disease",
+    "rawScore": -0.34157185716376814,
+    "prs": 0.7106524003191925,
+    "zScore": -0.34157185716376814,
+    "percentile": 40,
+    "matches": 236542,
+    "totalVariants": 1116379,
+    "topVariants": [
+      {
+        "rsid": "rs3131972",
+        "variant": "1:752721",
+        "alleles": "GG",
+        "score": 0.000003504346
+      },
+      {
+        "rsid": "rs13302982",
+        "variant": "1:861808",
+        "alleles": "GG",
+        "score": -0.00002009562
+      },
+      {
+        "rsid": "rs1110052",
+        "variant": "1:873558",
+        "alleles": "GT",
+        "score": 0.00001329037
+      },
+      {
+        "rsid": "rs2272756",
+        "variant": "1:882033",
+        "alleles": "AG",
+        "score": -0.00001702665
+      },
+      {
+        "rsid": "rs13303010",
+        "variant": "1:894573",
+        "alleles": "AG",
+        "score": -0.00002108215
+      },
+      {
+        "rsid": "rs13303118",
+        "variant": "1:918384",
+        "alleles": "TT",
+        "score": -0.000011414816
+      },
+      {
+        "rsid": "rs6665000",
+        "variant": "1:924898",
+        "alleles": "AA",
+        "score": -0.000008101222
+      },
+      {
+        "rsid": "rs2341362",
+        "variant": "1:927309",
+        "alleles": "CC",
+        "score": -0.0000476274
+      },
+      {
+        "rsid": "rs9777703",
+        "variant": "1:928836",
+        "alleles": "TT",
+        "score": 0.0002586194
+      },
+      {
+        "rsid": "rs3128117",
+        "variant": "1:944564",
+        "alleles": "CC",
+        "score": 0.000011134374
+      },
+      {
+        "rsid": "rs2341365",
+        "variant": "1:948692",
+        "alleles": "AA",
+        "score": -0.00002793174
+      },
+      {
+        "rsid": "rs15842",
+        "variant": "1:948921",
+        "alleles": "CC",
+        "score": 0.00008310426
+      },
+      {
+        "rsid": "rs2710888",
+        "variant": "1:959842",
+        "alleles": "TT",
+        "score": 0.0002128316
+      },
+      {
+        "rsid": "rs2710875",
+        "variant": "1:977780",
+        "alleles": "TT",
+        "score": 0.0000282628
+      },
+      {
+        "rsid": "rs2465136",
+        "variant": "1:990417",
+        "alleles": "CT",
+        "score": 0.000001125479
+      },
+      {
+        "rsid": "rs2488991",
+        "variant": "1:994391",
+        "alleles": "TT",
+        "score": -0.0003503624
+      },
+      {
+        "rsid": "rs3934834",
+        "variant": "1:1005806",
+        "alleles": "CT",
+        "score": -0.00002597468
+      },
+      {
+        "rsid": "rs10907177",
+        "variant": "1:1021346",
+        "alleles": "AG",
+        "score": -0.0000159946
+      },
+      {
+        "rsid": "rs6687776",
+        "variant": "1:1030565",
+        "alleles": "TT",
+        "score": 0.00017071626
+      },
+      {
+        "rsid": "rs9651273",
+        "variant": "1:1031540",
+        "alleles": "GG",
+        "score": -0.00007521602
+      },
+      {
+        "rsid": "rs4970405",
+        "variant": "1:1048955",
+        "alleles": "AG",
+        "score": 0.00003699461
+      },
+      {
+        "rsid": "rs12726255",
+        "variant": "1:1049950",
+        "alleles": "GG",
+        "score": 0.00006320782
+      },
+      {
+        "rsid": "rs9442380",
+        "variant": "1:1087683",
+        "alleles": "CC",
+        "score": 0.00003522542
+      },
+      {
+        "rsid": "rs4970362",
+        "variant": "1:1094738",
+        "alleles": "AG",
+        "score": -0.00006450587
+      },
+      {
+        "rsid": "rs4442317",
+        "variant": "1:1106784",
+        "alleles": "CT",
+        "score": -0.00004546732
+      },
+      {
+        "rsid": "rs11260542",
+        "variant": "1:1110019",
+        "alleles": "AG",
+        "score": 0.00002257727
+      },
+      {
+        "rsid": "rs9442387",
+        "variant": "1:1110586",
+        "alleles": "CC",
+        "score": -0.00015101174
+      },
+      {
+        "rsid": "rs11260549",
+        "variant": "1:1121794",
+        "alleles": "AG",
+        "score": -0.00001278687
+      },
+      {
+        "rsid": "rs9729550",
+        "variant": "1:1135242",
+        "alleles": "AC",
+        "score": -0.000001258161
+      },
+      {
+        "rsid": "rs2887286",
+        "variant": "1:1156131",
+        "alleles": "CT",
+        "score": 0.000003313446
+      },
+      {
+        "rsid": "rs6603781",
+        "variant": "1:1158631",
+        "alleles": "GG",
+        "score": 0.000018537156
+      },
+      {
+        "rsid": "rs7524470",
+        "variant": "1:1192515",
+        "alleles": "AG",
+        "score": 0.000136713
+      },
+      {
+        "rsid": "rs11804831",
+        "variant": "1:1194804",
+        "alleles": "CT",
+        "score": -0.00005314212
+      },
+      {
+        "rsid": "rs6685064",
+        "variant": "1:1211292",
+        "alleles": "CT",
+        "score": 0.0000067063
+      },
+      {
+        "rsid": "rs12142199",
+        "variant": "1:1249187",
+        "alleles": "AG",
+        "score": 5.317475e-7
+      },
+      {
+        "rsid": "rs3855955",
+        "variant": "1:1276077",
+        "alleles": "AG",
+        "score": 0.00002387586
+      },
+      {
+        "rsid": "rs2649588",
+        "variant": "1:1314015",
+        "alleles": "CT",
+        "score": 0.00001649674
+      },
+      {
+        "rsid": "rs12089560",
+        "variant": "1:1356550",
+        "alleles": "AG",
+        "score": -0.00005661323
+      },
+      {
+        "rsid": "rs1240732",
+        "variant": "1:1404809",
+        "alleles": "AG",
+        "score": -0.000001762436
+      },
+      {
+        "rsid": "rs819980",
+        "variant": "1:1425700",
+        "alleles": "CT",
+        "score": 0.00004223941
+      },
+      {
+        "rsid": "rs6690515",
+        "variant": "1:1447325",
+        "alleles": "AG",
+        "score": 0.000006397323
+      },
+      {
+        "rsid": "rs3128342",
+        "variant": "1:1486834",
+        "alleles": "AC",
+        "score": 0.00008651354
+      },
+      {
+        "rsid": "rs6687029",
+        "variant": "1:1519068",
+        "alleles": "AC",
+        "score": 0.000003090227
+      },
+      {
+        "rsid": "rs12748433",
+        "variant": "1:1559971",
+        "alleles": "TT",
+        "score": -0.00001475627
+      },
+      {
+        "rsid": "rs28464684",
+        "variant": "1:1566160",
+        "alleles": "CC",
+        "score": -0.00005884704
+      },
+      {
+        "rsid": "rs7520934",
+        "variant": "1:1615348",
+        "alleles": "AC",
+        "score": 0.00001643061
+      },
+      {
+        "rsid": "rs28487995",
+        "variant": "1:1619541",
+        "alleles": "AG",
+        "score": 0.000003879706
+      },
+      {
+        "rsid": "rs2294489",
+        "variant": "1:1664124",
+        "alleles": "CC",
+        "score": 0.00002704334
+      },
+      {
+        "rsid": "rs7407",
+        "variant": "1:1684472",
+        "alleles": "CT",
+        "score": 0.000006860843
+      },
+      {
+        "rsid": "rs35672141",
+        "variant": "1:1691050",
+        "alleles": "CT",
+        "score": -0.00001770419
+      },
+      {
+        "rsid": "rs7531583",
+        "variant": "1:1706160",
+        "alleles": "GG",
+        "score": -0.00000506981
+      },
+      {
+        "rsid": "rs6681938",
+        "variant": "1:1781220",
+        "alleles": "CT",
+        "score": 0.00001275837
+      },
+      {
+        "rsid": "rs10907192",
+        "variant": "1:1793111",
+        "alleles": "GG",
+        "score": 0.00002174506
+      },
+      {
+        "rsid": "rs4648592",
+        "variant": "1:1801034",
+        "alleles": "AG",
+        "score": 0.000002788664
+      },
+      {
+        "rsid": "rs7525092",
+        "variant": "1:1810090",
+        "alleles": "CT",
+        "score": -0.0001460872
+      },
+      {
+        "rsid": "rs2474460",
+        "variant": "1:1844046",
+        "alleles": "CT",
+        "score": 0.00003397367
+      },
+      {
+        "rsid": "rs941532",
+        "variant": "1:1848734",
+        "alleles": "GG",
+        "score": 0.0002370046
+      },
+      {
+        "rsid": "rs28508199",
+        "variant": "1:1852484",
+        "alleles": "AG",
+        "score": -0.00001020319
+      },
+      {
+        "rsid": "rs12758705",
+        "variant": "1:1873625",
+        "alleles": "AG",
+        "score": -0.00001318073
+      },
+      {
+        "rsid": "rs2803291",
+        "variant": "1:1892325",
+        "alleles": "CC",
+        "score": 0.000009389646
+      },
+      {
+        "rsid": "rs16824588",
+        "variant": "1:1900232",
+        "alleles": "CT",
+        "score": -0.00001410714
+      },
+      {
+        "rsid": "rs3795283",
+        "variant": "1:1916587",
+        "alleles": "GT",
+        "score": -0.000003227001
+      },
+      {
+        "rsid": "rs6656398",
+        "variant": "1:1941929",
+        "alleles": "AA",
+        "score": -0.00006120958
+      },
+      {
+        "rsid": "rs13303016",
+        "variant": "1:1946591",
+        "alleles": "AA",
+        "score": 0.000012099868
+      },
+      {
+        "rsid": "rs28603108",
+        "variant": "1:1950621",
+        "alleles": "AA",
+        "score": -0.00002341784
+      },
+      {
+        "rsid": "rs4648808",
+        "variant": "1:2040936",
+        "alleles": "CC",
+        "score": -0.00011979594
+      },
+      {
+        "rsid": "rs3107151",
+        "variant": "1:2051513",
+        "alleles": "GT",
+        "score": -0.000007354653
+      },
+      {
+        "rsid": "rs3128291",
+        "variant": "1:2058023",
+        "alleles": "GG",
+        "score": 0.0000387642
+      },
+      {
+        "rsid": "rs3753242",
+        "variant": "1:2069681",
+        "alleles": "CT",
+        "score": 0.000002424637
+      },
+      {
+        "rsid": "rs424079",
+        "variant": "1:2071340",
+        "alleles": "AC",
+        "score": -0.000005599229
+      },
+      {
+        "rsid": "rs262669",
+        "variant": "1:2082489",
+        "alleles": "AG",
+        "score": 0.000007340813
+      },
+      {
+        "rsid": "rs2257182",
+        "variant": "1:2082566",
+        "alleles": "CT",
+        "score": 0.00005739809
+      },
+      {
+        "rsid": "rs262654",
+        "variant": "1:2089526",
+        "alleles": "AG",
+        "score": 0.00002127183
+      },
+      {
+        "rsid": "rs262641",
+        "variant": "1:2104981",
+        "alleles": "AG",
+        "score": 0.00006728817
+      },
+      {
+        "rsid": "rs262688",
+        "variant": "1:2113565",
+        "alleles": "GT",
+        "score": 1.815257e-7
+      },
+      {
+        "rsid": "rs2503701",
+        "variant": "1:2121118",
+        "alleles": "TT",
+        "score": -0.0000437081
+      },
+      {
+        "rsid": "rs6665593",
+        "variant": "1:2140261",
+        "alleles": "AG",
+        "score": 0.0001134586
+      },
+      {
+        "rsid": "rs262683",
+        "variant": "1:2155869",
+        "alleles": "CT",
+        "score": 0.000022039
+      },
+      {
+        "rsid": "rs2460000",
+        "variant": "1:2156362",
+        "alleles": "AG",
+        "score": 0.000006421951
+      },
+      {
+        "rsid": "rs263526",
+        "variant": "1:2173504",
+        "alleles": "CT",
+        "score": 0.00000954008
+      },
+      {
+        "rsid": "rs10910034",
+        "variant": "1:2176038",
+        "alleles": "CT",
+        "score": 0.00002349547
+      },
+      {
+        "rsid": "rs1713712",
+        "variant": "1:2176161",
+        "alleles": "CT",
+        "score": 8.129552e-7
+      },
+      {
+        "rsid": "rs260512",
+        "variant": "1:2182470",
+        "alleles": "AG",
+        "score": 0.000006815305
+      },
+      {
+        "rsid": "rs7547453",
+        "variant": "1:2195117",
+        "alleles": "CT",
+        "score": 0.00001646247
+      },
+      {
+        "rsid": "rs2017143",
+        "variant": "1:2220649",
+        "alleles": "CT",
+        "score": 0.000004859052
+      },
+      {
+        "rsid": "rs903919",
+        "variant": "1:2222583",
+        "alleles": "CC",
+        "score": 0.000008404632
+      },
+      {
+        "rsid": "rs884940",
+        "variant": "1:2223866",
+        "alleles": "TT",
+        "score": -0.000019542614
+      },
+      {
+        "rsid": "rs10910050",
+        "variant": "1:2224876",
+        "alleles": "CC",
+        "score": 0.00002393854
+      },
+      {
+        "rsid": "rs12562937",
+        "variant": "1:2229478",
+        "alleles": "CT",
+        "score": -0.0001715965
+      },
+      {
+        "rsid": "rs903916",
+        "variant": "1:2231463",
+        "alleles": "CT",
+        "score": -0.00001523642
+      },
+      {
+        "rsid": "rs2643904",
+        "variant": "1:2236697",
+        "alleles": "GG",
+        "score": -0.0000697168
+      },
+      {
+        "rsid": "rs2173049",
+        "variant": "1:2240006",
+        "alleles": "CC",
+        "score": -0.000018939876
+      },
+      {
+        "rsid": "rs2645075",
+        "variant": "1:2254910",
+        "alleles": "CT",
+        "score": 9.267527e-7
+      },
+      {
+        "rsid": "rs2843142",
+        "variant": "1:2270098",
+        "alleles": "AG",
+        "score": 0.00004671685
+      },
+      {
+        "rsid": "rs2055204",
+        "variant": "1:2280661",
+        "alleles": "AG",
+        "score": -0.00007586512
+      },
+      {
+        "rsid": "rs2840528",
+        "variant": "1:2283896",
+        "alleles": "AG",
+        "score": -0.000006718482
+      },
+      {
+        "rsid": "rs2645085",
+        "variant": "1:2287616",
+        "alleles": "CT",
+        "score": 0.00001634649
+      },
+      {
+        "rsid": "rs903914",
+        "variant": "1:2289321",
+        "alleles": "AG",
+        "score": 0.00001181619
+      },
+      {
+        "rsid": "rs2840542",
+        "variant": "1:2291680",
+        "alleles": "CC",
+        "score": -0.00005862684
+      },
+      {
+        "rsid": "rs7545940",
+        "variant": "1:2299627",
+        "alleles": "CT",
+        "score": -0.0001512039
+      }
+    ]
+  }
+]

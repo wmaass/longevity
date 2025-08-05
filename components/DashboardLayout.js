@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Sun, Moon } from "lucide-react";
 import Link from "next/link";
 
-export default function DashboardLayout({ children }) {
+export default function DashboardLayout({ children, logText }) {
   const [dark, setDark] = useState(false);
 
   return (
@@ -56,7 +56,16 @@ export default function DashboardLayout({ children }) {
 
       {/* Main Content */}
       <main className="flex-1 p-10 overflow-y-auto">
-        <div className="max-w-7xl mx-auto space-y-8">{children}</div>
+        <div className="max-w-7xl mx-auto space-y-8">
+          {children}
+
+          {logText && (
+            <div className="mt-8 border-t pt-4 text-xs text-gray-700 bg-white rounded-lg shadow-inner p-3 max-h-40 overflow-y-auto whitespace-pre-wrap">
+              <h3 className="text-sm font-semibold mb-2">🔍 Systemmeldungen</h3>
+              <pre>{logText}</pre>
+            </div>
+          )}
+        </div>
       </main>
     </div>
   );

@@ -1,57 +1,68 @@
 // pages/api/fetchAndUnpackPGS.js
-import fs from 'fs';
+import https from 'https';
+import fs from 'fs/promises';
 import path from 'path';
-import fetch from 'node-fetch';
+import { pipeline } from 'stream/promises';
 import zlib from 'zlib';
-import { promisify } from 'util';
-
-const pipeline = promisify(require('stream').pipeline);
-const MAX_UNZIPPED_SIZE_MB = 10; // <- Grenze für entpackte Datei
-const LOCAL_DIR = './public/pgs_scores/unpacked';
-
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
 
 export default async function handler(req, res) {
-  const { id } = req.query;
+  const { id, maxSizeMB = 10 } = req.query;
 
-  if (!id || !/^PGS\d+$/.test(id)) {
-    return res.status(400).json({ error: 'Ungültige ID' });
+  if (!id) {
+    res.status(400).json({ error: 'No PGS id specified.' });
+    return;
   }
 
-  const remoteUrl = `https://ftp.ebi.ac.uk/pub/databases/spot/pgs/scores/${id}/ScoringFiles/Harmonized/${id}_hmPOS_GRCh37.txt.gz`;
+  const fileName = `${id}_hmPOS_GRCh37.txt`;
+  const destDir = path.join(process.cwd(), 'public', 'pgs_scores', 'unpacked');
+  const destPath = path.join(destDir, fileName);
 
   try {
-    const response = await fetch(remoteUrl);
-    if (!response.ok) {
-      return res.status(404).json({ error: `Datei ${id} nicht gefunden` });
+    await fs.mkdir(destDir, { recursive: true });
+
+    const url = `https://ftp.ebi.ac.uk/pub/databases/spot/pgs/scores/${id}/ScoringFiles/Harmonized/${fileName}.gz`;
+
+    // 1. 📏 HEAD request to check size
+    const sizeOk = await checkRemoteSize(url, maxSizeMB);
+    if (!sizeOk) {
+      console.warn(`[Skip] ${id}: .gz Datei zu groß`);
+      return res.status(413).json({ error: 'File too large (HEAD check).' });
     }
 
-    const tempPath = path.join('/tmp', `${id}.txt.gz`);
-    const writeStream = fs.createWriteStream(tempPath);
-    await pipeline(response.body, writeStream);
+    // 2. ⬇️ Download and unzip
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`Download failed: ${response.statusText}`);
 
-    // 🧠 Entpacken und Größe messen
-    const gzBuffer = fs.readFileSync(tempPath);
-    const unzippedBuffer = zlib.gunzipSync(gzBuffer);
-    const sizeMB = unzippedBuffer.length / (1024 * 1024);
+    const buffer = await response.arrayBuffer();
+    const decompressed = zlib.gunzipSync(Buffer.from(buffer));
 
-    if (sizeMB > MAX_UNZIPPED_SIZE_MB) {
-      fs.unlinkSync(tempPath); // löschen
-      return res.status(413).json({ error: `Entpackte Datei zu groß (${sizeMB.toFixed(2)} MB)` });
+    // 3. 📏 Check uncompressed size
+    const sizeMB = decompressed.length / (1024 * 1024);
+    if (sizeMB > maxSizeMB) {
+      console.warn(`[Skip] ${id}: Entpackt ${sizeMB.toFixed(1)} MB > ${maxSizeMB} MB`);
+      return res.status(413).json({ error: 'Uncompressed file too large.' });
     }
 
-    // ✅ speichern
-    if (!fs.existsSync(LOCAL_DIR)) fs.mkdirSync(LOCAL_DIR, { recursive: true });
-    const outPath = path.join(LOCAL_DIR, `${id}_hmPOS_GRCh37.txt`);
-    fs.writeFileSync(outPath, unzippedBuffer);
+    // 4. 💾 Save to disk
+    await fs.writeFile(destPath, decompressed);
+    res.status(200).json({ ok: true });
 
-    res.status(200).json({ message: `✔️ ${id} entpackt (${sizeMB.toFixed(2)} MB)` });
   } catch (err) {
-    console.error(`[fetchAndUnpackPGS] Fehler bei ${id}:`, err.message);
-    res.status(500).json({ error: `Fehler bei ${id}: ${err.message}` });
+    console.error(`[ERROR] ${id}:`, err.message);
+    res.status(500).json({ error: err.message });
   }
+}
+
+// HEAD check for remote .gz size
+async function checkRemoteSize(url, maxSizeMB) {
+  return new Promise((resolve) => {
+    const req = https.request(url, { method: 'HEAD' }, (res) => {
+      const contentLength = res.headers['content-length'];
+      if (!contentLength) return resolve(false);
+      const sizeMB = parseInt(contentLength, 10) / (1024 * 1024);
+      resolve(sizeMB <= maxSizeMB);
+    });
+    req.on('error', () => resolve(false));
+    req.end();
+  });
 }

@@ -1,311 +1,291 @@
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import DashboardLayout from '../components/DashboardLayout';
-import { Bar } from 'react-chartjs-2';
-import { Chart, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import LogTable from '../components/LogTable';
+import ProgressBar from '../components/ProgressBar';
+import Papa from 'papaparse';
 
-Chart.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
-
-const EFO_IDS = [
-  // Bestehende Traits (Metabolites & Lipids)
-  'EFO_0004530', // Triglyceride measurement
-  'EFO_0006336', // LDL cholesterol
-  'EFO_0006335', // HDL cholesterol
-  'EFO_0004541', // Total cholesterol
-  'EFO_0001645', // Heart rate
-  'EFO_0004458', // Cardiac output
-  'EFO_0004611', // Liver enzyme level
-  'EFO_0004612', // Bilirubin measurement
-  'EFO_0004574', // Liver fat percentage
-
-  // Erweiterte organbezogene Traits
-  'EFO_0003833', // Brain neoplasm (Gehirntumor)
-  'EFO_0003777', // Heart disease (Herzerkrankung)
-  'EFO_0000319', // Cardiovascular disease (Herz-Kreislauf-System, Blutgefäße)
-  'EFO_0004314', // Forced expiratory volume (FEV1) – Lungenfunktion
-  'EFO_0003892', // Pulmonary function measurement – allgemeine Lungenfunktion
-  'EFO_0001421', // Liver disease – Lebererkrankung
-  'EFO_0010821', // Liver fat measurement – Leberfettanteil (z. B. per MRI)
-  'EFO_0004582', // Liver enzyme measurement – Leberenzyme (AST/ALT)
-
-  // Niere
-  'EFO_0003884', // Chronic kidney disease – chronische Nierenfunktion (CKD) :contentReference[oaicite:1]{index=1}
-  'EFO_0006829', // GFR change measurement – Variabilität der glomerulären Filtrationsrate (Nierenfunktion) :contentReference[oaicite:2]{index=2}
-
-  // Blase
-  'EFO_0009690', // Urinary system disease – Erkrankung des Harntrakts (inkl. Blase) :contentReference[oaicite:3]{index=3}
-
-  // Darm/Magen
-  // → EFO benennt keine generischen Messwerte für Magen oder Darm.
-  // Für Krankheiten/Zustände wie Colitis, Gastric cancer etc. müssten spezifische IDs hinzugefügt werden.
-];
-
-const CONFIG = {
-  MAX_VARIANTS_ALLOWED: 100_000,
-  METADATA_URL: 'https://ftp.ebi.ac.uk/pub/databases/spot/pgs/metadata/pgs_all_metadata_scores.csv',
-  useLocalFiles: true
-};
-
-export default function PersonalPGSUI() {
+export default function PersonalUICardio() {
   const [genomeText, setGenomeText] = useState('');
+  const [genomeName, setGenomeName] = useState('');
   const [results, setResults] = useState([]);
   const [log, setLog] = useState([]);
-  const [finalLogs, setFinalLogs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [genomeFileName, setGenomeFileName] = useState('genome_webworker');
-  const [summaryResults, setSummaryResults] = useState([]);
-  const [currentEfo, setCurrentEfo] = useState('');
   const [progressState, setProgressState] = useState({ currentPGS: '', percent: 0 });
-  const logRef = useRef(null);
-  const workerRef = useRef(null);
 
   useEffect(() => {
-    if (logRef.current) {
-      logRef.current.scrollTop = logRef.current.scrollHeight;
+    if (log.length > 0) {
+      const logContainer = document.getElementById('log-container');
+      if (logContainer) {
+        logContainer.scrollTop = logContainer.scrollHeight;
+      }
     }
   }, [log]);
-
-  useEffect(() => {
-    const clearOldDetails = async () => {
-      try {
-        const res = await fetch('/api/clearEfoDetails', { method: 'POST' });
-        const json = await res.json();
-        console.log('🧨 clearEfoDetails API aufgerufen');
-        console.log(json.message);
-      } catch (err) {
-        console.error('❌ Fehler beim Löschen alter Detail-Dateien:', err);
-      }
-    };
-
-    clearOldDetails();  // ✅ Jetzt korrekt innerhalb von useEffect
-  }, []);
-
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
     const text = await file.text();
     setGenomeText(text.replace(/\0/g, '').trim());
-    setGenomeFileName(file.name.replace(/\.txt$/, ''));
+    setGenomeName(file.name.replace(/\.txt$/i, ''));
     setResults([]);
     setError(null);
   };
 
   const runAnalysis = () => {
     if (!genomeText) {
-      setError('Bitte lade zuerst eine 23andMe-Datei hoch.');
+      setError('Bitte lade eine 23andMe-Datei hoch.');
       return;
     }
 
     setLoading(true);
-    setError(null);
     setLog([]);
-    setFinalLogs([]);
+    setResults([]);
 
     const worker = new Worker('/workers/prs.worker.js');
-    workerRef.current = worker;
 
     worker.postMessage({
       genomeTxt: genomeText,
-      efoIds: EFO_IDS,
-      config: CONFIG
+      efoIds: Array.from(new Set([
+          "EFO_0004541", // HbA1c measurement
+          //"EFO_0004611", // LDL cholesterol
+          //"EFO_0004612", // HDL cholesterol
+          //"EFO_0004530", // Triglycerides
+          //"EFO_0001645", // Coronary artery disease
+          "EFO_0006335", // Systolic blood pressure
+          //"EFO_0004574", // Total cholesterol
+          //"EFO_0004458", // C-reactive protein
+          //"EFO_0006336"  // Diastolic blood pressure
+      ])),
+      config: {
+        useLocalFiles: true,
+        genomeFileName: genomeName
+      },
+      efoToPgsMap: {
+        "EFO_0004541": [
+          "PGS000127", "PGS000128", "PGS000129", "PGS000130", "PGS000131", "PGS000132", "PGS000304"
+        ],
+        //"EFO_0004611": [
+        //  "PGS000061", "PGS000065", "PGS000115", "PGS000310", "PGS000340", "PGS000661"
+        //],
+        //"EFO_0004612": [
+        //  "PGS000060", "PGS000064", "PGS000309", "PGS000660"
+        //],
+        //"EFO_0004530": [
+        //  "PGS000063", "PGS000066", "PGS000312", "PGS000659"
+        //],
+        //"EFO_0001645": [
+        //  "PGS000010", "PGS000011", "PGS000012", "PGS000019", "PGS000057", "PGS000058",
+        //  "PGS000059", "PGS000116", "PGS000200", "PGS000337", "PGS000349"
+        //],
+        "EFO_0006335": [
+          "PGS000301", "PGS002009"
+        ],
+        //"EFO_0004574": [
+        //  "PGS000062", "PGS000311", "PGS000658", "PGS000677"
+        //],
+        //"EFO_0004458": [
+        //  "PGS000314", "PGS000675"
+        //],
+        //"EFO_0006336": [
+        //  "PGS000302", "PGS001900"
+        //]
+      }
     });
 
-    worker.onmessage = async (event) => {
-      const { results: resultList, log: newLog, logs, currentPGS, progress } = event.data;
+    worker.onmessage = (event) => {
+      const { results: resultList, log: logEntry, logs, currentPGS, progress, efoId, aggregated } = event.data;
 
-      if (newLog) {
-        setLog((prev) => [...prev, newLog]);
-        const match = newLog.match(/EFO\s+(EFO_\d+):/);
-        if (match) setCurrentEfo(match[1]);
-
-        const matchPGS = newLog.match(/Pr\u00fcfe Gr\u00f6\u00dfe von (PGS\d+)/);
-        if (matchPGS) {
-          setProgressState({ currentPGS: matchPGS[1], percent: 0 });
-        }
+      // 📘 Log-Ausgabe
+      if (Array.isArray(logs)) {
+        setLog(prev => [...prev, ...logs]);
+      } else if (logEntry) {
+        setLog(prev => [...prev, logEntry]);
       }
 
-      if (logs && Array.isArray(logs)) {
-        setFinalLogs(logs);
-      }
-
-      if (currentPGS && typeof progress === 'number') {
-        setProgressState({ currentPGS, percent: progress });
-        const progressMsg = `📊 Prüfe ${currentPGS} (${progress.toFixed(1)}%)`;
-        setLog((prev) => [...prev, progressMsg]);
-      }
-
+      // 📊 Ergebnisse speichern
       if (resultList) {
         setResults(resultList);
         setLoading(false);
         worker.terminate();
 
-        if (!resultList.length) {
-          setError('Keine Ergebnisse gefunden.');
-          return;
-        }
+        // 🧾 Detaillierte Ergebnisse (batch_details_cardio.csv)
+        if (genomeName) {
+          const detailRows = resultList.map(r => ({
+            efoId: r.efoId,
+            id: r.id,
+            trait: r.trait,
+            rawScore: r.rawScore,
+            prs: r.prs,
+            zScore: r.zScore,
+            percentile: r.percentile,
+            matches: r.matches,
+            totalVariants: r.totalVariants
+          }));
 
-        const summary = summarizeResults(resultList);
-        setSummaryResults(summary);
-
-        try {
-          const res = await fetch('/api/save_results_cardio', {
+          const detailCsv = Papa.unparse(detailRows);
+          fetch('/api/saveResultsCardioDetails', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              baseName: genomeFileName,
-              results: summary,
-              details: resultList
+            body: JSON.stringify({ genomeName, csvContent: detailCsv })
+          })
+            .then(res => res.json())
+            .then(data => {
+              if (data.path) {
+                const msg = `✅ Detail-CSV gespeichert unter: ${data.path}`;
+                console.log(msg);
+                setLog(prev => [...prev, msg]);
+              } else {
+                const warn = '⚠️ Detail-CSV konnte nicht gespeichert werden.';
+                console.warn(warn);
+                setLog(prev => [...prev, warn]);
+              }
             })
-          });
-          if (!res.ok) throw new Error(`Fehler beim Speichern: ${res.status}`);
-        } catch (e) {
-          console.error('Speichern fehlgeschlagen:', e);
-          setError('Analyse abgeschlossen, aber Speichern fehlgeschlagen.');
+            .catch(err => {
+              console.error('❌ Fehler beim Speichern der Detail-CSV:', err);
+              setLog(prev => [...prev, '❌ Fehler beim Speichern der Detail-CSV']);
+            });
         }
       }
-    };
 
-    worker.onerror = (err) => {
-      console.error('Worker error:', err);
-      setError('Analyse fehlgeschlagen.');
-      setLoading(false);
-    };
-  };
+      // 📈 Aggregierte Ergebnisse (batch_results_cardio.csv)
+      if (aggregated && genomeName) {
+        const csv = Papa.unparse(aggregated);
+        fetch('/api/saveResults', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ genomeName, csvContent: csv })
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.path) {
+              const msg = `✅ CSV gespeichert unter: ${data.path}`;
+              console.log(msg);
+              setLog(prev => [...prev, msg]);
+            } else {
+              const warn = '⚠️ CSV konnte nicht gespeichert werden.';
+              console.warn(warn);
+              setLog(prev => [...prev, warn]);
+            }
+          })
+          .catch(err => {
+            console.error('❌ Fehler beim Speichern der CSV:', err);
+            setLog(prev => [...prev, '❌ Fehler beim Speichern der CSV']);
+          });
+      }
 
-  const summarizeResults = (rawResults) => {
-    if (!Array.isArray(rawResults)) return [];
-    const grouped = {};
-    for (const r of rawResults) {
-      if (!grouped[r.efoId]) grouped[r.efoId] = [];
-      grouped[r.efoId].push(r);
-    }
-    return Object.entries(grouped).map(([efoId, scores]) => {
-      const trait = scores[0]?.trait || scores[0]?.label || '(unbekannt)';
-      const pgsCount = scores.length;
-      const avgPRS = scores.reduce((sum, s) => sum + s.prs, 0) / pgsCount;
-      const maxPRS = Math.max(...scores.map(s => s.prs));
-      const minPRS = Math.min(...scores.map(s => s.prs));
-      const avgPercentile = scores.reduce((sum, s) => sum + s.percentile, 0) / pgsCount;
-      const maxPercentile = Math.max(...scores.map(s => s.percentile));
-      const minPercentile = Math.min(...scores.map(s => s.percentile));
-      const totalVariants = scores.reduce((sum, s) => sum + (s.totalVariants || 0), 0);
-      return {
-        efoId,
-        'EFO-ID': efoId,
-        'Trait': trait,
-        'PGS Count': pgsCount,
-        'Avg PRS': parseFloat(avgPRS.toFixed(3)),
-        'Max PRS': parseFloat(maxPRS.toFixed(3)),
-        'Min PRS': parseFloat(minPRS.toFixed(3)),
-        'Avg Percentile': parseFloat(avgPercentile.toFixed(1)),
-        'Max Percentile': parseFloat(maxPercentile.toFixed(1)),
-        'Min Percentile': parseFloat(minPercentile.toFixed(1)),
-        'Total Variants': totalVariants
-      };
-    });
-  };
+      if (event.data.detailRows && genomeName) {
+        const detailCsv = Papa.unparse(event.data.detailRows);
+        fetch('/api/saveDetails', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ genomeName, csvContent: detailCsv })
+        })
+          .then(res => res.json())
+          .then(data => {
+            if (data.path) {
+              const msg = `✅ Detail-CSV gespeichert unter: ${data.path}`;
+              console.log(msg);
+              setLog(prev => [...prev, msg]);
+            } else {
+              const warn = '⚠️ Detail-CSV konnte nicht gespeichert werden.';
+              console.warn(warn);
+              setLog(prev => [...prev, warn]);
+            }
+          })
+          .catch(err => {
+            console.error('❌ Fehler beim Speichern der Detail-CSV:', err);
+            setLog(prev => [...prev, `❌ Fehler beim Speichern der Detail-CSV: ${err.message}`]);
+          });
+      }
 
-  const renderSummaryChart = () => {
-    if (!summaryResults.length) return null;
-    const data = {
-      labels: summaryResults.map(s => s['Trait']),
-      datasets: [{
-        label: 'Avg PRS',
-        data: summaryResults.map(s => s['Avg PRS']),
-        backgroundColor: 'rgba(54, 162, 235, 0.6)'
-      }]
-    };
-    const options = {
-      responsive: true,
-      plugins: {
-        legend: { position: 'top' },
-        title: { display: true, text: 'Durchschnittlicher PRS pro Trait' }
-      },
-      scales: {
-        x: { ticks: { autoSkip: false, maxRotation: 90, minRotation: 45 } }
+            // 💾 EFO-JSON-Dateien speichern (Variante B)
+      if (event.data.efoDetailsMap && genomeName) {
+        const efoDetailsMap = event.data.efoDetailsMap;
+
+        for (const [efoId, detail] of Object.entries(efoDetailsMap)) {
+          fetch('/api/saveEfoDetail', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ genomeName, efoId, detail })
+          })
+            .then(res => res.json())
+            .then(data => {
+              if (data.path) {
+                const msg = `✅ Detail-JSON gespeichert für ${efoId}: ${data.path}`;
+                console.log(msg);
+                setLog(prev => [...prev, msg]);
+              } else {
+                const warn = `⚠️ Detail-JSON für ${efoId} konnte nicht gespeichert werden.`;
+                console.warn(warn);
+                setLog(prev => [...prev, warn]);
+              }
+            })
+            .catch(err => {
+              const errMsg = `❌ Fehler beim Speichern von ${efoId}: ${err.message}`;
+              console.error(errMsg);
+              setLog(prev => [...prev, errMsg]);
+            });
+        }
+      }
+
+
+      // 🔄 Fortschrittsanzeige
+      if (currentPGS && typeof progress === 'number') {
+        setProgressState({ currentPGS: `${efoId || ''} – ${currentPGS}`, percent: progress });
       }
     };
-    return <Bar data={data} options={options} className="max-w-4xl mx-auto" />;
+
+
+    worker.onerror = (err) => {
+      setError('Analyse fehlgeschlagen.');
+      setLoading(false);
+      console.error('Worker error:', err);
+    };
   };
 
   return (
     <DashboardLayout>
       <div className="p-4 space-y-4">
-        <h1 className="text-xl font-bold text-gray-800">Persönliche PGS-Analyse (WebWorker)</h1>
+        <h1 className="text-xl font-bold text-gray-800">Cardio PGS Analyse</h1>
 
-        <input type="file" onChange={handleFileChange} accept=".txt" className="block text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" />
+        <input type="file" onChange={handleFileChange} accept=".txt" />
 
-        <button onClick={runAnalysis} disabled={loading || !genomeText} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow disabled:opacity-50 disabled:cursor-not-allowed">
+        <button onClick={runAnalysis} disabled={loading || !genomeText} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
           {loading ? 'Analyse läuft…' : 'Analyse starten'}
         </button>
 
-        {loading && currentEfo && (
-          <p className="text-sm text-gray-600">Aktuelles EFO: <code>{currentEfo}</code></p>
-        )}
-
-        {loading && progressState.currentPGS && (
-          <p className="text-sm text-gray-600">Datei: <code>{progressState.currentPGS}</code> – {progressState.percent.toFixed(1)}%</p>
-        )}
-
         {error && <p className="text-red-600 font-medium">{error}</p>}
 
+        {loading && <ProgressBar currentPGS={progressState.currentPGS} percent={progressState.percent} />}
+
         {results.length > 0 && (
-          <div className="mt-4">
-            <h2 className="text-lg font-semibold">Ergebnisse</h2>
-            <table className="min-w-full table-auto border mt-2 text-sm">
-              <thead>
-                <tr>
-                  <th className="border px-2 py-1">EFO-ID</th>
-                  <th className="border px-2 py-1">PGS-ID</th>
-                  <th className="border px-2 py-1">RawScore</th>
-                  <th className="border px-2 py-1">PRS</th>
-                  <th className="border px-2 py-1">Percentile</th>
+          <table className="min-w-full mt-4 table-auto border text-sm">
+            <thead>
+              <tr>
+                <th className="border px-2 py-1">EFO-ID</th>
+                <th className="border px-2 py-1">Trait</th>
+                <th className="border px-2 py-1">RawScore</th>
+                <th className="border px-2 py-1">PRS</th>
+                <th className="border px-2 py-1">Percentile</th>
+              </tr>
+            </thead>
+            <tbody>
+              {results.map((r, i) => (
+                <tr key={i}>
+                  <td className="border px-2 py-1">{r.efoId}</td>
+                  <td className="border px-2 py-1">{r.trait}</td>
+                  <td className="border px-2 py-1">{r.rawScore.toFixed(3)}</td>
+                  <td className="border px-2 py-1">{r.prs.toFixed(3)}</td>
+                  <td className="border px-2 py-1">{r.percentile >= 0 ? r.percentile.toFixed(1) : '–'}%</td>
                 </tr>
-              </thead>
-              <tbody>
-                {results.map((r, i) => (
-                  <tr key={i}>
-                    <td className="border px-2 py-1">{r.efoId}</td>
-                    <td className="border px-2 py-1">{r.id}</td>
-                    <td className="border px-2 py-1">{r.rawScore.toFixed(3)}</td>
-                    <td className="border px-2 py-1">{r.prs.toFixed(3)}</td>
-                    <td className="border px-2 py-1">{r.percentile}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            <div className="mt-8">
-              {renderSummaryChart()}
-            </div>
-
-            {finalLogs.length > 0 && (
-              <div className="mt-4">
-                <button
-                  onClick={() => {
-                    const blob = new Blob([finalLogs.join('\n')], { type: 'text/plain' });
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `prs_log_${genomeFileName}.txt`;
-                    a.click();
-                    URL.revokeObjectURL(url);
-                  }}
-                  className="bg-gray-200 hover:bg-gray-300 text-gray-800 px-3 py-2 rounded shadow"
-                >
-                  📄 Log-Datei speichern
-                </button>
-              </div>
-            )}
-          </div>
+              ))}
+            </tbody>
+          </table>
         )}
 
         {log.length > 0 && (
-          <div className="mt-8">
-            <h2 className="text-lg font-semibold">Protokoll</h2>
-            <LogTable log={log} />
+          <div id="log-container" className="mt-6 max-h-64 overflow-y-auto bg-white border border-gray-300 rounded p-3 text-sm font-mono text-gray-800 shadow-inner">
+            {log.map((entry, idx) => <div key={idx}>{entry}</div>)}
           </div>
         )}
       </div>

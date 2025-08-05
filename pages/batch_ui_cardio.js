@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Papa from 'papaparse';
 import * as d3 from 'd3';
@@ -14,23 +14,60 @@ export default function CardioDashboard() {
   const [data, setData] = useState([]);
   const [organMap, setOrganMap] = useState({});
   const [traitNames, setTraitNames] = useState({});
-  const [showReferences, setShowReferences] = useState(false); // ← Toggle-Zustand
+  const [showReferences, setShowReferences] = useState(false);
+  const [logEntries, setLogEntries] = useState([]);
+  const [genomeName, setGenomeName] = useState('genome_Dorothy_Wolf_v4_Full_20170525101345');
   const router = useRouter();
 
-  useEffect(() => {
-    fetch('/batch_results_cardio.csv')
-      .then((res) => res.text())
-      .then((csv) => {
-        const parsed = Papa.parse(csv, { header: true, skipEmptyLines: true }).data.map((row) => ({
-          ...row,
-          'EFO-ID': (row['EFO-ID'] || '').trim(),
-          'Avg PRS': parseFloat(row['Avg PRS'] || 0),
-          'Avg Percentile': parseFloat(row['Avg Percentile'] || 0),
-          logPRS: parseFloat(row['Avg PRS']) > 0 ? Math.log10(parseFloat(row['Avg PRS'])) : 0,
-        }));
-        setData(parsed);
-      });
+  console.log('📊 Parsed CSV Data:', genomeName);
 
+  const log = (msg) => {
+    setLogEntries((prev) => [...prev.slice(-20), msg]);
+    console.log(msg);
+  };
+
+
+  useEffect(() => {
+  console.log('🧪 useEffect triggered');
+  console.log('🔎 genomeName ist:', genomeName);
+
+  if (!genomeName) {
+    console.warn('⛔ genomeName leer – Effekt wird abgebrochen');
+    return;
+  }
+
+  const filePath = `/results/${genomeName}/batch_results_cardio.csv`;
+
+  log(`📥 Lade ${filePath}...`);
+  fetch(filePath)
+    .then((res) => {
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return res.text();
+    })
+    .then((csv) => {
+      const parsed = Papa.parse(csv, { header: true, skipEmptyLines: true }).data.map((row) => ({
+        ...row,
+        'EFO-ID': (row['EFO-ID'] || '').trim(),
+        'Avg PRS': parseFloat(row['Avg PRS'] || 0),
+        'Avg Percentile': parseFloat(row['Avg Percentile'] || 0),
+        logPRS: parseFloat(row['Avg PRS']) > 0 ? Math.log10(parseFloat(row['Avg PRS'])) : 0,
+      }));
+
+      console.log("📦 PARSED ROWS:", parsed.map(r => ({
+        efo: r['EFO-ID'],
+        prs: r['Avg PRS'],
+        percentile: r['Avg Percentile'],
+        trait: r.Trait
+      })));
+
+      log(`✅ ${parsed.length} Zeilen geladen aus ${filePath}`);
+      setData(parsed);
+    })
+    .catch(err => {
+      log(`❌ Fehler beim Laden von ${filePath}: ${err.message}`);
+    });
+
+    log('📥 Lade efo_to_organ.json...');
     fetch('/efo_to_organ.json')
       .then(res => res.json())
       .then(data => {
@@ -38,19 +75,42 @@ export default function CardioDashboard() {
         for (const organ in data) {
           cleaned[organ] = data[organ].map(efo => efo.trim());
         }
+        log('✅ efo_to_organ.json geladen');
         setOrganMap(cleaned);
+      })
+      .catch(err => {
+        log(`❌ Fehler beim Laden von efo_to_organ.json: ${err}`);
       });
 
-    fetch('/efo_traitnames.json')
+    log('📥 Lade efo_traitnames.json...');
+    fetch('/traits.json')
       .then(res => res.json())
-      .then(setTraitNames);
-  }, []);
+      .then(data => {
+        const traitMap = {};
+        for (const entry of data) {
+          if (entry.id && entry.label) {
+            traitMap[entry.id.trim()] = entry.label.trim();
+          }
+        }
+        log('✅ traits.json geladen');
+        setTraitNames(traitMap);
+      })
+      .catch(err => {
+        log(`❌ Fehler beim Laden von traits.json: ${err}`);
+      });
+  }, [genomeName]);
 
   useEffect(() => {
+    if (!genomeName) return; // Warten auf genomeName
+
+    console.log('🚀 genomeName vor renderBodyMap:', genomeName);
+
     if (Object.keys(organMap).length > 0 && data.length > 0 && Object.keys(traitNames).length > 0) {
-      renderBodyMap(data, organMap, traitNames, router);
+      renderBodyMap(data, organMap, traitNames, router, genomeName);
     }
-  }, [data, organMap, traitNames, router]);
+  }, [data, organMap, traitNames, genomeName, router]);
+
+
 
   const enrichedData = data
     .map(d => ({
@@ -60,11 +120,11 @@ export default function CardioDashboard() {
     .sort((a, b) => b['Avg Percentile'] - a['Avg Percentile']);
 
   const barData = {
-    labels: enrichedData.map((d) => d.TraitLabel),
+    labels: enrichedData.map(d => d.TraitLabel),
     datasets: [
       {
         label: 'log10(Avg PRS)',
-        data: enrichedData.map((d) => d.logPRS),
+        data: enrichedData.map(d => d.logPRS),
         backgroundColor: 'rgba(34,197,94,0.6)',
         borderRadius: 8,
         borderSkipped: false,
@@ -82,14 +142,6 @@ export default function CardioDashboard() {
     plugins: {
       legend: { display: false },
       tooltip: {
-        backgroundColor: '#ffffff',
-        titleColor: '#111827',
-        bodyColor: '#374151',
-        borderColor: '#e5e7eb',
-        borderWidth: 1,
-        padding: 12,
-        titleFont: { size: 16, weight: 'bold' },
-        bodyFont: { size: 14 },
         callbacks: {
           label: (ctx) => {
             const d = enrichedData[ctx.dataIndex];
@@ -98,26 +150,20 @@ export default function CardioDashboard() {
         },
       },
     },
-    scales: {
-      x: {
-        ticks: { font: { size: 14 }, color: '#374151' },
-        grid: { color: '#f3f4f6', drawTicks: false },
-      },
-      y: {
-        ticks: { font: { size: 16, weight: '500' }, color: '#111827' },
-        grid: { drawTicks: false, color: '#ffffff' },
-      },
-    },
-    layout: { padding: { top: 10, bottom: 10, left: 10, right: 10 } },
-    onHover: (event, chartElement) => {
-      event.native.target.style.cursor = chartElement.length ? 'pointer' : 'default';
-    },
     onClick: (_, elements) => {
       if (elements.length > 0) {
         const idx = elements[0].index;
-        router.push(`/details/${enrichedData[idx]['EFO-ID']}?trait=${encodeURIComponent(enrichedData[idx].TraitLabel)}`);
+        router.push(`/details/${enrichedData[idx]['EFO-ID']}?trait=${encodeURIComponent(enrichedData[idx].TraitLabel)}&genome=${encodeURIComponent(genomeName)}`);
       }
     },
+  };
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setGenomeName(file.name.replace(/\.txt(\.gz)?$/, ''));
+      log(`📂 Genom-Datei ausgewählt: ${file.name}`);
+    }
   };
 
   return (
@@ -126,8 +172,14 @@ export default function CardioDashboard() {
         Kardiovaskuläre PGS-Ergebnisse
       </h2>
 
+      <div className="mb-4">
+        <label className="text-sm font-medium text-gray-700 mr-2">Genom-Datei wählen:</label>
+        <input type="file" accept=".txt,.gz" onChange={handleFileSelect} />
+      </div>
+
+
+
       <div className="flex flex-row gap-8">
-        {/* Linke Spalte */}
         <div className="flex flex-col w-1/2">
           <div id="bodymap" className="relative mb-8 overflow-visible" style={{ width: '700px', height: '800px' }}>
             <img
@@ -146,39 +198,21 @@ export default function CardioDashboard() {
             <div id="tooltip" className="absolute bg-white text-sm text-gray-800 border border-gray-300 px-3 py-2 rounded-lg shadow-md pointer-events-auto opacity-0 transition-opacity duration-200 z-50"></div>
           </div>
 
-          <div className="mt-6">
-            <Bar data={barData} options={barOptions} />
+
+
+          <div className="bg-white border border-gray-200 rounded-lg mb-6 p-4 max-h-48 overflow-auto text-sm text-gray-700">
+            <strong>🔍 Log-Ausgaben:</strong>
+            <ul className="list-disc ml-6 mt-2">
+              {logEntries.map((msg, idx) => (
+                <li key={idx}>{msg}</li>
+              ))}
+            </ul>
           </div>
         </div>
 
-        {/* Rechte Spalte */}
         <div className="flex flex-col w-1/2">
-          <table className="mb-12 w-full text-sm text-left border border-gray-200">
-            <thead className="bg-gray-100 text-gray-700">
-              <tr>
-                <th className="py-2 px-4">EFO ID</th>
-                <th className="py-2 px-4">Trait</th>
-                <th className="py-2 px-4">Percentile</th>
-                <th className="py-2 px-4">PGS Count</th>
-              </tr>
-            </thead>
-            <tbody>
-              {enrichedData.map((row, idx) => (
-                <tr key={idx} className="border-t">
-                  <td className="py-2 px-4 font-mono text-xs text-gray-700">
-                    <a href={`/details/${row['EFO-ID']}`} className="text-blue-600 hover:underline">{row['EFO-ID']}</a>
-                  </td>
-                  <td className="py-2 px-4">
-                    <a href={`/details/${row['EFO-ID']}`} className="text-blue-700 hover:underline">{row.TraitLabel}</a>
-                  </td>
-                  <td className="py-2 px-4">{row['Avg Percentile'].toFixed(1)}</td>
-                  <td className="py-2 px-4">{row['PGS Count']}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
 
-          <div className="trait-interpretation text-sm">
+        <div className="trait-interpretation text-sm">
             <h2 className="text-lg font-semibold mb-4">Interpretation der Ergebnisse</h2>
 
             <table className="mb-4 text-sm border border-gray-300 w-full">
@@ -214,15 +248,43 @@ export default function CardioDashboard() {
               </p>
             )}
           </div>
+        
+          <table className="mb-12 w-full text-sm text-left border border-gray-200">
+            <thead className="bg-gray-100 text-gray-700">
+              <tr>
+                <th className="py-2 px-4">EFO ID</th>
+                <th className="py-2 px-4">Trait</th>
+                <th className="py-2 px-4">Percentile</th>
+                <th className="py-2 px-4">PGS Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {enrichedData.map((row, idx) => (
+                <tr key={idx} className="border-t">
+                  <td className="py-2 px-4 font-mono text-xs text-gray-700">
+                    <a href={`/details/${row['EFO-ID']}?genome=${encodeURIComponent(genomeName)}`} className="text-blue-600 hover:underline">{row['EFO-ID']}</a>
+                  </td>
+                  <td className="py-2 px-4">
+                    <a href={`/details/${row['EFO-ID']}?genome=${encodeURIComponent(genomeName)}`} className="text-blue-700 hover:underline">{row.TraitLabel}</a>
+                  </td>
+                  <td className="py-2 px-4">{row['Avg Percentile'].toFixed(1)}</td>
+                  <td className="py-2 px-4">{row['PGS Count']}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="mt-6">
+            <Bar data={barData} options={barOptions} />
+          </div>
         </div>
+
+        
       </div>
     </DashboardLayout>
   );
 }
 
-
-
-function renderBodyMap(results, organMap, traitNames, router) {
+function renderBodyMap(results, organMap, traitNames, router, genomeName) {
   const svg = d3.select('#organsvg');
   svg.selectAll('*').remove();
 
@@ -249,7 +311,12 @@ function renderBodyMap(results, organMap, traitNames, router) {
 
   organs.forEach(({ name, x, y, x1, y1 }) => {
     const efoList = (organMap[name] || []).map(efo => efo.trim());
-    const matches = results.filter(r => efoList.includes((r['EFO-ID'] || '').trim()));
+    const efoIdsInResults = new Set(results.map(r => (r['EFO-ID'] || '').trim()));
+
+    const matches = efoList
+      .filter(efo => efoIdsInResults.has(efo))
+      .map(efo => results.find(r => (r['EFO-ID'] || '').trim() === efo))
+      .filter(Boolean);
 
     const validPercentiles = matches
       .map(m => parseFloat(m['Avg Percentile']))
@@ -269,12 +336,17 @@ function renderBodyMap(results, organMap, traitNames, router) {
       .attr('stroke', '#333')
       .attr('stroke-width', 1)
       .style('cursor', efoList.length > 0 ? 'pointer' : 'default')
-      .on('click', function () {
+      .on('click', function(event) {
+        event.preventDefault();
+        event.stopPropagation();
         if (efoList.length === 1) {
-          router.push(`/details/${efoList[0]}`);
+          router.push({
+            pathname: `/details/${efo}`,
+            query: { genome: genomeName }
+          });
         } else if (efoList.length > 1) {
-          const content = efoList.map((efo) => {
-            const match = results.find(r => (r['EFO-ID'] || '').trim() === efo);
+          const content = matches.map((match) => {
+            const efo = (match['EFO-ID'] || '').trim();
             const label = match?.Trait || traitNames[efo] || `Unbekannter Trait (${efo})`;
             return `<div class='hover:bg-gray-100 p-1 cursor-pointer' data-efo='${efo}'>${label} (${efo})</div>`;
           }).join('');
@@ -286,9 +358,15 @@ function renderBodyMap(results, organMap, traitNames, router) {
             .style('top', `${y - 20}px`)
             .html(`<div class='font-semibold mb-1'>${name}</div>${content}`);
 
-          tooltip.selectAll('[data-efo]').on('click', function () {
+          // Event-Handler für die Klicks auf einzelne EFO-Einträge im Tooltip
+          tooltip.selectAll('[data-efo]').on('click', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
             const efo = d3.select(this).attr('data-efo');
-            router.push(`/details/${efo}`);
+            router.push({
+              pathname: `/details/${efo}`,
+              query: { genome: genomeName }
+            });
           });
         }
       });

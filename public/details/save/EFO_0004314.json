@@ -1,0 +1,38 @@
+[
+  {
+    "id": "PGS001236",
+    "trait": "PGS für EFO_0004314",
+    "rawScore": -0.029057658799299904,
+    "prs": 0.9713604553743675,
+    "zScore": -0.029057658799299904,
+    "percentile": 49,
+    "matches": 3094,
+    "totalVariants": 17732,
+    "topVariants": [
+      {
+        "variant": "Chr8.120596023:g.G",
+        "rsid": "rs10283100",
+        "beta": 0.01085724,
+        "z": 2,
+        "score": 0.02171448,
+        "alleles": "GG"
+      },
+      {
+        "variant": "Chr5.56177443:g.A",
+        "rsid": "rs702689",
+        "beta": 0.009754446,
+        "z": 2,
+        "score": 0.019508892,
+        "alleles": "AA"
+      },
+      {
+        "variant": "Chr11.126009500:g.C",
+        "rsid": "rs541601",
+        "beta": 0.00593433,
+        "z": 2,
+        "score": 0.01186866,
+        "alleles": "CC"
+      }
+    ]
+  }
+]

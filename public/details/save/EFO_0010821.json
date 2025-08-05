@@ -1,0 +1,94 @@
+[
+  {
+    "id": "PGS000865",
+    "trait": "PGS für EFO_0010821",
+    "rawScore": 0.33039999999999997,
+    "prs": 1.3915246270074544,
+    "zScore": 0.33039999999999997,
+    "percentile": 60,
+    "matches": 2,
+    "totalVariants": 4,
+    "topVariants": [
+      {
+        "variant": "Chr22.44324727:g.G",
+        "rsid": "rs738409",
+        "beta": 0.2657,
+        "z": 1,
+        "score": 0.2657,
+        "alleles": "CG"
+      },
+      {
+        "variant": "Chr2.27730940:g.T",
+        "rsid": "rs1260326",
+        "beta": 0.0647,
+        "z": 1,
+        "score": 0.0647,
+        "alleles": "CT"
+      }
+    ]
+  },
+  {
+    "id": "PGS000866",
+    "trait": "PGS für EFO_0010821",
+    "rawScore": 0.11099999999999999,
+    "prs": 1.1173949068544582,
+    "zScore": 0.11099999999999999,
+    "percentile": 53,
+    "matches": 2,
+    "totalVariants": 4,
+    "topVariants": [
+      {
+        "variant": "Chr22.44324727:g.G",
+        "rsid": "rs738409",
+        "beta": 0.086,
+        "z": 1,
+        "score": 0.086,
+        "alleles": "CG"
+      },
+      {
+        "variant": "Chr2.27730940:g.T",
+        "rsid": "rs1260326",
+        "beta": 0.025,
+        "z": 1,
+        "score": 0.025,
+        "alleles": "CT"
+      }
+    ]
+  },
+  {
+    "id": "PGS002245",
+    "trait": "PGS für EFO_0010821",
+    "rawScore": 0.47000000000000003,
+    "prs": 1.5999941932173602,
+    "zScore": 0.47000000000000003,
+    "percentile": 64,
+    "matches": 3,
+    "totalVariants": 8,
+    "topVariants": [
+      {
+        "variant": "Chr22.44324727:g.G",
+        "rsid": "rs738409",
+        "beta": 0.19,
+        "z": 1,
+        "score": 0.19,
+        "alleles": "CG"
+      },
+      {
+        "variant": "Chr4.100239319:g.C",
+        "rsid": "rs1229984",
+        "beta": 0.16,
+        "z": 1,
+        "score": 0.16,
+        "alleles": "CT"
+      },
+      {
+        "variant": "Chr19.45411941:g.T",
+        "rsid": "rs429358",
+        "beta": 0.12,
+        "z": 1,
+        "score": 0.12,
+        "alleles": "CT"
+      }
+    ]
+  }
+]

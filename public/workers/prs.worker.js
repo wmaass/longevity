@@ -1,49 +1,8 @@
-// workers/prs.worker.js
 importScripts('https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js');
 
-// 🧾 Logger-Modul zur strukturierten Ausgabe
-const Logger = (() => {
-  const counters = new Map();
-  const allLogs = [];
-
-  function log(message, level = 'info', tag = null, limit = null) {
-    const key = tag || message;
-    const count = counters.get(key) || 0;
-
-    if (limit === null || count < limit) {
-      const formatted = `[${level.toUpperCase()}] ${message}`;
-      postMessage({ log: formatted });
-      allLogs.push(formatted);
-      counters.set(key, count + 1);
-    }
-  }
-
-  return {
-    info: (msg, tag = null, limit = null) => log(msg, 'info', tag, limit),
-    warn: (msg, tag = null, limit = null) => log(msg, 'warn', tag, limit),
-    error: (msg, tag = null, limit = null) => log(msg, 'error', tag, limit),
-    debug: (msg, tag = null, limit = null) => log(msg, 'debug', tag, limit),
-    reset: () => counters.clear(),
-    getAll: () => allLogs
-  };
-})();
-
-let TRAIT_LOOKUP = {};
-
-async function loadTraitLabels() {
-  try {
-    const res = await fetch('/traits.json');
-    if (!res.ok) return;
-    const traitList = await res.json();
-    for (const trait of traitList) {
-      if (trait.id && trait.label) {
-        TRAIT_LOOKUP[trait.id] = trait.label;
-      }
-    }
-  } catch (err) {
-    Logger.error(`Fehler beim Laden von traits.json: ${err.message}`);
-  }
-}
+const MAX_VARIANTS_ALLOWED = 1000;
+const MAX_FILE_SIZE_MB = 10;
+const MAX_TOP_VARIANTS = 3;
 
 function parse23andMe(text) {
   return text
@@ -55,279 +14,324 @@ function parse23andMe(text) {
     });
 }
 
-function computeStats(rawScore) {
-  const z = rawScore;
-  const erf = (x) => {
-    const sign = x < 0 ? -1 : 1;
-    x = Math.abs(x);
-    const t = 1 / (1 + 0.3275911 * x);
-    const tau = t * Math.exp(-x * x - 1.26551223 +
-      t * (1.00002368 + t * (0.37409196 + t *
-        (0.09678418 + t * (-0.18628806 + t * (0.27886807 + t *
-          (-1.13520398 + t * (1.48851587 + t *
-            (-0.82215223 + t * 0.17087277)))))))));
-    return sign * (1 - tau);
-  };
-  const percentile = Math.round(((1 + erf(z / Math.sqrt(2))) / 2) * 100);
-  return { z, percentile };
-}
+async function fetchPGSFile(pgsId, config, emitLog) {
+  const fileName = `${pgsId}_hmPOS_GRCh37.txt`;
+  const url = config.useLocalFiles
+    ? `/pgs_scores/unpacked/${fileName}`
+    : `https://ftp.ebi.ac.uk/pub/databases/spot/pgs/scores/${pgsId}/ScoringFiles/Harmonized/${fileName}.gz`;
 
-function matchGenotype(map, chr, pos, ea) {
-  const key = `${chr}:${pos}`;
-  const genotype = map.get(key);
-  if (!genotype || !/^[ACGT]{2}$/.test(genotype)) return { count: 0, genotype: null };
+  emitLog(`📁 Lade PGS-Datei: ${fileName}`);
+  emitLog(`🌐 Von Pfad: ${url}`);
 
-  let count = 0;
-  if (genotype[0] === ea) count++;
-  if (genotype[1] === ea) count++;
-  return { count, genotype };
-}
-
-onmessage = async function (event) {
   try {
-    const startTime = Date.now();
-    const { genomeTxt, efoIds, config } = event.data;
-    Logger.reset();
-    await loadTraitLabels();
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Nicht vorhanden oder nicht lesbar: ${fileName}`);
 
-    const snps = parse23andMe(genomeTxt);
-    const genomeMap = new Map(snps.map(s => {
-      const chr = s.chrom.replace(/^chr/i, '').trim();
-      const pos = s.pos.trim();
-      return [`${chr}:${pos}`, s.genotype.toUpperCase()];
-    }));
+    const blob = await res.blob();
+    const sizeMB = blob.size / 1024 / 1024;
+    if (sizeMB > MAX_FILE_SIZE_MB) throw new Error(`📦 Datei zu groß: ${sizeMB.toFixed(2)} MB`);
 
-    Logger.info(`📋 Anzahl SNPs im Genom: ${snps.length}`);
+    const buffer = await blob.arrayBuffer();
+    const text = url.endsWith('.gz')
+      ? pako.inflate(new Uint8Array(buffer), { to: 'string' })
+      : new TextDecoder().decode(buffer);
 
-    const metadataRes = await fetch(config.METADATA_URL);
-    const csvText = await metadataRes.text();
-    const metadataLines = csvText.split('\n');
-    const header = metadataLines[0].split(',');
-    const records = metadataLines.slice(1).map(l => {
-      const cols = l.split(',');
-      const record = {};
-      header.forEach((key, i) => {
-        record[key.trim()] = cols[i]?.trim();
-      });
-      return record;
-    });
-
-    let bigPGS = [];
-    const maxVar = config.MAX_VARIANTS_ALLOWED || 100000;
-    try {
-      const bigPGSRes = await fetch(`/pgs_scores/bigPGS_${maxVar}.json`);
-      if (bigPGSRes.ok) {
-        bigPGS = await bigPGSRes.json();
-        Logger.info(`📂 ${bigPGS.length} große PGS-Dateien werden übersprungen (>${maxVar})`);
-      } else {
-        Logger.info(`⚙️ Serverseitige Erzeugung bigPGS_${maxVar}.json wird angestoßen…`);
-        const trigger = await fetch(`/api/genBigPGS?max=${maxVar}`);
-        if (trigger.ok) {
-          const retry = await fetch(`/pgs_scores/bigPGS_${maxVar}.json`);
-          if (retry.ok) {
-            bigPGS = await retry.json();
-            Logger.info(`📁 bigPGS_${maxVar}.json geladen: ${bigPGS.length} Dateien`);
-          }
-        }
-      }
-    } catch (err) {
-      Logger.warn(`Fehler beim Laden oder Erzeugen von bigPGS_${maxVar}.json: ${err.message}`);
-    }
-
-    const results = [];
-
-    for (const efoId of efoIds) {
-      Logger.info(`🔍 EFO ${efoId}: Starte Analyse`);
-
-      const matchedPGS = records.filter(r => {
-        const mapped = (r['Mapped Trait(s) (EFO ID)'] || '').split(';').map(s => s.trim());
-        const original = (r['Trait EFO(s)'] || '').split(';').map(s => s.trim());
-        return mapped.includes(efoId) || original.includes(efoId);
-      });
-
-      Logger.info(`📑 ${matchedPGS.length} PGS-Einträge für ${efoId} gefunden.`);
-
-      for (let i = 0; i < matchedPGS.length; i++) {
-        const pgs = matchedPGS[i];
-        const pgsId = pgs['Polygenic Score (PGS) ID'];
-
-        if (bigPGS.includes(pgsId)) {
-          Logger.debug(`${pgsId} übersprungen – zu groß`);
-          continue;
-        }
-
-        const localUrl = `/pgs_scores/unpacked/${pgsId}_hmPOS_GRCh37.txt`;
-        Logger.info(`📥 Prüfe lokale Datei für ${pgsId}`, `fetch:${pgsId}`);
-
-        let txt;
-        try {
-          const res = await fetch(localUrl);
-          if (!res.ok) {
-            Logger.warn(`📂 ${pgsId} nicht lokal gefunden, versuche Download vom FTP`, `fetch:${pgsId}`);
-
-            const ftpUrl = `https://ftp.ebi.ac.uk/pub/databases/spot/pgs/scores/${pgsId}/ScoringFiles/Harmonized/${pgsId}_hmPOS_GRCh37.txt.gz`;
-
-            // Anfrage an eigene API zum Herunterladen und Entpacken
-            const unpackRes = await fetch(`/api/fetchAndUnpackPGS?id=${pgsId}`);
-            if (!unpackRes.ok) {
-              Logger.warn(`❌ ${pgsId} konnte nicht vom FTP geladen werden (API-Rückgabe: ${unpackRes.status})`);
-              continue;
-            }
-
-            // Danach erneut versuchen, lokal zu laden
-            const retry = await fetch(localUrl);
-            if (!retry.ok) {
-              Logger.warn(`❌ ${pgsId} nach Download nicht auffindbar`);
-              continue;
-            }
-
-            txt = await retry.text();
-          } else {
-            txt = await res.text();
-          }
-        } catch (err) {
-          Logger.warn(`Fehler beim Zugriff auf ${pgsId}: ${err.message}`);
-          continue;
-        }
-
-        const lines = txt.split('\n');
-        Logger.info(`📊 ${pgsId}: Datei geladen mit ${lines.length} Zeilen`);
-
-        let headerLine = null;
-        let dataStart = 0;
-
-        for (let j = 0; j < lines.length; j++) {
-          const line = lines[j].trim();
-          if (line.startsWith('#')) continue;
-          const lower = line.toLowerCase();
-          if (lower.includes('effect_allele') && lower.includes('effect_weight') && (lower.includes('chr') || lower.includes('pos'))) {
-            headerLine = line;
-            dataStart = j + 1;
-            Logger.debug(`${pgsId}: Header erkannt in Zeile ${j}`);
-            break;
-          }
-        }
-
-        if (!headerLine) {
-          Logger.warn(`Kein gültiger Header in ${pgsId}, breche ab`);
-          continue;
-        }
-
-        const hdr = headerLine.split('\t');
-        const idx = {
-          chr: hdr.indexOf('hm_chr') >= 0 ? hdr.indexOf('hm_chr') : hdr.indexOf('chr_name'),
-          pos: hdr.indexOf('hm_pos') >= 0 ? hdr.indexOf('hm_pos') : hdr.indexOf('pos'),
-          ea: hdr.indexOf('effect_allele'),
-          weight: hdr.indexOf('effect_weight')
-        };
-
-        if (idx.chr < 0 || idx.pos < 0 || idx.ea < 0 || idx.weight < 0) {
-          Logger.warn(`Ungültiger Header in ${pgsId}`);
-          continue;
-        }
-
-        let rawScore = 0;
-        let matched = 0;
-        let validRows = 0;
-
-        for (let j = dataStart; j < lines.length; j++) {
-          const line = lines[j].trim();
-          if (!line || line.startsWith('#')) continue;
-          validRows++;
-          const cols = line.split('\t');
-          const chr = cols[idx.chr]?.replace(/^chr/i, '').trim();
-          const pos = cols[idx.pos]?.trim();
-          const ea = cols[idx.ea]?.toUpperCase();
-          const beta = parseFloat(cols[idx.weight]) || 0;
-          const { count } = matchGenotype(genomeMap, chr, pos, ea);
-          rawScore += count * beta;
-          if (count > 0) {
-            matched++;
-            Logger.debug(
-              `🔎 Match bei ${chr}:${pos} – EA: ${ea}, Count: ${count}, Beta: ${beta.toFixed(4)}, Beitrag: ${(count * beta).toFixed(4)}`,
-              `match:${pgsId}`,
-              10
-            );
-          }
-        }
-
-        Logger.info(`🔬 ${pgsId}: Verarbeitet: ${validRows} Datenzeilen, matched: ${matched}`);
-
-        const prs = Math.exp(rawScore);
-        const { z, percentile } = computeStats(rawScore);
-
-        Logger.info(`📈 ${pgsId}: RawScore=${rawScore.toFixed(4)}, PRS=${prs.toFixed(4)}, z=${z.toFixed(2)}, Perzentil=${percentile}`);
-
-        try {
-          // Neue Top-Variantenerfassung
-          const variants = [];
-
-          for (let j = dataStart; j < lines.length; j++) {
-            const line = lines[j].trim();
-            if (!line || line.startsWith('#')) continue;
-
-            const cols = line.split('\t');
-            const chr = cols[idx.chr]?.replace(/^chr/i, '').trim();
-            const pos = cols[idx.pos]?.trim();
-            const ea = cols[idx.ea]?.toUpperCase();
-            const beta = parseFloat(cols[idx.weight]) || 0;
-            const { count, genotype } = matchGenotype(genomeMap, chr, pos, ea);
-            if (count > 0) {
-              variants.push({
-                variant: `Chr${chr}.${pos}:g.${ea}`,
-                rsid: cols.find(c => c?.startsWith('rs')) || null,
-                beta,
-                z: count,
-                score: count * beta,
-                alleles: genotype || null
-              });
-            }
-          }
-
-          // Top 3 Varianten nach Score
-          const topVariants = variants
-            .sort((a, b) => b.score - a.score)
-            .slice(0, 3);  // kannst du auch auf 5 oder 10 erweitern
-
-          const detail = {
-            id: pgsId,
-            trait: `PGS für ${efoId}`,
-            rawScore,
-            prs,
-            zScore: z,
-            percentile,
-            matches: matched,
-            totalVariants: validRows,
-            topVariants
-          };
-
-          await fetch('/api/saveEfoDetail', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ efoId, detail })
-          });
-          Logger.info(`💾 Detaildatei für ${pgsId} gespeichert.`);
-        } catch (saveErr) {
-          Logger.warn(`❌ Fehler beim Speichern von ${pgsId}: ${saveErr.message}`);
-        }
-
-
-        if (matched === 0) {
-          Logger.warn(`Keine Übereinstimmungen bei ${pgsId}`);
-        }
-
-        Logger.info(`✅ ${pgsId}: Analyse abgeschlossen (n=${matched})`);
-      }
-
-      Logger.info(`🎯 Analyse für ${efoId} abgeschlossen`);
-    }
-
-    const duration = Math.round((Date.now() - startTime) / 1000);
-    Logger.info(`✅ Gesamtanalyse abgeschlossen in ${duration}s`);
-    postMessage({ results, logs: Logger.getAll() });
+    emitLog(`✅ Datei erfolgreich geladen (${sizeMB.toFixed(2)} MB)`);
+    return text;
 
   } catch (err) {
-    console.error('[Worker Fehler]', err);
-    postMessage({ error: err.message });
+    emitLog(`❌ Fehler beim Laden der Datei ${fileName}: ${err.message}`);
+    throw err;
   }
+}
+
+function matchPGS(variants, scoreLines) {
+  const header = scoreLines[0].split('\t');
+  const records = scoreLines.slice(1).map(l => l.split('\t'));
+
+  const matches = [];
+
+  const idx = {
+    rsid: header.indexOf('rsID'),
+    beta: header.indexOf('effect_weight'),
+    chr: header.indexOf('chr_name'),
+    pos: header.indexOf('chr_position'),
+    hmRsid: header.indexOf('hm_rsID'),
+    hmChr: header.indexOf('hm_chr'),
+    hmPos: header.indexOf('hm_pos')
+  };
+
+  for (const fields of records) {
+    const rsid = fields[idx.hmRsid] || fields[idx.rsid];  // fallback auf original falls kein hm_rsID
+    const betaStr = fields[idx.beta];
+    const chr = fields[idx.hmChr] || fields[idx.chr];
+    const pos = fields[idx.hmPos] || fields[idx.pos];
+    const beta = parseFloat(betaStr);
+
+    if (!rsid || isNaN(beta)) continue;
+
+    const variant = variants.find(v => v.rsid === rsid || `${v.chrom}:${v.pos}` === `${chr}:${pos}`);
+    if (variant) {
+      const dosage = variant.dosage ?? 1;
+      matches.push({
+        rsid,
+        variant: `${chr}:${pos}`,
+        genotype: variant.genotype,
+        beta,
+        dosage,
+        score: beta * dosage
+      });
+    }
+  }
+
+  return matches;
+}
+
+
+function computePRS(matches) {
+  self.postMessage({ log: `🧮 Start PRS Berechung` });
+  let raw = 0;
+  for (let i = 0; i < matches.length; i++) {
+    raw += matches[i].beta * matches[i].dosage;
+  }
+  self.postMessage({ log: `🧮 PRS berechnet: ${raw.toFixed(4)} aus ${matches.length} Treffern` });
+  return { rawScore: raw, matchedVariants: matches.length };
+}
+
+function extractTopVariants(matches) {
+  if (!Array.isArray(matches) || matches.length === 0) return [];
+  return matches
+    .map(m => ({
+      rsid: m.rsid,
+      variant: `${m.chrom}:${m.pos}`,
+      alleles: m.alleles,
+      score: m.beta * m.dosage
+    }))
+    .sort((a, b) => Math.abs(b.score) - Math.abs(a.score))
+    .slice(0, MAX_TOP_VARIANTS);
+}
+
+function aggregateResults(results) {
+  const grouped = {};
+  for (const r of results) {
+    if (!grouped[r.efoId]) {
+      grouped[r.efoId] = {
+        efoId: r.efoId,
+        trait: r.trait || '',
+        prsValues: [],
+        percentiles: [],
+        totalVariants: 0
+      };
+    }
+    grouped[r.efoId].prsValues.push(r.prs);
+    grouped[r.efoId].percentiles.push(r.percentile);
+    grouped[r.efoId].totalVariants += r.totalVariants;
+  }
+
+  return Object.values(grouped).map(g => {
+    const avg = arr => arr.reduce((a, b) => a + b, 0) / arr.length;
+    return {
+      "EFO-ID": g.efoId,
+      "Trait": g.trait,
+      "PGS Count": g.prsValues.length,
+      "Avg PRS": avg(g.prsValues).toFixed(3),
+      "Max PRS": Math.max(...g.prsValues).toFixed(3),
+      "Min PRS": Math.min(...g.prsValues).toFixed(3),
+      "Avg Percentile": avg(g.percentiles).toFixed(1),
+      "Max Percentile": Math.max(...g.percentiles).toFixed(1),
+      "Min Percentile": Math.min(...g.percentiles).toFixed(1),
+      "Total Variants": g.totalVariants
+    };
+  });
+}
+
+self.onmessage = async function (e) {
+  const { genomeTxt, efoIds, config, efoToPgsMap: providedMap = {} } = e.data;
+  const emitLog = (msg) => self.postMessage({ log: msg });
+  const variants = parse23andMe(genomeTxt);
+  const results = [];
+  const detailRows = [];
+
+  emitLog(`🧬 Genom enthält ${variants.length} Varianten`);
+
+  let traitsMap = {};
+  emitLog(`📥 Lade traits.json...`);
+  try {
+    const traitsRes = await fetch('/traits.json');
+    const traitsJson = await traitsRes.json();
+    for (const trait of traitsJson) {
+      traitsMap[trait.id.trim()] = trait.label.trim();
+    }
+    emitLog(`✅ traits.json geladen (${Object.keys(traitsMap).length} Traits)`);
+  } catch (err) {
+    emitLog(`❌ Fehler beim Laden von traits.json: ${err.message}`);
+  }
+
+  const effectiveMap = {};
+  for (const efo of efoIds) {
+    if (providedMap[efo]) {
+      effectiveMap[efo] = providedMap[efo];
+    } else {
+      emitLog(`🔍 Suche PGS für ${efo} in EBI-Metadaten`);
+      const metaRes = await fetch('https://ftp.ebi.ac.uk/pub/databases/spot/pgs/metadata/pgs_all_metadata_scores.csv');
+      const csv = await metaRes.text();
+      const metaLines = csv.split('\n');
+      const matches = metaLines
+        .filter((l) => {
+          const cols = l.split(',');
+          const efoCol = cols[5] || '';
+          return efoCol.split('|').includes(efo) && l.includes('GRCh37');
+        })
+        .map((l) => l.split(',')[0]);
+      effectiveMap[efo] = matches;
+    }
+  }
+
+  const totalJobs = Object.values(effectiveMap).reduce((sum, arr) => sum + arr.length, 0);
+  let completed = 0;
+
+  for (const efo of efoIds) {
+    const pgsIds = effectiveMap[efo];
+    if (!pgsIds || pgsIds.length === 0) {
+      emitLog(`⚠️ Keine PGS für ${efo}`);
+      continue;
+    }
+
+    emitLog(`📌 Verwende PGS für ${efo}: ${pgsIds.join(', ')}`);
+    const efoDetails = [];
+
+    for (const pgsId of pgsIds) {
+      self.postMessage({ log: `⬇️ Lade ${pgsId}`, currentPGS: pgsId, progress: 0, efoId: efo });
+
+      try {
+        const rawTxt = await fetchPGSFile(pgsId, config, emitLog);
+        const scoreLines = rawTxt.split('\n').filter(l => l && !l.startsWith('#'));
+        if (scoreLines.length > MAX_VARIANTS_ALLOWED) {
+          emitLog(`⚠️ Überspringe ${pgsId}: zu viele Varianten (${scoreLines.length})`);
+          completed++;
+          continue;
+        }
+
+        emitLog(`🔍 Vergleiche Varianten für ${pgsId}`);
+        const matches = matchPGS(variants, scoreLines);
+        emitLog(`✅ ${matches.length} Treffer für ${pgsId} gefunden`);
+
+        emitLog(`⚙️ Berechne PRS für ${pgsId}`);
+        const { rawScore, matchedVariants } = computePRS(matches);
+        emitLog(`✅ PRS für ${pgsId}: ${rawScore.toFixed(4)} (aus ${matchedVariants.length} Varianten)`);
+
+
+        const traitName = traitsMap[efo] || '';
+        const matchedList = Array.isArray(matchedVariants) ? matchedVariants : [];
+        const topVariants = matchedList
+          .filter(v => v && typeof v.score === 'number' && v.rsid)
+          .sort((a, b) => Math.abs(b.score) - Math.abs(a.score))
+          .slice(0, 10)
+          .map(v => ({
+            rsid: v.rsid,
+            variant: v.variant,
+            alleles: v.genotype,
+            score: v.score
+          }));
+
+        const detail = {
+          id: pgsId,
+          efoId: efo,
+          trait: traitName,
+          prs: rawScore,
+          rawScore,
+          zScore: rawScore,
+          percentile: Math.min(99.9, 100 * rawScore / 10),
+          matches: matchedList.length,
+          totalVariants: scoreLines.length,
+          topVariants
+        };
+
+        emitLog(`🧬 Trait für ${efo}: ${traitName || '(leer)'}`);
+
+        results.push(detail);
+        efoDetails.push(detail);
+
+        detailRows.push({
+          efoId: efo,
+          id: pgsId,
+          trait: traitName,
+          rawScore,
+          prs: rawScore,
+          zScore: rawScore,
+          percentile: Math.min(99.9, 100 * rawScore / 10),
+          matches: matchedList.length,
+          totalVariants: scoreLines.length
+        });
+
+      } catch (err) {
+        emitLog(`❌ Fehler bei ${pgsId}: ${err.message}`);
+      }
+
+      completed++;
+      const progress = (completed / totalJobs) * 100;
+      self.postMessage({ currentPGS: pgsId, progress, efoId: efo });
+    }
+
+    if (config.genomeName && efoDetails.length > 0) {
+      try {
+        const res = await fetch('/api/saveEfoDetail', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            genomeName: config.genomeName,
+            efoId: efo,
+            detail: efoDetails
+          })
+        });
+
+        if (!res.ok) {
+          const err = await res.text();
+          emitLog(`⚠️ Fehler beim Speichern der JSON für ${efo}: ${err}`);
+        } else {
+          emitLog(`✅ Detail-JSON gespeichert für ${efo}`);
+        }
+      } catch (e) {
+        emitLog(`❌ Netzwerkfehler beim Speichern von ${efo}: ${e.message}`);
+      }
+    }
+  }
+
+  const aggregated = aggregateResults(results);
+
+  const efoDetailsMap = {};
+  for (const r of results) {
+    if (!efoDetailsMap[r.efoId]) efoDetailsMap[r.efoId] = [];
+    efoDetailsMap[r.efoId].push({
+      id: r.id,
+      trait: r.trait,
+      rawScore: r.rawScore,
+      prs: r.prs,
+      zScore: r.zScore,
+      percentile: r.percentile,
+      matches: r.matches,
+      totalVariants: r.totalVariants,
+      topVariants: r.topVariants
+    });
+  }
+
+  self.postMessage({
+    results,
+    aggregated,
+    detailRows,
+    efoDetailsMap,
+    logs: [`✅ Analyse abgeschlossen (${results.length} Resultate)`],
+    log: `✅ Analyse abgeschlossen (${results.length} Resultate)`
+  });
 };
+
+function computePRS(matches) {
+  self.postMessage({ log: `🧮 Start PRS Berechung` });
+  let raw = 0;
+  for (let i = 0; i < matches.length; i++) {
+    raw += matches[i].beta * matches[i].dosage;
+  }
+  self.postMessage({ log: `🧮 PRS berechnet: ${raw.toFixed(4)} aus ${matches.length} Treffern` });
+  return { rawScore: raw, matchedVariants: matches };
+}
+

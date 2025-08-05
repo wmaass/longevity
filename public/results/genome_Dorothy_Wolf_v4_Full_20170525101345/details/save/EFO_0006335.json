@@ -1,0 +1,64 @@
+[
+  {
+    "id": "PGS000301",
+    "efoId": "EFO_0006335",
+    "trait": "",
+    "prs": 33.426768,
+    "rawScore": 33.426768,
+    "zScore": 33.426768,
+    "percentile": 99.9,
+    "matches": 107,
+    "totalVariants": 971,
+    "topVariants": [
+      {
+        "rsid": "rs17608766",
+        "variant": "45013271:C",
+        "alleles": "TT",
+        "score": 1.237978
+      },
+      {
+        "rsid": "rs3184504",
+        "variant": "111884608:T",
+        "alleles": "CC",
+        "score": 1.165906
+      },
+      {
+        "rsid": "rs17477177",
+        "variant": "106411858:C",
+        "alleles": "TT",
+        "score": 1.134984
+      }
+    ]
+  },
+  {
+    "id": "PGS002009",
+    "efoId": "EFO_0006335",
+    "trait": "",
+    "prs": 4.813903156218546,
+    "rawScore": 4.813903156218546,
+    "zScore": 4.813903156218546,
+    "percentile": 48.139031562185465,
+    "matches": 25298,
+    "totalVariants": 68450,
+    "topVariants": [
+      {
+        "rsid": "rs11191580",
+        "variant": "104906211:C",
+        "alleles": "TT",
+        "score": -0.747411205022934
+      },
+      {
+        "rsid": "rs3740360",
+        "variant": "96025491:C",
+        "alleles": "AA",
+        "score": -0.690862159157814
+      },
+      {
+        "rsid": "rs2681492",
+        "variant": "90013089:C",
+        "alleles": "TT",
+        "score": -0.645430756741298
+      }
+    ]
+  }
+]

@@ -1,0 +1,254 @@
+[
+  {
+    "id": "PGS000859",
+    "trait": "PGS für EFO_0003884",
+    "rawScore": -0.06969999999999998,
+    "prs": 0.932673580013838,
+    "zScore": -0.06969999999999998,
+    "percentile": 48,
+    "matches": 9,
+    "totalVariants": 34,
+    "topVariants": [
+      {
+        "variant": "Chr16.20421556:g.A",
+        "rsid": "rs12920537",
+        "beta": 0.0751,
+        "z": 2,
+        "score": 0.1502,
+        "alleles": "AA"
+      },
+      {
+        "variant": "Chr6.43806609:g.A",
+        "rsid": "rs881858",
+        "beta": 0.0616,
+        "z": 2,
+        "score": 0.1232,
+        "alleles": "AA"
+      },
+      {
+        "variant": "Chr11.30760335:g.T",
+        "rsid": "rs3925584",
+        "beta": 0.08,
+        "z": 1,
+        "score": 0.08,
+        "alleles": "CT"
+      }
+    ]
+  },
+  {
+    "id": "PGS001272",
+    "trait": "PGS für EFO_0003884",
+    "rawScore": 0.09122354120000001,
+    "prs": 1.095513870373925,
+    "zScore": 0.09122354120000001,
+    "percentile": 52,
+    "matches": 47,
+    "totalVariants": 158,
+    "topVariants": [
+      {
+        "variant": "Chr7.151415041:g.G",
+        "rsid": "rs10224002",
+        "beta": 0.04448195,
+        "z": 1,
+        "score": 0.04448195,
+        "alleles": "AG"
+      },
+      {
+        "variant": "Chr15.54003091:g.A",
+        "rsid": "rs551225",
+        "beta": 0.03017612,
+        "z": 1,
+        "score": 0.03017612,
+        "alleles": "AG"
+      },
+      {
+        "variant": "Chr6.43806609:g.A",
+        "rsid": "rs881858",
+        "beta": 0.01373197,
+        "z": 2,
+        "score": 0.02746394,
+        "alleles": "AA"
+      }
+    ]
+  },
+  {
+    "id": "PGS004004",
+    "trait": "PGS für EFO_0003884",
+    "rawScore": 0.0171298824740642,
+    "prs": 1.0172774402559033,
+    "zScore": 0.0171298824740642,
+    "percentile": 50,
+    "matches": 2733,
+    "totalVariants": 15373,
+    "topVariants": [
+      {
+        "variant": "Chr7.1274582:g.A",
+        "rsid": "rs4724799",
+        "beta": 0.00727048135184323,
+        "z": 2,
+        "score": 0.01454096270368646,
+        "alleles": "AA"
+      },
+      {
+        "variant": "Chr19.33364628:g.T",
+        "rsid": "rs8101881",
+        "beta": 0.00662359641805949,
+        "z": 2,
+        "score": 0.01324719283611898,
+        "alleles": "TT"
+      },
+      {
+        "variant": "Chr7.151405818:g.C",
+        "rsid": "rs10480299",
+        "beta": 0.0104673126943434,
+        "z": 1,
+        "score": 0.0104673126943434,
+        "alleles": "CT"
+      }
+    ]
+  },
+  {
+    "id": "PGS004016",
+    "trait": "PGS für EFO_0003884",
+    "rawScore": -0.021719173703038754,
+    "prs": 0.978514989211249,
+    "zScore": -0.021719173703038754,
+    "percentile": 49,
+    "matches": 14995,
+    "totalVariants": 88605,
+    "topVariants": [
+      {
+        "variant": "Chr7.1274582:g.A",
+        "rsid": "rs4724799",
+        "beta": 0.00845446874525924,
+        "z": 2,
+        "score": 0.01690893749051848,
+        "alleles": "AA"
+      },
+      {
+        "variant": "Chr7.151405818:g.C",
+        "rsid": "rs10480299",
+        "beta": 0.0105016616973721,
+        "z": 1,
+        "score": 0.0105016616973721,
+        "alleles": "CT"
+      },
+      {
+        "variant": "Chr18.77164243:g.A",
+        "rsid": "rs8091180",
+        "beta": 0.00509961501130004,
+        "z": 2,
+        "score": 0.01019923002260008,
+        "alleles": "AA"
+      }
+    ]
+  },
+  {
+    "id": "PGS004112",
+    "trait": "PGS für EFO_0003884",
+    "rawScore": 0.052355000000000006,
+    "prs": 1.0537497572856511,
+    "zScore": 0.052355000000000006,
+    "percentile": 51,
+    "matches": 89,
+    "totalVariants": 301,
+    "topVariants": [
+      {
+        "variant": "Chr7.1274582:g.A",
+        "rsid": "rs4724799",
+        "beta": 0.005402,
+        "z": 2,
+        "score": 0.010804,
+        "alleles": "AA"
+      },
+      {
+        "variant": "Chr1.150940625:g.T",
+        "rsid": "rs267738",
+        "beta": 0.005007,
+        "z": 2,
+        "score": 0.010014,
+        "alleles": "TT"
+      },
+      {
+        "variant": "Chr19.33364628:g.T",
+        "rsid": "rs8101881",
+        "beta": 0.004632,
+        "z": 2,
+        "score": 0.009264,
+        "alleles": "TT"
+      }
+    ]
+  },
+  {
+    "id": "PGS004128",
+    "trait": "PGS für EFO_0003884",
+    "rawScore": -0.046007999999999744,
+    "prs": 0.9550343218855786,
+    "zScore": -0.046007999999999744,
+    "percentile": 49,
+    "matches": 2496,
+    "totalVariants": 8543,
+    "topVariants": [
+      {
+        "variant": "Chr10.18685781:g.A",
+        "rsid": "rs12258178",
+        "beta": 0.008707,
+        "z": 2,
+        "score": 0.017414,
+        "alleles": "AA"
+      },
+      {
+        "variant": "Chr1.161141086:g.A",
+        "rsid": "rs35587044",
+        "beta": 0.005789,
+        "z": 2,
+        "score": 0.011578,
+        "alleles": "AA"
+      },
+      {
+        "variant": "Chr7.1274582:g.A",
+        "rsid": "rs4724799",
+        "beta": 0.005402,
+        "z": 2,
+        "score": 0.010804,
+        "alleles": "AA"
+      }
+    ]
+  },
+  {
+    "id": "PGS004224",
+    "trait": "PGS für EFO_0003884",
+    "rawScore": 0.3645344210867362,
+    "prs": 1.4398434913041258,
+    "zScore": 0.3645344210867362,
+    "percentile": 61,
+    "matches": 26,
+    "totalVariants": 241,
+    "topVariants": [
+      {
+        "variant": "Chr6.43806609:g.A",
+        "rsid": "rs881858",
+        "beta": 0.058268908123975824,
+        "z": 2,
+        "score": 0.11653781624795165,
+        "alleles": "AA"
+      },
+      {
+        "variant": "Chr1.150940625:g.T",
+        "rsid": "rs267738",
+        "beta": 0.04879016416943205,
+        "z": 2,
+        "score": 0.0975803283388641,
+        "alleles": "TT"
+      },
+      {
+        "variant": "Chr1.48002447:g.A",
+        "rsid": "rs688540",
+        "beta": 0.03922071315328133,
+        "z": 2,
+        "score": 0.07844142630656266,
+        "alleles": "AA"
+      }
+    ]
+  }
+]
