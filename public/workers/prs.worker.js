@@ -1,6 +1,6 @@
 importScripts('https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js');
 
-const MAX_VARIANTS_ALLOWED = 1000;
+const MAX_VARIANTS_ALLOWED = 100000;
 const MAX_FILE_SIZE_MB = 10;
 const MAX_TOP_VARIANTS = 3;
 

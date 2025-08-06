@@ -47,14 +47,14 @@ export default function PersonalUICardio() {
       genomeTxt: genomeText,
       efoIds: Array.from(new Set([
           "EFO_0004541", // HbA1c measurement
-          //"EFO_0004611", // LDL cholesterol
-          //"EFO_0004612", // HDL cholesterol
-          //"EFO_0004530", // Triglycerides
-          //"EFO_0001645", // Coronary artery disease
+          "EFO_0004611", // LDL cholesterol
+          "EFO_0004612", // HDL cholesterol
+          "EFO_0004530", // Triglycerides
+          "EFO_0001645", // Coronary artery disease
           "EFO_0006335", // Systolic blood pressure
-          //"EFO_0004574", // Total cholesterol
-          //"EFO_0004458", // C-reactive protein
-          //"EFO_0006336"  // Diastolic blood pressure
+          "EFO_0004574", // Total cholesterol
+          "EFO_0004458", // C-reactive protein
+          "EFO_0006336"  // Diastolic blood pressure
       ])),
       config: {
         useLocalFiles: true,
@@ -64,31 +64,31 @@ export default function PersonalUICardio() {
         "EFO_0004541": [
           "PGS000127", "PGS000128", "PGS000129", "PGS000130", "PGS000131", "PGS000132", "PGS000304"
         ],
-        //"EFO_0004611": [
-        //  "PGS000061", "PGS000065", "PGS000115", "PGS000310", "PGS000340", "PGS000661"
-        //],
-        //"EFO_0004612": [
-        //  "PGS000060", "PGS000064", "PGS000309", "PGS000660"
-        //],
-        //"EFO_0004530": [
-        //  "PGS000063", "PGS000066", "PGS000312", "PGS000659"
-        //],
-        //"EFO_0001645": [
-        //  "PGS000010", "PGS000011", "PGS000012", "PGS000019", "PGS000057", "PGS000058",
-        //  "PGS000059", "PGS000116", "PGS000200", "PGS000337", "PGS000349"
-        //],
+        "EFO_0004611": [
+          "PGS000061", "PGS000065", "PGS000115", "PGS000310", "PGS000340", "PGS000661"
+        ],
+        "EFO_0004612": [
+          "PGS000060", "PGS000064", "PGS000309", "PGS000660"
+        ],
+        "EFO_0004530": [
+          "PGS000063", "PGS000066", "PGS000312", "PGS000659"
+        ],
+        "EFO_0001645": [
+          "PGS000010", "PGS000011", "PGS000012", "PGS000019", "PGS000057", "PGS000058",
+          "PGS000059", "PGS000116", "PGS000200", "PGS000337", "PGS000349"
+        ],
         "EFO_0006335": [
           "PGS000301", "PGS002009"
         ],
-        //"EFO_0004574": [
-        //  "PGS000062", "PGS000311", "PGS000658", "PGS000677"
-        //],
-        //"EFO_0004458": [
-        //  "PGS000314", "PGS000675"
-        //],
-        //"EFO_0006336": [
-        //  "PGS000302", "PGS001900"
-        //]
+        "EFO_0004574": [
+          "PGS000062", "PGS000311", "PGS000658", "PGS000677"
+        ],
+        "EFO_0004458": [
+          "PGS000314", "PGS000675"
+        ],
+        "EFO_0006336": [
+          "PGS000302", "PGS001900"
+        ]
       }
     });
 
