@@ -26,7 +26,8 @@ const ORGAN_POS = {
   Blutgefäße: [57, 52],
 };
 
-function OrganView({
+// Named export so your page stays the default export
+export const OrganView = ({
   organScores = {},
   organMap = {},
   results = [],
@@ -34,46 +35,62 @@ function OrganView({
   selectedOrgan,
   onSelectOrgan = () => {},
   genomeName = '',
-}) {
-  // --- Color: green -> yellow -> red based on percentile ---
-  function hex(c) { return c.toString(16).padStart(2, '0'); }
-  function rgb(r, g, b) { return `#${hex(r)}${hex(g)}${hex(b)}`; }
-  function lerp(a, b, t) { return a + (b - a) * t; }
-  function blend(a, b, t) { return rgb(
-    Math.round(lerp(a[0], b[0], t)),
-    Math.round(lerp(a[1], b[1], t)),
-    Math.round(lerp(a[2], b[2], t))
-  ); }
-  function getColorForPercentile(p) {
+}) => {
+  // color: green -> yellow -> red
+  const hex = (c) => c.toString(16).padStart(2, '0');
+  const rgb = (r, g, b) => `#${hex(r)}${hex(g)}${hex(b)}`;
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const blend = (a, b, t) =>
+    rgb(
+      Math.round(lerp(a[0], b[0], t)),
+      Math.round(lerp(a[1], b[1], t)),
+      Math.round(lerp(a[2], b[2], t))
+    );
+  const getColorForPercentile = (p) => {
     if (!Number.isFinite(p)) return '#cccccc';
     const t = Math.max(0, Math.min(1, p / 100));
-    // 0..0.5: green (#16a34a) -> yellow (#facc15), 0.5..1: yellow -> red (#dc2626)
     const green = [22, 163, 74];
     const yellow = [250, 204, 21];
     const red = [220, 38, 38];
-    if (t <= 0.5) return blend(green, yellow, t / 0.5);
-    return blend(yellow, red, (t - 0.5) / 0.5);
-  }
+    return t <= 0.5 ? blend(green, yellow, t / 0.5) : blend(yellow, red, (t - 0.5) / 0.5);
+  };
 
-  const efoList = selectedOrgan && Array.isArray(organMap[selectedOrgan]) ? organMap[selectedOrgan] : [];
+  // circles on sides + organ targets
+  const organs = [
+    { name: 'Gehirn', x: 580, y: 80,  x1: 360, y1: 70  },
+    { name: 'Herz',   x: 580, y: 180, x1: 340, y1: 220 },
+    { name: 'Magen',  x: 580, y: 280, x1: 370, y1: 280 },
+    { name: 'Darm',   x: 580, y: 380, x1: 360, y1: 360 },
+    { name: 'Blase',  x: 580, y: 460, x1: 350, y1: 420 },
+    { name: 'Lunge',  x: 120, y: 100, x1: 320, y1: 170 },
+    { name: 'Leber',  x: 120, y: 200, x1: 310, y1: 280 },
+    { name: 'Niere',  x: 120, y: 300, x1: 320, y1: 310 },
+    { name: 'Blutgefäße', x: 120, y: 400, x1: 140, y1: 400 },
+  ];
+
+  // table rows for selected organ (grouped per EFO)
+  const efoList =
+    selectedOrgan && Array.isArray(organMap[selectedOrgan]) ? organMap[selectedOrgan] : [];
   const rows = React.useMemo(() => {
     const byEfo = new Map();
-    // seed entries so we always show all mapped EFOs
-    efoList.forEach((id) => byEfo.set(id, {
-      efoId: id,
-      trait: traitNames[id] || 'Unknown trait',
-      pgsCount: 0,
-      percentiles: [],
-      models: [],
-    }));
-    // fold-in results
-    results.forEach((r) => {
+    efoList.forEach((id) =>
+      byEfo.set(id, {
+        efoId: id,
+        trait: traitNames[id] || 'Unknown trait',
+        pgsCount: 0,
+        percentiles: [],
+        models: [],
+      })
+    );
+    (results || []).forEach((r) => {
       if (!byEfo.has(r.efoId)) return;
       const v = byEfo.get(r.efoId);
       v.trait = r.trait || v.trait;
       v.pgsCount += 1;
       if (Number.isFinite(r.percentile)) v.percentiles.push(r.percentile);
-      const label = [r.id, (r.name || r.label || r.shortName || '')].filter(Boolean).join(' — ');
+      const label = [r.id, (r.name || r.label || r.shortName || '')]
+        .filter(Boolean)
+        .join(' — ');
       if (label && !v.models.includes(label)) v.models.push(label);
     });
     return Array.from(byEfo.values()).map((v) => ({
@@ -82,25 +99,61 @@ function OrganView({
     }));
   }, [efoList, results, traitNames]);
 
-  return (
-    <div className="relative w-full max-w-sm mx-auto">
-      <img src="/images/bodymap.png" alt="Body Map" className="w-full" />
-      {Object.entries(organScores).map(([organ, score]) => {
-        const [top, left] = ORGAN_POS[organ] || [50, 50];
-        return (
-          <button
-            key={organ}
-            type="button"
-            onClick={() => onSelectOrgan(organ)}
-            className={`absolute rounded-full border-2 border-white shadow ${selectedOrgan === organ ? 'ring-4 ring-blue-400' : ''}`}
-            style={{ top: `${top}%`, left: `${left}%`, width: 22, height: 22, backgroundColor: getColorForPercentile(score), transform: 'translate(-50%, -50%)' }}
-            title={`${organ}: ${Number.isFinite(score) ? score.toFixed(1) : '–'}%`}
-          />
-        );
-      })}
+  // SVG canvas to match coordinates above
+  const W = 700, H = 520;
 
+  return (
+    <div className="relative w-full max-w-5xl mx-auto">
+      <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto">
+        <defs>
+          <marker
+            id="arrow"
+            viewBox="0 0 10 10"
+            refX="9"
+            refY="5"
+            markerWidth="6"
+            markerHeight="6"
+            orient="auto-start-reverse"
+          >
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="#9ca3af" />
+          </marker>
+        </defs>
+
+        {/* Background body */}
+        <image href="/images/bodymap.png" x="0" y="0" width={W} height={H} />
+
+        {/* Side circles + connector arrows */}
+        {organs.map((o) => {
+          const fill = getColorForPercentile(organScores[o.name]);
+          const stroke = selectedOrgan === o.name ? '#2563eb' : '#ffffff';
+          const sw = selectedOrgan === o.name ? 4 : 2;
+          return (
+            <g
+              key={o.name}
+              className="cursor-pointer"
+              onClick={() => onSelectOrgan(o.name)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ' ? onSelectOrgan(o.name) : null)}
+            >
+              <line
+                x1={o.x}
+                y1={o.y}
+                x2={o.x1}
+                y2={o.y1}
+                stroke="#9ca3af"
+                strokeWidth="2"
+                markerEnd="url(#arrow)"
+              />
+              <circle cx={o.x} cy={o.y} r="14" fill={fill} stroke={stroke} strokeWidth={sw} />
+            </g>
+          );
+        })}
+      </svg>
+
+      {/* Details panel (wider) */}
       {selectedOrgan && rows.length > 0 && (
-        <div className="absolute left-2 bottom-2 bg-white shadow-xl rounded-lg border p-3 text-sm max-w-[92%] overflow-auto">
+        <div className="absolute left-2 bottom-2 bg-white shadow-xl rounded-lg border p-3 text-sm max-w-[95vw] overflow-auto">
           <div className="font-semibold mb-2">{selectedOrgan}</div>
           <table className="min-w-full text-xs border">
             <thead>
@@ -116,10 +169,16 @@ function OrganView({
               {rows.map((it) => {
                 const href = `/details/${it.efoId}?genome=${encodeURIComponent(genomeName || '')}`;
                 return (
-                  <tr key={it.efoId} className="hover:bg-gray-50 cursor-pointer" onClick={() => (window.location.href = href)}>
-                    <td className="border px-2 py-1 font-mono text-blue-700 underline"><a href={href}>{it.efoId}</a></td>
-                    <td className="border px-2 py-1"><a className="hover:underline" href={href}>{it.trait}</a></td>
-                    <td className="border px-2 py-1 text-right">{it.percentile != null ? `${it.percentile.toFixed(1)}%` : '–'}</td>
+                  <tr key={it.efoId} className="hover:bg-gray-50 cursor-pointer" onClick={() => window.open(href, '_blank', 'noopener,noreferrer')}>
+                    <td className="border px-2 py-1 font-mono text-blue-700 underline">
+                      <a href={href} target="_blank" rel="noopener noreferrer">{it.efoId}</a>
+                    </td>
+                    <td className="border px-2 py-1">
+                      <a className="hover:underline" href={href} target="_blank" rel="noopener noreferrer">{it.trait}</a>
+                    </td>
+                    <td className="border px-2 py-1 text-right">
+                      {it.percentile != null ? `${it.percentile.toFixed(1)}%` : '–'}
+                    </td>
                     <td className="border px-2 py-1 align-top">
                       {it.models && it.models.length ? (
                         <ul className="list-disc list-inside space-y-0.5">
@@ -137,31 +196,35 @@ function OrganView({
       )}
     </div>
   );
-}
+};
+
+
+//export { OrganView };
+
 
 
 // ---------------- Agent plumbing ----------------
 const DEFAULT_EFO_TO_PGS = {
   EFO_0004541: ['PGS000127', 'PGS000128', 'PGS000129', 'PGS000130', 'PGS000131', 'PGS000132', 'PGS000304'],
-//   EFO_0004611: ['PGS000061', 'PGS000065', 'PGS000115', 'PGS000310', 'PGS000340', 'PGS000661'],
-//   EFO_0004612: ['PGS000060', 'PGS000064', 'PGS000309', 'PGS000660'],
-//   EFO_0004530: ['PGS000063', 'PGS000066', 'PGS000312', 'PGS000659'],
-//   EFO_0001645: ['PGS000010', 'PGS000011', 'PGS000012', 'PGS000019', 'PGS000057', 'PGS000058', 'PGS000059', 'PGS000116', 'PGS000200', 'PGS000337', 'PGS000349'],
-//   EFO_0006335: ['PGS000301', 'PGS002009'],
-//   EFO_0004574: ['PGS000062', 'PGS000311', 'PGS000658', 'PGS000677'],
-//   EFO_0004458: ['PGS000314', 'PGS000675'],
-//   EFO_0006336: ['PGS000302', 'PGS001900'],
+  EFO_0004611: ['PGS000061', 'PGS000065', 'PGS000115', 'PGS000310', 'PGS000340', 'PGS000661'],
+  EFO_0004612: ['PGS000060', 'PGS000064', 'PGS000309', 'PGS000660'],
+  EFO_0004530: ['PGS000063', 'PGS000066', 'PGS000312', 'PGS000659'],
+  EFO_0001645: ['PGS000010', 'PGS000011', 'PGS000012', 'PGS000019', 'PGS000057', 'PGS000058', 'PGS000059', 'PGS000116', 'PGS000200', 'PGS000337', 'PGS000349'],
+  EFO_0006335: ['PGS000301', 'PGS002009'],
+  EFO_0004574: ['PGS000062', 'PGS000311', 'PGS000658', 'PGS000677'],
+  EFO_0004458: ['PGS000314', 'PGS000675'],
+  EFO_0006336: ['PGS000302', 'PGS001900'],
 };
 const CARDIO_EFOS = [
   'EFO_0004541',
-//   'EFO_0004611',
-//   'EFO_0004612',
-//   'EFO_0004530',
-//   'EFO_0001645',
-//   'EFO_0006335',
-//   'EFO_0004574',
-//   'EFO_0004458',
-//   'EFO_0006336',
+  'EFO_0004611',
+  'EFO_0004612',
+  'EFO_0004530',
+  'EFO_0001645',
+  'EFO_0006335',
+  'EFO_0004574',
+  'EFO_0004458',
+  'EFO_0006336',
 ];
 const initialAgentState = {
   mode: 'auto',
@@ -560,26 +623,31 @@ export default function AgenticPersonalUICardio() {
                   </tr>
                 </thead>
                 <tbody>
-                    {rows.map((r) => (
-                        <tr key={r.efoId}>
-                        <td className="border px-2 py-1 font-mono text-blue-700 underline">
-                            <a href={`/details/${r.efoId}?genome=${encodeURIComponent(genomeName || '')}`}>
-                            {r.efoId}
-                            </a>
-                        </td>
-                        <td className="border px-2 py-1">{traitNames[r.efoId] ?? r.trait}</td>
-                        <td className="border px-2 py-1">{typeof r.percentile === 'number' ? r.percentile.toFixed(1) : '—'}</td>
-                        <td className="border px-2 py-1">
-                            {[r.id, (r.name || r.label || r.shortName || '')]
-                            .filter(Boolean)
-                            .join(' — ') || '—'}
-                        </td>
-                        <td className="border px-2 py-1">
-                            {r.pgsCount ?? (Array.isArray(r.ids) ? r.ids.length : (r.count ?? 1))}
-                        </td>
-                        </tr>
-                    ))}
-                    </tbody>
+                  {filteredResults.map((r, i) => (
+                    <tr key={i}>
+                      <td className="border px-2 py-1">
+                        <a
+                          className="text-blue-600 hover:underline"
+                          href={`/details/${r.efoId}?genome=${encodeURIComponent(genomeName)}`}
+                        >
+                          {r.efoId}
+                        </a>
+                      </td>
+                      <td className="border px-2 py-1">{traitNames[r.efoId] ?? r.trait}</td>
+                      <td className="border px-2 py-1">
+                        {typeof r.percentile === 'number' ? r.percentile.toFixed(1) : '—'}
+                      </td>
+                      <td className="border px-2 py-1">
+                        {[r.id, (r.name || r.label || r.shortName || '')]
+                          .filter(Boolean)
+                          .join(' — ') || '—'}
+                      </td>
+                      <td className="border px-2 py-1">
+                        {r.pgsCount ?? (Array.isArray(r.ids) ? r.ids.length : (r.count ?? 1))}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
               </table>
             </div>
           </div>
