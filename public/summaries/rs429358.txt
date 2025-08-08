@@ -1,0 +1,8 @@
+Title: Variation in APOE ε4 Prevalence and Brain Health Associations by European Descent in White All of Us Participants
+
+Summary: This study examines the prevalence and associations of the APOE ε4 allele, a known risk factor for Alzheimer's disease (AD), among individuals of European descent within the All of Us research program. The researchers found that APOE ε4 prevalence varies significantly across populations with European ancestry, suggesting potential genetic heterogeneity in brain health outcomes related to this allele. Notably, they observed that APOE ε4 carriers showed a higher risk for AD-related neuroimaging markers such as lower cortical thickness and hippocampal volume compared to non-carriers.
+
+Highlights:
+- Investigates APOE ε4 prevalence and its associations with brain health in individuals of European descent within the All of Us research program.
+- Finds significant variation in APOE ε4 prevalence across populations with European ancestry.
+- Observes higher risk for Alzheimer's disease (AD)-related neuroimaging markers among APOE ε4 carriers compared to non-carriers.
