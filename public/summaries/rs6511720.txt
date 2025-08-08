@@ -1,0 +1,3 @@
+Title: Variants in candidate genes and their interactions with smoking on the risk of acute coronary syndrome
+
+Summary: The study investigates the interplay between genetic variants (SNPs) in candidate genes, specifically ABO, ABCA1, and ALDH2, and smoking habits as risk factors for Acute Coronary Syndrome (ACS). The research found that certain alleles of these genes, particularly ABO G O, ABCA1 R452C, and ALDH2*2/*2, could increase the susceptibility to ACS in smokers. The study was conducted on a Chinese Han population, suggesting potential ethnic-specific genetic factors influencing the development of ACS. However, further research is needed to confirm these findings and elucidate the underlying mechanisms.
