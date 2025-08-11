@@ -21,78 +21,94 @@ export default async function handler(req, res) {
     const query = `https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=${rsid}&format=json&pageSize=5`;
 
     try {
-      const res = await fetch(query);
-      const json = await res.json();
+      const r = await fetch(query);
+      const json = await r.json();
       const papers = json.resultList?.result || [];
 
       if (papers.length === 0) {
         log(`⚠️ Kein Paper gefunden zu ${rsid}`);
-        return { combinedText: '', doi: null };
+        return { combinedText: '', url: null };
       }
 
-      const paper = papers[0];
+      // Pick best-scoring paper (prefer DOI/PMID)
+      const scored = papers.map(p => ({
+        p,
+        score:
+          (p.doi ? 4 : 0) +
+          (p.pmid ? 3 : 0) +
+          (p.pmcid ? 2 : 0) +
+          (p.title?.toLowerCase().includes(rsid.toLowerCase()) ? 2 : 0) +
+          ((Number(p.pubYear) || 0) / 10000)
+      })).sort((a, b) => b.score - a.score);
+
+      const paper = scored[0].p;
       const title = paper.title || 'Untitled';
-      const abstract = (paper.abstractText || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-      const doiLink = paper.doi ? `https://doi.org/${paper.doi}` : null;
+      const abstract = (paper.abstractText || '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+      // Build robust URL
+      let url = null;
+      if (paper.doi) {
+        url = `https://doi.org/${paper.doi}`;
+      } else if (paper.pmid) {
+        url = `https://pubmed.ncbi.nlm.nih.gov/${paper.pmid}/`;
+      } else if (paper.pmcid) {
+        url = `https://www.ncbi.nlm.nih.gov/pmc/articles/${paper.pmcid}/`;
+      } else if (paper.id && paper.source) {
+        url = `https://europepmc.org/article/${paper.source}/${paper.id}`;
+      } else if (paper.fullTextUrlList?.fullTextUrl?.[0]?.url) {
+        url = paper.fullTextUrlList.fullTextUrl[0].url;
+      } else {
+        // Last resort: EuropePMC search
+        url = `https://europepmc.org/search?query=${encodeURIComponent(rsid)}`;
+      }
 
       log(`📄 Gefunden: ${title}`);
-      if (doiLink) log(`🔗 DOI-Link: ${doiLink}`);
+      log(`🔗 URL: ${url}`);
       log(`📏 Abstract-Länge: ${abstract.length} Zeichen`);
 
-      const combinedText = `Title: ${title}\n${doiLink ? `Link: ${doiLink}\n` : ''}Abstract: ${abstract}`;
-      return { combinedText, doi: doiLink };
+      const combinedText = `Title: ${title}\n${abstract ? `Abstract: ${abstract}` : ''}`;
+      return { combinedText, url };
 
     } catch (err) {
       log(`❌ Fehler beim Europe PMC Fetch: ${err.message}`);
-      return { combinedText: '', doi: null };
+      return { combinedText: '', url: null };
     }
   }
 
-  async function generateWithOllama(rsid, text) {
-    const label = `🧠 Ollama Request ${rsid}`;
-    log(`🚀 Sende LLM-Request an mediphi-lite für ${rsid}`);
-    console.time(label);
+  // top-level
+let ollamaSeq = 0;
 
-    const prompt = `Summarize the following PubMed abstract for a medical professional:\n\n${text}`;
+async function generateWithOllama(rsid, text) {
+  const label = `🧠 Ollama ${rsid} [${++ollamaSeq}]`;
+  log(`🚀 Sende LLM-Request an mediphi-lite für ${rsid} (${label})`);
+  console.time(label);
+  try {
+    const res = await fetch('http://localhost:11434/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'mediphi-lite', prompt: `Summarize the following PubMed abstract for a medical professional:\n\n${text}`, stream: false }),
+    });
+    const raw = await res.text();
+    if (!res.ok) { log(`❌ HTTP ${res.status} bei LLM-Request: ${raw}`); return null; }
 
-    try {
-      const res = await fetch('http://localhost:11434/api/generate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'mediphi-lite', prompt, stream: false }),
-      });
+    let parsed;
+    try { parsed = JSON.parse(raw); } catch (e) { log(`❌ JSON-Parsing-Fehler: ${e.message}`); return null; }
 
-      const raw = await res.text();
-
-      if (!res.ok) {
-        log(`❌ HTTP ${res.status} bei LLM-Request: ${raw}`);
-        return null;
-      }
-
-      let parsed;
-      try {
-        parsed = JSON.parse(raw);
-      } catch (jsonErr) {
-        log(`❌ JSON-Parsing-Fehler: ${jsonErr.message}`);
-        return null;
-      }
-
-      const summary = parsed.response?.trim();
-      if (!summary) {
-        log(`⚠️ Leere oder fehlende Antwort von mediphi-lite`);
-        return null;
-      }
-
-      log(`✅ LLM-Zusammenfassung erfolgreich (${summary.length} Zeichen)`);
-      return summary;
-
-    } catch (err) {
-      log(`❌ Fehler bei LLM-Zusammenfassung: ${err.message}`);
-      return null;
-    } finally {
-      console.timeEnd(label);
-    }
+    const summary = parsed.response?.trim();
+    if (!summary) { log('⚠️ Leere oder fehlende Antwort von mediphi-lite'); return null; }
+    log(`✅ LLM-Zusammenfassung erfolgreich (${summary.length} Zeichen)`);
+    return summary;
+  } catch (err) {
+    log(`❌ Fehler bei LLM-Zusammenfassung: ${err.message}`);
+    return null;
+  } finally {
+    // this label is unique, so no collision
+    console.timeEnd(label);
   }
+}
 
   async function generateWithDistilBART(text) {
     if (!summarizerBackup) {
@@ -113,10 +129,10 @@ export default async function handler(req, res) {
   }
 
   async function generateSummary(rsid) {
-    const { combinedText, doi } = await fetchEuropePMCPapers(rsid);
+    const { combinedText, url } = await fetchEuropePMCPapers(rsid);
     if (!combinedText.trim()) {
       log(`⚠️ Keine Paper gefunden für ${rsid}`);
-      return { text: `No Europe PMC papers available for SNP ${rsid}.`, url: doi, local: false };
+      return { text: `No Europe PMC papers available for SNP ${rsid}.`, url, local: false };
     }
 
     const summary =
@@ -127,16 +143,13 @@ export default async function handler(req, res) {
       log(`⚠️ Keine Zusammenfassung erzeugt`);
     }
 
-    return { text: summary, url: doi, local: false };
+    return { text: summary, url, local: false };
   }
 
   // Haupt-Requestverarbeitung
   const { rsid } = req.query;
   if (!rsid) {
-    return res.status(400).json({
-      error: 'Missing rsid parameter',
-      logs: requestLogs,
-    });
+    return res.status(400).json({ error: 'Missing rsid parameter', logs: requestLogs });
   }
 
   const cachePath = path.join(process.cwd(), 'public', 'summaries', `${rsid}.txt`);
@@ -148,8 +161,8 @@ export default async function handler(req, res) {
     if (fs.existsSync(cachePath)) {
       log(`📦 Cache-Hit: Lade gespeicherte Zusammenfassung für ${rsid}`);
       summaryText = fs.readFileSync(cachePath, 'utf8');
-      const { doi } = await fetchEuropePMCPapers(rsid);
-      url = doi;
+      const { url: cachedUrl } = await fetchEuropePMCPapers(rsid);
+      url = cachedUrl;
       isLocal = true;
     } else {
       log(`📤 Keine Zusammenfassung im Cache. Generiere neue für ${rsid}`);
@@ -173,12 +186,7 @@ export default async function handler(req, res) {
       }
     }
 
-    res.status(200).json({
-      text: summaryText,
-      url,
-      local: isLocal,
-      logs: requestLogs,
-    });
+    res.status(200).json({ text: summaryText, url, local: isLocal, logs: requestLogs });
 
   } catch (err) {
     log(`❌ Unerwarteter Fehler: ${err.message}`);

@@ -1,0 +1,4 @@
+Title: Expression of the C-allele of intronic rs8192675 in SLC2A2 is associated with improved glucose response to metformin.
+Link: https://doi.org/10.1590/1678-4685-gmb-2023-0281
+
+Summary: The study finds that the C-allele of a specific SNP (rs8192675) within the SLC2A2 gene is linked to an improved response in glucose levels when treated with metformin. This association was observed in the studied population, although further research is needed to confirm these findings and determine potential mechanisms behind this improvement.

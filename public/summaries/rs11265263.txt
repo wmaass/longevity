@@ -1,0 +1,5 @@
+Title: fastGxE: Powering genome-wide detection of genotype-environment interaction in biobank studies
+
+Summary: The study introduces a new method called fastGxE, designed to efficiently detect genotype-environment interactions (GEI) at the genome-wide level. Genetic variants, particularly single nucleotide polymorphisms (SNPs), and their potential interactions with environmental factors in relation to various diseases are analyzed using data from biobank studies. The technique is beneficial for identifying susceptibility genes and risk factors that could contribute to disease development in diverse populations.
+
+Highlight: fastGxE, genotype-environment interaction (GEI), single nucleotide polymorphisms (SNPs), diseases, biobank studies, diverse populations.

@@ -1,0 +1,8 @@
+Title: Differences in insulin resistance biomarkers among individuals with different SLC30A8 genotypes in the São Paulo population-based study (2015 ISA-Nutrition).
+
+Summary: The study investigates the relationship between various SLC30A8 genotypes and insulin resistance biomarkers in a São Paulo population. Results indicate differences in insulin resistance biomarkers among individuals carrying different SLC30A8 genotypes, but no significant correlation was found between these genotypes and serum zinc concentration.
+
+Highlights:
+- Disease/Condition: Insulin resistance (indicated by biomarkers)
+- SNP: SLC30A8 gene variation (genotype)
+- Population: São Paulo population-based study (2015 ISA-Nutrition)

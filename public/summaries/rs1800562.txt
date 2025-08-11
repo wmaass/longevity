@@ -1,0 +1,3 @@
+Abstract Summary:
+
+This study investigates serum metabolites in relation to liver phenotypes using population-based imaging. The research found distinct metabolic patterns associated with different hepatic phenotypes, suggesting a potential non-invasive diagnostic approach. Notably, single nucleotide polymorphisms (SNPs) in genes such as PNPLA3 and TM6SF2 were linked to altered metabolite levels, particularly in individuals with liver steatosis or fibrosis. The study involved a large, diverse population, providing valuable insights into the metabolic mechanisms underlying various liver diseases.

@@ -1,0 +1,8 @@
+Title: The total and direct effects of systolic and diastolic blood pressure on cardiovascular disease and longevity using Mendelian randomization
+
+Summary: This study employs Mendelian randomization to investigate the causal associations between both systolic and diastolic blood pressure levels and the risk of cardiovascular disease (CVD) as well as longevity. By utilizing genetic variants associated with blood pressure levels as instrumental variables, the researchers aim to minimize confounding factors and provide more robust evidence regarding the effects of blood pressure on CVD and life expectancy.
+
+Highlights:
+- Systolic and diastolic blood pressure associations with CVD and longevity are investigated using Mendelian randomization.
+- Genetic variants linked to blood pressure levels serve as instrumental variables to minimize confounding factors.
+- The study aims to provide more robust evidence on the effects of blood pressure on cardiovascular disease risk and life expectancy.
