@@ -1,0 +1,14 @@
+{
+  "bloodPressureSystolic": ["EFO_0006335"],
+  "bloodPressureDiastolic": ["EFO_0006336"],
+  "totalCholesterol": ["EFO_0004574"],
+  "hdlCholesterol": ["EFO_0004612"],
+  "ldlCholesterol": ["EFO_0004611"],
+  "triglycerides": ["EFO_0004530"],
+  "hba1c": ["EFO_0004541"],
+  "cReactiveProtein": ["EFO_0004458"],
+  "coronaryArteryDisease": ["EFO_0001645"],
+
+  "bloodPressure": ["EFO_0006335", "EFO_0006336"],
+  "lipidPanel": ["EFO_0004574", "EFO_0004612", "EFO_0004611", "EFO_0004530"]
+}

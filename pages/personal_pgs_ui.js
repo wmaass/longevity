@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react';
 import DashboardLayout from '../components/DashboardLayout';
 import ProgressBar from '../components/ProgressBar';
 import Papa from 'papaparse';
+import ComparePGSDiffs from "../components/ComparePGSDiffs";
+
+
 
 export default function PersonalUICardio() {
   const [genomeText, setGenomeText] = useState('');
@@ -11,6 +14,7 @@ export default function PersonalUICardio() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [progressState, setProgressState] = useState({ currentPGS: '', percent: 0 });
+  const fmt = (v, d = 1) => Number.isFinite(v) ? v.toFixed(d) : '–';
 
   useEffect(() => {
     if (log.length > 0) {
@@ -41,20 +45,23 @@ export default function PersonalUICardio() {
     setLog([]);
     setResults([]);
 
+    // 🧬 Print genome name in log panel immediately
+    setLog(prev => [...prev, `🧬 Genome Name: ${genomeName || '(unknown)'}`]);
+
     const worker = new Worker('/workers/prs.worker.js');
 
     worker.postMessage({
       genomeTxt: genomeText,
       efoIds: Array.from(new Set([
-          "EFO_0004541", // HbA1c measurement
-          "EFO_0004611", // LDL cholesterol
-          "EFO_0004612", // HDL cholesterol
-          "EFO_0004530", // Triglycerides
-          "EFO_0001645", // Coronary artery disease
-          "EFO_0006335", // Systolic blood pressure
-          "EFO_0004574", // Total cholesterol
-          "EFO_0004458", // C-reactive protein
-          "EFO_0006336"  // Diastolic blood pressure
+        "EFO_0004541", // HbA1c measurement
+        "EFO_0004611", // LDL cholesterol
+        "EFO_0004612", // HDL cholesterol
+        "EFO_0004530", // Triglycerides
+        "EFO_0001645", // Coronary artery disease
+        "EFO_0006335", // Systolic blood pressure
+        "EFO_0004574", // Total cholesterol
+        "EFO_0004458", // C-reactive protein
+        "EFO_0006336"  // Diastolic blood pressure
       ])),
       config: {
         useLocalFiles: true,
@@ -276,12 +283,15 @@ export default function PersonalUICardio() {
                   <td className="border px-2 py-1">{r.trait}</td>
                   <td className="border px-2 py-1">{r.rawScore.toFixed(3)}</td>
                   <td className="border px-2 py-1">{r.prs.toFixed(3)}</td>
-                  <td className="border px-2 py-1">{r.percentile >= 0 ? r.percentile.toFixed(1) : '–'}%</td>
+                  <td className="border px-2 py-1">
+                    {Number.isFinite(r.percentile) ? `${r.percentile.toFixed(1)}%` : '–'}
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         )}
+        <ComparePGSDiffs />
 
         {log.length > 0 && (
           <div id="log-container" className="mt-6 max-h-64 overflow-y-auto bg-white border border-gray-300 rounded p-3 text-sm font-mono text-gray-800 shadow-inner">

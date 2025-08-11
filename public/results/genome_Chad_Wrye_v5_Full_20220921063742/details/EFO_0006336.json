@@ -1,0 +1,74 @@
+[
+  {
+    "id": "PGS000302",
+    "trait": "diastolic blood pressure",
+    "rawScore": 23.543751,
+    "prs": 23.543751,
+    "zScore": 23.543751,
+    "percentile": 99.9,
+    "matches": 98,
+    "totalVariants": 962,
+    "topVariants": [
+      {
+        "rsid": "rs137923903",
+        "variant": "21:44829595",
+        "alleles": "CC",
+        "score": 1.570346
+      },
+      {
+        "rsid": "rs17080102",
+        "variant": "6:151004770",
+        "alleles": "GG",
+        "score": 1.009116
+      },
+      {
+        "rsid": "rs73220980",
+        "variant": "21:44752768",
+        "alleles": "GG",
+        "score": 0.91849
+      },
+      {
+        "rsid": "rs11191548",
+        "variant": "10:104846178",
+        "alleles": "TT",
+        "score": 0.916946
+      },
+      {
+        "rsid": "rs17249754",
+        "variant": "12:90060586",
+        "alleles": "GG",
+        "score": 0.81375
+      },
+      {
+        "rsid": "rs1530440",
+        "variant": "10:63524591",
+        "alleles": "CC",
+        "score": 0.718398
+      },
+      {
+        "rsid": "rs72847884",
+        "variant": "10:103115345",
+        "alleles": "AA",
+        "score": 0.675066
+      },
+      {
+        "rsid": "rs36092215",
+        "variant": "8:142367246",
+        "alleles": "GG",
+        "score": 0.590338
+      },
+      {
+        "rsid": "rs633185",
+        "variant": "11:100593538",
+        "alleles": "CC",
+        "score": 0.564584
+      },
+      {
+        "rsid": "rs880315",
+        "variant": "1:10796866",
+        "alleles": "CC",
+        "score": 0.523454
+      }
+    ]
+  }
+]

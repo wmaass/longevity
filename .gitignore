@@ -54,5 +54,6 @@ PGS*.txt
 
 .DS_Store
 pages/.DS_Store
+af_tmp/
 
 .venv/

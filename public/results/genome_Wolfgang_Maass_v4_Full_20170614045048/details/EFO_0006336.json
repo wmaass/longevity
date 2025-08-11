@@ -2,36 +2,48 @@
   {
     "id": "PGS000302",
     "trait": "diastolic blood pressure",
-    "rawScore": 21.83261700000001,
-    "prs": 21.83261700000001,
-    "zScore": 21.83261700000001,
-    "percentile": 99.9,
-    "matches": 157,
-    "totalVariants": 963,
+    "rawScore": 20.625068999999996,
+    "prs": 20.625068999999996,
+    "zScore": -17.288447933527443,
+    "percentile": 0.1,
+    "matches": 100,
+    "totalVariants": 962,
     "topVariants": [
-      {
-        "rsid": "rs78378222",
-        "variant": "17:7571752",
-        "alleles": "TT",
-        "score": 0.622526
-      },
       {
         "rsid": "rs13107325",
         "variant": "4:103188709",
         "alleles": "CC",
-        "score": 0.608984
+        "score": 1.217968
       },
       {
-        "rsid": "rs3918226",
-        "variant": "7:150690176",
-        "alleles": "CC",
-        "score": 0.554911
+        "rsid": "rs11191548",
+        "variant": "10:104846178",
+        "alleles": "TT",
+        "score": 0.916946
       },
       {
-        "rsid": "rs1800888",
-        "variant": "5:148206885",
+        "rsid": "rs1458038",
+        "variant": "4:81164723",
+        "alleles": "TT",
+        "score": 0.826388
+      },
+      {
+        "rsid": "rs1530440",
+        "variant": "10:63524591",
         "alleles": "CC",
-        "score": 0.49788
+        "score": 0.718398
+      },
+      {
+        "rsid": "rs36027301",
+        "variant": "11:67809268",
+        "alleles": "CC",
+        "score": 0.55003
+      },
+      {
+        "rsid": "rs2782980",
+        "variant": "10:115781527",
+        "alleles": "CC",
+        "score": 0.48477
       },
       {
         "rsid": "rs17367504",
@@ -46,28 +58,16 @@
         "score": 0.459174
       },
       {
-        "rsid": "rs11191548",
-        "variant": "10:104846178",
-        "alleles": "TT",
-        "score": 0.458473
+        "rsid": "rs6891344",
+        "variant": "5:123136656",
+        "alleles": "AA",
+        "score": 0.452104
       },
       {
         "rsid": "rs3184504",
         "variant": "12:111884608",
         "alleles": "CT",
         "score": 0.444957
-      },
-      {
-        "rsid": "rs1458038",
-        "variant": "4:81164723",
-        "alleles": "TT",
-        "score": 0.413194
-      },
-      {
-        "rsid": "rs1799945",
-        "variant": "6:26091179",
-        "alleles": "CG",
-        "score": 0.383401
       }
     ]
   }

@@ -1,0 +1,30 @@
+{
+  "patient": {
+    "name": "Wolfgang Maaß",
+    "age": 60,
+    "gender": "male",
+    "sports": ["swimming"],
+    "fitnessLevel": "good for age"
+  },
+  "biomarkers": {
+    "vitals": {
+      "bloodPressureSystolic": { "value": 122, "unit": "mmHg" },
+      "bloodPressureDiastolic": { "value": 78, "unit": "mmHg" },
+      "bmi": { "value": 24.0, "unit": "kg/m²" },
+      "oxygenSaturation": { "value": 97, "unit": "%" }
+    },
+    "bloodTests": {
+      "totalCholesterol": { "value": 185, "unit": "mg/dL" },
+      "hdlCholesterol": { "value": 62, "unit": "mg/dL" },
+      "ldlCholesterol": { "value": 105, "unit": "mg/dL" },
+      "triglycerides": { "value": 95, "unit": "mg/dL" },
+      "hba1c": { "value": 5.4, "unit": "%" },
+      "fastingGlucose": { "value": 90, "unit": "mg/dL" },
+      "cReactiveProtein": { "value": 0.8, "unit": "mg/L" }
+    },
+    "other": {
+      "restingHeartRate": { "value": 56, "unit": "bpm" },
+      "maxVO2": { "value": 42, "unit": "mL/kg/min" }
+    }
+  }
+}

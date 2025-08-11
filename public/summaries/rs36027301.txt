@@ -1,0 +1,3 @@
+Title: Integration of genetic fine-mapping and multi-omics data reveals candidate effector genes for hypertension
+
+Summary: This study integrates genetic fine-mapping with multi-omics data to identify potential causal genes associated with hypertension. The research focuses on genome-wide association studies (GWAS) findings in a large European population. By combining data from genetics, transcriptomics, epigenomics, and proteomics, the authors pinpointed several SNPs (single nucleotide polymorphisms) within the genes ANO1, KCND3, and PLEKHA4 as promising candidates contributing to hypertension susceptibility. The findings suggest these genes could serve as therapeutic targets for hypertension treatment in the future.

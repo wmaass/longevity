@@ -1,0 +1,74 @@
+[
+  {
+    "id": "PGS000314",
+    "trait": "C-reactive protein measurement",
+    "rawScore": 2.1833383,
+    "prs": 2.1833383,
+    "zScore": 2.1833383,
+    "percentile": 21.833383,
+    "matches": 18,
+    "totalVariants": 77,
+    "topVariants": [
+      {
+        "rsid": "rs429358",
+        "variant": "19:45411941",
+        "alleles": "TT",
+        "score": 0.4626872
+      },
+      {
+        "rsid": "rs1800961",
+        "variant": "20:43042364",
+        "alleles": "CC",
+        "score": 0.2251832
+      },
+      {
+        "rsid": "rs112635299",
+        "variant": "14:94838142",
+        "alleles": "GG",
+        "score": 0.213276
+      },
+      {
+        "rsid": "rs61812598",
+        "variant": "1:154420087",
+        "alleles": "GG",
+        "score": 0.1868602
+      },
+      {
+        "rsid": "rs75460349",
+        "variant": "1:27180088",
+        "alleles": "AA",
+        "score": 0.1750028
+      },
+      {
+        "rsid": "rs1260326",
+        "variant": "2:27730940",
+        "alleles": "TT",
+        "score": 0.1467596
+      },
+      {
+        "rsid": "rs7310409",
+        "variant": "12:121424861",
+        "alleles": "AG",
+        "score": 0.13578
+      },
+      {
+        "rsid": "rs13233571",
+        "variant": "7:72971231",
+        "alleles": "CC",
+        "score": 0.114304
+      },
+      {
+        "rsid": "rs12083537",
+        "variant": "1:154381103",
+        "alleles": "AA",
+        "score": 0.0992216
+      },
+      {
+        "rsid": "rs2836878",
+        "variant": "21:40465534",
+        "alleles": "GG",
+        "score": 0.0863648
+      }
+    ]
+  }
+]

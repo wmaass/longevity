@@ -1,0 +1,63 @@
+{
+  "patientId": "123456",
+  "name": "Dorothy Wolf",
+  "dateOfBirth": "1970-05-14",
+  "dateRecorded": "2025-08-10",
+  "biomarkers": {
+    "vitals": {
+      "bloodPressure": {
+        "systolic": 120,
+        "diastolic": 80,
+        "unit": "mmHg"
+      },
+      "heartRate": {
+        "value": 72,
+        "unit": "bpm"
+      },
+      "respiratoryRate": {
+        "value": 16,
+        "unit": "breaths/min"
+      },
+      "bodyTemperature": {
+        "value": 36.7,
+        "unit": "°C"
+      }
+    },
+    "bloodTests": {
+      "totalCholesterol": {
+        "value": 180,
+        "unit": "mg/dL"
+      },
+      "hdlCholesterol": {
+        "value": 55,
+        "unit": "mg/dL"
+      },
+      "ldlCholesterol": {
+        "value": 100,
+        "unit": "mg/dL"
+      },
+      "triglycerides": {
+        "value": 120,
+        "unit": "mg/dL"
+      },
+      "fastingGlucose": {
+        "value": 90,
+        "unit": "mg/dL"
+      },
+      "hba1c": {
+        "value": 5.4,
+        "unit": "%"
+      }
+    },
+    "other": {
+      "oxygenSaturation": {
+        "value": 98,
+        "unit": "%"
+      },
+      "bmi": {
+        "value": 24.0,
+        "unit": "kg/m²"
+      }
+    }
+  }
+}

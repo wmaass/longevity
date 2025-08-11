@@ -1,0 +1,218 @@
+[
+  {
+    "id": "PGS000062",
+    "trait": "total cholesterol measurement",
+    "rawScore": -0.6349999999999998,
+    "prs": -0.6349999999999998,
+    "zScore": -0.6349999999999998,
+    "percentile": -6.349999999999998,
+    "matches": 34,
+    "totalVariants": 52,
+    "topVariants": [
+      {
+        "rsid": "rs6511720",
+        "variant": "19:11202306",
+        "alleles": "GG",
+        "score": -0.374
+      },
+      {
+        "rsid": "rs1800961",
+        "variant": "20:43042364",
+        "alleles": "CC",
+        "score": -0.2362
+      },
+      {
+        "rsid": "rs9987289",
+        "variant": "8:9183358",
+        "alleles": "GG",
+        "score": -0.1776
+      },
+      {
+        "rsid": "rs1883025",
+        "variant": "9:107664301",
+        "alleles": "CC",
+        "score": -0.133
+      },
+      {
+        "rsid": "rs2000999",
+        "variant": "16:72108093",
+        "alleles": "GG",
+        "score": 0.1306
+      },
+      {
+        "rsid": "rs3177928",
+        "variant": "6:32412435",
+        "alleles": "GG",
+        "score": 0.1256
+      },
+      {
+        "rsid": "rs635634",
+        "variant": "9:136155000",
+        "alleles": "CC",
+        "score": 0.1254
+      },
+      {
+        "rsid": "rs1367117",
+        "variant": "2:21263900",
+        "alleles": "AG",
+        "score": 0.118
+      },
+      {
+        "rsid": "rs2814982",
+        "variant": "6:34546560",
+        "alleles": "CC",
+        "score": -0.1098
+      },
+      {
+        "rsid": "rs2072183",
+        "variant": "7:44579180",
+        "alleles": "GG",
+        "score": 0.0996
+      }
+    ]
+  },
+  {
+    "id": "PGS000311",
+    "trait": "total cholesterol measurement",
+    "rawScore": -0.33499999999999974,
+    "prs": -0.33499999999999974,
+    "zScore": -0.33499999999999974,
+    "percentile": -3.349999999999997,
+    "matches": 88,
+    "totalVariants": 234,
+    "topVariants": [
+      {
+        "rsid": "rs646776",
+        "variant": "1:109818530",
+        "alleles": "TT",
+        "score": 0.26
+      },
+      {
+        "rsid": "rs541041",
+        "variant": "2:21294975",
+        "alleles": "AA",
+        "score": 0.22
+      },
+      {
+        "rsid": "rs10790162",
+        "variant": "11:116639104",
+        "alleles": "GG",
+        "score": -0.18
+      },
+      {
+        "rsid": "rs964184",
+        "variant": "11:116648917",
+        "alleles": "CC",
+        "score": -0.174
+      },
+      {
+        "rsid": "rs7350481",
+        "variant": "11:116586283",
+        "alleles": "CC",
+        "score": -0.164
+      },
+      {
+        "rsid": "rs505151",
+        "variant": "1:55529187",
+        "alleles": "AA",
+        "score": -0.16
+      },
+      {
+        "rsid": "rs157580",
+        "variant": "19:45395266",
+        "alleles": "AA",
+        "score": 0.146
+      },
+      {
+        "rsid": "rs2954038",
+        "variant": "8:126507389",
+        "alleles": "AA",
+        "score": -0.104
+      },
+      {
+        "rsid": "rs174546",
+        "variant": "11:61569830",
+        "alleles": "TT",
+        "score": -0.094
+      },
+      {
+        "rsid": "rs174547",
+        "variant": "11:61570783",
+        "alleles": "CC",
+        "score": -0.094
+      }
+    ]
+  },
+  {
+    "id": "PGS000658",
+    "trait": "total cholesterol measurement",
+    "rawScore": 1.4012900000000001,
+    "prs": 1.4012900000000001,
+    "zScore": 1.4012900000000001,
+    "percentile": 14.012900000000002,
+    "matches": 19,
+    "totalVariants": 229,
+    "topVariants": [
+      {
+        "rsid": "rs646776",
+        "variant": "1:109818530",
+        "alleles": "TT",
+        "score": 0.16318
+      },
+      {
+        "rsid": "rs13306194",
+        "variant": "2:21252534",
+        "alleles": "GG",
+        "score": 0.15318
+      },
+      {
+        "rsid": "rs2575876",
+        "variant": "9:107665739",
+        "alleles": "GG",
+        "score": 0.11236
+      },
+      {
+        "rsid": "rs2278426",
+        "variant": "19:11350488",
+        "alleles": "CC",
+        "score": 0.10356
+      },
+      {
+        "rsid": "rs440277",
+        "variant": "19:45361224",
+        "alleles": "AG",
+        "score": 0.09419
+      },
+      {
+        "rsid": "rs4149297",
+        "variant": "9:107604104",
+        "alleles": "AA",
+        "score": 0.09334
+      },
+      {
+        "rsid": "rs12341993",
+        "variant": "9:107658910",
+        "alleles": "CC",
+        "score": 0.091
+      },
+      {
+        "rsid": "rs1135062",
+        "variant": "19:45322744",
+        "alleles": "AG",
+        "score": 0.07881
+      },
+      {
+        "rsid": "rs7540564",
+        "variant": "1:92957826",
+        "alleles": "AA",
+        "score": 0.07812
+      },
+      {
+        "rsid": "rs1260326",
+        "variant": "2:27730940",
+        "alleles": "TT",
+        "score": 0.0705
+      }
+    ]
+  }
+]

@@ -1,0 +1,65 @@
+{
+  "bloodPressureSystolic": [
+    { "max": 90, "tone": "yellow", "note": "niedrig" },
+    { "max": 119, "tone": "green", "note": "normal" },
+    { "max": 129, "tone": "yellow", "note": "erhöht" },
+    { "max": 139, "tone": "yellow", "note": "Hypertonie (Stufe 1)" },
+    { "max": null, "tone": "red", "note": "Hypertonie (Stufe 2)" }
+  ],
+  "bloodPressureDiastolic": [
+    { "max": 60, "tone": "yellow", "note": "niedrig" },
+    { "max": 79, "tone": "green", "note": "normal" },
+    { "max": 89, "tone": "yellow", "note": "Hypertonie (Stufe 1)" },
+    { "max": null, "tone": "red", "note": "Hypertonie (Stufe 2)" }
+  ],
+  "totalCholesterol": [
+    { "max": 200, "tone": "green", "note": "wünschenswert" },
+    { "max": 240, "tone": "yellow", "note": "grenzwertig hoch" },
+    { "max": null, "tone": "red", "note": "hoch" }
+  ],
+  "hdlCholesterol": [
+    { "min": 60, "tone": "green", "note": "protektiv" },
+    { "min": 40, "tone": "yellow", "note": "akzeptabel" },
+    { "min": null, "tone": "red", "note": "niedrig" }
+  ],
+  "ldlCholesterol": [
+    { "max": 100, "tone": "green", "note": "optimal" },
+    { "max": 129, "tone": "green", "note": "nahe optimal" },
+    { "max": 159, "tone": "yellow", "note": "grenzwertig hoch" },
+    { "max": 189, "tone": "yellow", "note": "hoch" },
+    { "max": null, "tone": "red", "note": "sehr hoch" }
+  ],
+  "triglycerides": [
+    { "max": 149, "tone": "green", "note": "normal" },
+    { "max": 199, "tone": "yellow", "note": "grenzwertig hoch" },
+    { "max": 499, "tone": "yellow", "note": "hoch" },
+    { "max": null, "tone": "red", "note": "sehr hoch" }
+  ],
+  "hba1c": [
+    { "max": 5.69, "tone": "green", "note": "normal" },
+    { "max": 6.49, "tone": "yellow", "note": "Prädiabetes" },
+    { "max": null, "tone": "red", "note": "Diabetes-Bereich" }
+  ],
+  "fastingGlucose": [
+    { "max": 69, "tone": "yellow", "note": "niedrig" },
+    { "max": 99, "tone": "green", "note": "normal" },
+    { "max": 125, "tone": "yellow", "note": "Prädiabetes" },
+    { "max": null, "tone": "red", "note": "Diabetes-Bereich" }
+  ],
+  "cReactiveProtein": [
+    { "max": 0.99, "tone": "green", "note": "niedriges Risiko" },
+    { "max": 3, "tone": "yellow", "note": "mittleres Risiko" },
+    { "max": null, "tone": "red", "note": "hohes Risiko" }
+  ],
+  "bmi": [
+    { "max": 18.49, "tone": "yellow", "note": "Untergewicht" },
+    { "max": 24.99, "tone": "green", "note": "normal" },
+    { "max": 29.99, "tone": "yellow", "note": "Übergewicht" },
+    { "max": null, "tone": "red", "note": "Adipositas" }
+  ],
+  "oxygenSaturation": [
+    { "min": 95, "tone": "green", "note": "normal" },
+    { "min": 92, "tone": "yellow", "note": "grenzwertig" },
+    { "min": null, "tone": "red", "note": "niedrig" }
+  ]
+}

@@ -1,0 +1,476 @@
+[
+  {
+    "id": "PGS000127",
+    "trait": "HbA1c measurement",
+    "rawScore": 0.23099999999999998,
+    "prs": 0.23099999999999998,
+    "zScore": 0.23099999999999998,
+    "percentile": 2.3099999999999996,
+    "matches": 9,
+    "totalVariants": 21,
+    "topVariants": [
+      {
+        "rsid": "rs198846",
+        "variant": "6:26107463",
+        "alleles": "GG",
+        "score": 0.044
+      },
+      {
+        "rsid": "rs9494142",
+        "variant": "6:135431640",
+        "alleles": "TT",
+        "score": 0.042
+      },
+      {
+        "rsid": "rs1800562",
+        "variant": "6:26093141",
+        "alleles": "AG",
+        "score": 0.04
+      },
+      {
+        "rsid": "rs4737009",
+        "variant": "8:41630405",
+        "alleles": "AG",
+        "score": 0.021
+      },
+      {
+        "rsid": "rs857691",
+        "variant": "1:158626378",
+        "alleles": "CT",
+        "score": 0.019
+      },
+      {
+        "rsid": "rs10774625",
+        "variant": "12:111910219",
+        "alleles": "GG",
+        "score": 0.018
+      },
+      {
+        "rsid": "rs837763",
+        "variant": "16:88853729",
+        "alleles": "CT",
+        "score": 0.017
+      },
+      {
+        "rsid": "rs4820268",
+        "variant": "22:37469591",
+        "alleles": "AG",
+        "score": 0.016
+      },
+      {
+        "rsid": "rs11248914",
+        "variant": "16:293562",
+        "alleles": "CT",
+        "score": 0.014
+      }
+    ]
+  },
+  {
+    "id": "PGS000128",
+    "trait": "HbA1c measurement",
+    "rawScore": 0.16100000000000003,
+    "prs": 0.16100000000000003,
+    "zScore": 0.16100000000000003,
+    "percentile": 1.61,
+    "matches": 9,
+    "totalVariants": 22,
+    "topVariants": [
+      {
+        "rsid": "rs1800562",
+        "variant": "6:26093141",
+        "alleles": "AG",
+        "score": 0.08
+      },
+      {
+        "rsid": "rs198846",
+        "variant": "6:26107463",
+        "alleles": "GG",
+        "score": 0.042
+      },
+      {
+        "rsid": "rs857691",
+        "variant": "1:158626378",
+        "alleles": "CT",
+        "score": 0.028
+      },
+      {
+        "rsid": "rs9494142",
+        "variant": "6:135431640",
+        "alleles": "TT",
+        "score": -0.022
+      },
+      {
+        "rsid": "rs837763",
+        "variant": "16:88853729",
+        "alleles": "CT",
+        "score": 0.013
+      },
+      {
+        "rsid": "rs11248914",
+        "variant": "16:293562",
+        "alleles": "CT",
+        "score": 0.012
+      },
+      {
+        "rsid": "rs4737009",
+        "variant": "8:41630405",
+        "alleles": "AG",
+        "score": 0.007
+      },
+      {
+        "rsid": "rs10774625",
+        "variant": "12:111910219",
+        "alleles": "GG",
+        "score": 0.002
+      },
+      {
+        "rsid": "rs4820268",
+        "variant": "22:37469591",
+        "alleles": "AG",
+        "score": -0.001
+      }
+    ]
+  },
+  {
+    "id": "PGS000129",
+    "trait": "HbA1c measurement",
+    "rawScore": 0.1732,
+    "prs": 0.1732,
+    "zScore": 0.1732,
+    "percentile": 1.732,
+    "matches": 7,
+    "totalVariants": 17,
+    "topVariants": [
+      {
+        "rsid": "rs198846",
+        "variant": "6:26107463",
+        "alleles": "GG",
+        "score": 0.059
+      },
+      {
+        "rsid": "rs9494142",
+        "variant": "6:135431640",
+        "alleles": "TT",
+        "score": 0.0364
+      },
+      {
+        "rsid": "rs4737009",
+        "variant": "8:41630405",
+        "alleles": "AG",
+        "score": 0.0255
+      },
+      {
+        "rsid": "rs837763",
+        "variant": "16:88853729",
+        "alleles": "CT",
+        "score": 0.022
+      },
+      {
+        "rsid": "rs4820268",
+        "variant": "22:37469591",
+        "alleles": "AG",
+        "score": 0.0141
+      },
+      {
+        "rsid": "rs857691",
+        "variant": "1:158626378",
+        "alleles": "CT",
+        "score": 0.0139
+      },
+      {
+        "rsid": "rs11248914",
+        "variant": "16:293562",
+        "alleles": "CT",
+        "score": 0.0023
+      }
+    ]
+  },
+  {
+    "id": "PGS000130",
+    "trait": "HbA1c measurement",
+    "rawScore": 0.19099999999999998,
+    "prs": 0.19099999999999998,
+    "zScore": 0.19099999999999998,
+    "percentile": 1.9099999999999997,
+    "matches": 10,
+    "totalVariants": 19,
+    "topVariants": [
+      {
+        "rsid": "rs560887",
+        "variant": "2:169763148",
+        "alleles": "CC",
+        "score": 0.056
+      },
+      {
+        "rsid": "rs2383208",
+        "variant": "9:22132076",
+        "alleles": "AA",
+        "score": 0.028
+      },
+      {
+        "rsid": "rs11708067",
+        "variant": "3:123065778",
+        "alleles": "AA",
+        "score": 0.026
+      },
+      {
+        "rsid": "rs2191349",
+        "variant": "7:15064309",
+        "alleles": "TT",
+        "score": 0.018
+      },
+      {
+        "rsid": "rs11558471",
+        "variant": "8:118185733",
+        "alleles": "AG",
+        "score": 0.015
+      },
+      {
+        "rsid": "rs7756992",
+        "variant": "6:20679709",
+        "alleles": "AG",
+        "score": 0.012
+      },
+      {
+        "rsid": "rs11603334",
+        "variant": "11:72432985",
+        "alleles": "AG",
+        "score": 0.012
+      },
+      {
+        "rsid": "rs8192675",
+        "variant": "3:170724883",
+        "alleles": "CT",
+        "score": 0.011
+      },
+      {
+        "rsid": "rs11619319",
+        "variant": "13:28487599",
+        "alleles": "AG",
+        "score": 0.009
+      },
+      {
+        "rsid": "rs13387347",
+        "variant": "2:169754846",
+        "alleles": "TT",
+        "score": 0.004
+      }
+    ]
+  },
+  {
+    "id": "PGS000131",
+    "trait": "HbA1c measurement",
+    "rawScore": 0.181,
+    "prs": 0.181,
+    "zScore": 0.181,
+    "percentile": 1.8099999999999998,
+    "matches": 10,
+    "totalVariants": 19,
+    "topVariants": [
+      {
+        "rsid": "rs560887",
+        "variant": "2:169763148",
+        "alleles": "CC",
+        "score": 0.08
+      },
+      {
+        "rsid": "rs8192675",
+        "variant": "3:170724883",
+        "alleles": "CT",
+        "score": 0.029
+      },
+      {
+        "rsid": "rs11708067",
+        "variant": "3:123065778",
+        "alleles": "AA",
+        "score": 0.024
+      },
+      {
+        "rsid": "rs11558471",
+        "variant": "8:118185733",
+        "alleles": "AG",
+        "score": 0.019
+      },
+      {
+        "rsid": "rs2191349",
+        "variant": "7:15064309",
+        "alleles": "TT",
+        "score": 0.018
+      },
+      {
+        "rsid": "rs11619319",
+        "variant": "13:28487599",
+        "alleles": "AG",
+        "score": 0.016
+      },
+      {
+        "rsid": "rs13387347",
+        "variant": "2:169754846",
+        "alleles": "TT",
+        "score": -0.014
+      },
+      {
+        "rsid": "rs2383208",
+        "variant": "9:22132076",
+        "alleles": "AA",
+        "score": 0.01
+      },
+      {
+        "rsid": "rs11603334",
+        "variant": "11:72432985",
+        "alleles": "AG",
+        "score": -0.008
+      },
+      {
+        "rsid": "rs7756992",
+        "variant": "6:20679709",
+        "alleles": "AG",
+        "score": 0.007
+      }
+    ]
+  },
+  {
+    "id": "PGS000132",
+    "trait": "HbA1c measurement",
+    "rawScore": 0.1405,
+    "prs": 0.1405,
+    "zScore": 0.1405,
+    "percentile": 1.405,
+    "matches": 10,
+    "totalVariants": 19,
+    "topVariants": [
+      {
+        "rsid": "rs560887",
+        "variant": "2:169763148",
+        "alleles": "CC",
+        "score": 0.0478
+      },
+      {
+        "rsid": "rs13387347",
+        "variant": "2:169754846",
+        "alleles": "TT",
+        "score": -0.0406
+      },
+      {
+        "rsid": "rs2383208",
+        "variant": "9:22132076",
+        "alleles": "AA",
+        "score": 0.024
+      },
+      {
+        "rsid": "rs11708067",
+        "variant": "3:123065778",
+        "alleles": "AA",
+        "score": 0.0226
+      },
+      {
+        "rsid": "rs11558471",
+        "variant": "8:118185733",
+        "alleles": "AG",
+        "score": 0.0213
+      },
+      {
+        "rsid": "rs7756992",
+        "variant": "6:20679709",
+        "alleles": "AG",
+        "score": 0.0192
+      },
+      {
+        "rsid": "rs2191349",
+        "variant": "7:15064309",
+        "alleles": "TT",
+        "score": 0.0178
+      },
+      {
+        "rsid": "rs11619319",
+        "variant": "13:28487599",
+        "alleles": "AG",
+        "score": 0.013
+      },
+      {
+        "rsid": "rs8192675",
+        "variant": "3:170724883",
+        "alleles": "CT",
+        "score": 0.0086
+      },
+      {
+        "rsid": "rs11603334",
+        "variant": "11:72432985",
+        "alleles": "AG",
+        "score": 0.0068
+      }
+    ]
+  },
+  {
+    "id": "PGS000304",
+    "trait": "HbA1c measurement",
+    "rawScore": 0.45662070000000005,
+    "prs": 0.45662070000000005,
+    "zScore": 0.45662070000000005,
+    "percentile": 4.566207,
+    "matches": 19,
+    "totalVariants": 43,
+    "topVariants": [
+      {
+        "rsid": "rs560887",
+        "variant": "2:169763148",
+        "alleles": "CC",
+        "score": 0.0560358
+      },
+      {
+        "rsid": "rs6474359",
+        "variant": "8:41549194",
+        "alleles": "CT",
+        "score": 0.0440163
+      },
+      {
+        "rsid": "rs198846",
+        "variant": "6:26107463",
+        "alleles": "GG",
+        "score": 0.043684
+      },
+      {
+        "rsid": "rs9494142",
+        "variant": "6:135431640",
+        "alleles": "TT",
+        "score": 0.042
+      },
+      {
+        "rsid": "rs1800562",
+        "variant": "6:26093141",
+        "alleles": "AG",
+        "score": 0.0395497
+      },
+      {
+        "rsid": "rs2383208",
+        "variant": "9:22132076",
+        "alleles": "AA",
+        "score": 0.0279708
+      },
+      {
+        "rsid": "rs11708067",
+        "variant": "3:123065778",
+        "alleles": "AA",
+        "score": 0.025857
+      },
+      {
+        "rsid": "rs4737009",
+        "variant": "8:41630405",
+        "alleles": "AG",
+        "score": 0.020954
+      },
+      {
+        "rsid": "rs857691",
+        "variant": "1:158626378",
+        "alleles": "CT",
+        "score": 0.0189536
+      },
+      {
+        "rsid": "rs10774625",
+        "variant": "12:111910219",
+        "alleles": "GG",
+        "score": 0.0178648
+      }
+    ]
+  }
+]
