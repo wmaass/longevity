@@ -1,122 +1,89 @@
-# Stroke PRS PGS23 – Commercial Polygenic Risk Score Application
+# Teil 1 – Polygenic Risk Scores (PRS) aus 23andMe-Daten berechnen
 
-This application is a **commercial tool** for analyzing **polygenic risk scores (PRS)** using 23andMe raw genetic data and datasets from the **Polygenic Score (PGS) Catalog**.  
-It supports automated score downloads, batch PRS computation for cardiovascular traits, and interactive results visualization via a browser dashboard.
-
-> **Note:** This software is for **licensed commercial use only**.  
-> Redistribution, open-sourcing, or unlicensed deployment is prohibited.
-
----
+Dieser Teil der Anwendung lädt eine **23andMe-Rohdaten-Datei** (`.txt`), extrahiert relevante SNPs und berechnet **Polygenic Risk Scores (PRS)** für ausgewählte **EFO-Traits**.  
+Die Berechnung läuft im **Web Worker** (`/workers/prs.worker.js`), sodass die UI responsiv bleibt. Ergebnisse werden als **CSV** (aggregiert & Details) sowie als **JSON pro EFO** gespeichert.
 
 ## Features
 
-- **Automated Download** of:
-  - Trait definitions (`traits.json`),
-  - All required PGS score files (via `download_all_pgs.js`).
-- **Batch PRS Computation** for a preselected set of cardiovascular traits.
-- **Interactive Dashboard** to explore results per trait and per SNP.
-- **Scientific Context Summaries**:
-  - Fetches Europe PMC abstracts for top SNPs.
-  - Summarizes findings via **Ollama (Llama 3)** locally, with DistilBART fallback.
-  - Displays DOI links to relevant research.
+- Upload einer 23andMe-Rohdaten-Datei (`.txt`)
+- PRS-Berechnung im Browser (Web Worker)
+- Fortschrittsanzeige (aktuelles PGS & %)
+- Live-Log im UI (Debug/Status)
+- Speicherung der Ergebnisse:
+  - `batch_results_cardio.csv` (aggregiert)
+  - `batch_details_cardio.csv` (Details je PGS/EFO)
+  - `efoDetailsMap` → JSON pro EFO über `/api/saveEfoDetail`
+- Vergleichskomponente `ComparePGSDiffs` (optional)
 
----
+## Ziel-Traits (EFO) & zugehörige PGS
 
-## Requirements
+Die Berechnung ist aktuell auf kardiometabolische Traits fokussiert:
 
-- Node.js **v18+** (ES Module support).  
-- A 23andMe raw genome file (`.txt` format).  
-- Internet connectivity for downloading traits, PGS scores, and research papers.
+- **EFO_0004541** – HbA1c measurement → `PGS000127, PGS000128, PGS000129, PGS000130, PGS000131, PGS000132, PGS000304`
+- **EFO_0004611** – LDL cholesterol → `PGS000061, PGS000065, PGS000115, PGS000310, PGS000340, PGS000661`
+- **EFO_0004612** – HDL cholesterol → `PGS000060, PGS000064, PGS000309, PGS000660`
+- **EFO_0004530** – Triglycerides → `PGS000063, PGS000066, PGS000312, PGS000659`
+- **EFO_0001645** – Coronary artery disease → `PGS000010, PGS000011, PGS000012, PGS000019, PGS000057, PGS000058, PGS000059, PGS000116, PGS000200, PGS000337, PGS000349`
+- **EFO_0006335** – Systolic blood pressure → `PGS000301, PGS002009`
+- **EFO_0004574** – Total cholesterol → `PGS000062, PGS000311, PGS000658, PGS000677`
+- **EFO_0004458** – C-reactive protein → `PGS000314, PGS000675`
+- **EFO_0006336** – Diastolic blood pressure → `PGS000302, PGS001900`
 
----
+> Die EFO→PGS-Zuordnung ist in der Komponente hart codiert und kann leicht erweitert werden.
 
-## Installation
+## Voraussetzungen
+
+- Node.js (empfohlen: v20+)
+- Next.js-App (dieses Repo)
+- Browser mit Web-Worker-Support
+- 23andMe-Rohdaten-Datei (`.txt`, Spalten: rsid, chromosome, position, genotype)
+
+## Schnellstart
 
 ```bash
-git clone <PRIVATE_REPO_URL>
-cd stroke-prs-pgs23
+# Dependencies
 npm install
-```
 
----
-
-## Data Preparation
-
-1. **Fetch Trait Metadata** (from the PGS Catalog):
-   ```bash
-   npm run fetch:traits
-   ```
-
-2. **Download All Required PGS Scores**:
-   ```bash
-   node scripts/download_all_pgs.js
-   ```
-   - Downloads `.txt.gz` PGS score files into:
-     ```
-     /public/pgs_scores
-     ```
-   - Automatically unpacks `.txt` files into:
-     ```
-     /public/pgs_scores/unpacked
-     ```
-
-3. **Provide Genome Data**:
-   Place your 23andMe genome file in:
-   ```
-   /public/genome_23andMe_data.txt
-   ```
-
----
-
-## Running the App
-
-Start the development server:
-```bash
+# Dev-Server starten
 npm run dev
-```
+# -> http://localhost:3000
 
-The dashboard is available at:
-```
-http://localhost:3000/batch_ui_cardio
-```
+# Teil 2 – Analyse-App für kardiovaskuläre PRS-Ergebnisse
 
----
+Dieser Teil der Anwendung stellt die im ersten Schritt berechneten **Polygenic Risk Scores (PRS)** visuell dar und verknüpft sie mit **EFO-Traits**, **SNP-Informationen** sowie optionalen **Patienten-Biomarkern**.  
+Die App ermöglicht eine **organbasierte Visualisierung**, Detailansichten zu einzelnen EFOs und die Interpretation von Risikoperzentilen basierend auf wissenschaftlicher Literatur.
 
-## How It Works
+## Features
 
-1. **Batch PRS Computation**  
-   The app automatically calculates PRS for all **cardiovascular traits** listed in `CARDIO_EFO_IDS` (inside `scripts/run_batch_cardio.js`).
+- **Datenimport** der im PRS-Teil erzeugten CSV-Dateien:
+  - `batch_results_cardio.csv` (aggregierte PRS-Daten pro EFO)
+  - `batch_details_cardio.csv` (Details zu einzelnen PGS/EFO-Kombinationen)
+- **Organ-Map** (SVG/D3): Farbige Hervorhebung von Organen entsprechend dem durchschnittlichen PRS-Perzentil.
+- **Interaktive Tooltips** und Klick-Navigation zu EFO-Detailseiten.
+- **Balkendiagramm** (`chart.js`) für log10(Avg PRS) pro Trait.
+- **Patienten-Biomarker-Panel** (Vitalparameter & Bluttests aus `biomarkers.json`).
+- **Risikoklassifikation** basierend auf Perzentilbereichen:
+  - < 20 %: Unterdurchschnittlich  
+  - 20–80 %: Durchschnittlich  
+  - 80–95 %: Erhöht  
+  - > 95 %: Stark erhöht
+- **Log-Bereich** für Lade- und Verarbeitungsstatus.
+- Integration von **Referenzstatistiken** (`reference_stats.json`) für z-Score- und Perzentil-Berechnungen.
 
-2. **Results Output**  
-   Two CSVs are generated:
-   - `batch_results_cardio.csv` (summary per trait),
-   - `batch_details_cardio.csv` (detailed per PGS).
+## Voraussetzungen
 
-3. **Interactive Exploration**  
-   - Navigate to `/batch_ui_cardio` to view **sortable results and charts**.
-   - Click any trait to view its **detail page**:
-     - Top 10 contributing SNPs, with effect sizes (`β × z`),
-     - Links to **dbSNP** and, if available, an **AI-generated summary** with DOI link.
+- Die Analyse-App benötigt Ausgabedateien aus **Teil 1** im Verzeichnis `/results/<genomeName>/`:
+  - `batch_results_cardio.csv`
+  - `batch_details_cardio.csv`
+  - optional: `biomarkers.json`
+- Statische Mapping-Dateien im `public/`-Verzeichnis:
+  - `efo_to_organ.json` – Zuordnung von EFO-Traits zu Organen
+  - `traits.json` – EFO-ID zu Traitnamen
+  - optional: `reference_stats.json` – statistische Referenzwerte für PGS
 
----
+## Schnellstart
 
-## Literature Summaries
-
-- The app queries **Europe PMC** for each SNP.
-- Summaries are generated using:
-  - **Ollama (Llama 3)** (local inference),
-  - DistilBART as fallback if Ollama is unavailable.
-- Summaries and links are cached in `/public/summaries` for offline reuse.
-
----
-
-## License & Commercial Use
-
-This software is **proprietary and for licensed commercial use only**.  
-Contact for licensing or enterprise integration:
-
-```
-Wolfgang Maaß
-wmaass@mailfence.com
-```
-
+```bash
+npm install
+npm run dev
+# -> http://localhost:3000
