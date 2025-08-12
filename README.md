@@ -69,15 +69,15 @@ Die App ermöglicht eine organbasierte Visualisierung, Detailansichten zu einzel
 - Integration von Referenzstatistiken (`reference_stats.json`) für z-Score- und Perzentil-Berechnungen
 
 ### Voraussetzungen
-Die Analyse-App benötigt Ausgabedateien aus Teil 1 im Verzeichnis:
-/results/<genomeName>/
-batch_results_cardio.csv
-batch_details_cardio.csv
-optional: biomarkers.json
-Statische Mapping-Dateien im public/-Verzeichnis:
-efo_to_organ.json – Zuordnung von EFO-Traits zu Organen
-traits.json – EFO-ID zu Traitnamen
-optional: reference_stats.json – statistische Referenzwerte für PGS
+- Die Analyse-App benötigt Ausgabedateien aus Teil 1 im Verzeichnis:
+`/results/<genomeName>/`
+  - `batch_results_cardio.csv`
+  - `batch_details_cardio.csv`
+  - optional: `biomarkers.json`
+- Statische Mapping-Dateien im public/-Verzeichnis:
+  - `efo_to_organ.json` – Zuordnung von EFO-Traits zu Organen
+  - `traits.json` – EFO-ID zu Traitnamen
+  - optional: `reference_stats.json` – statistische Referenzwerte für PGS
 
 ### Voraussetzungen
 
@@ -88,9 +88,11 @@ optional: reference_stats.json – statistische Referenzwerte für PGS
 
 ### Schnellstart
 
+```bash
 # Dependencies installieren
 npm install
 
 # Dev-Server starten
 npm run dev
-# -> http://localhost:3000
+# -> http://localhost:3000 
+```
