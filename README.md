@@ -129,7 +129,7 @@ Konfiguration der PGS-Komponenten (welche EFOs, Gewichte, Richtung).
   { "label": "Systolic BP",             "efo": "EFO_0006335", "weight": 1.2, "direction": "higher-worse" },
   { "label": "HDL",                     "efo": "EFO_0004612", "weight": 0.4, "direction": "higher-better" }
 ]
-````
+```
 
 ### Beispiel `biomarkers.json`
 
@@ -175,6 +175,8 @@ Konfiguration der PGS-Komponenten (welche EFOs, Gewichte, Richtung).
     }
   }
 }
+```
+
 ### Voraussetzungen
 - Die Analyse-App benötigt Ausgabedateien aus Teil 1 im Verzeichnis:
 `/results/<genomeName>/`
