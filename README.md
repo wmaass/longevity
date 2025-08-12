@@ -90,12 +90,6 @@ Die App ermöglicht eine organbasierte Visualisierung, Detailansichten zu einzel
 
 ### Trait-PGS Detailansicht
 
-Dieses Dokument beschreibt die Einrichtung, die Datenformate und die Nutzung der EFO-Detailansicht für eine **Polygenic-Score-Analyse** inklusive Biomarker-Panel und On-Demand SNP-Zusammenfassungen.
-
------
-
-### Überblick
-
 Die Komponente rendert eine Detailseite für einen **EFO-Trait** (z. B. *coronary artery disease*) und stellt die folgenden Informationen dar: eine Zusammenfassung aller geladenen PGS-Modelle (Median/Min/Max Perzentil, PRS-Spanne), das **Anker-PGS** (das Modell mit dem höchsten Perzentil oder dem größten |PRS|), ein **Top-Varianten-Chart** für das Anker-PGS, eine Tabelle aller PGS-Modelle mit Perzentil-Einstufungen und Links zu **dbSNP/Publikationen**, ein **Patienten-Biomarker-Panel** (Vitalparameter, Blutwerte) sowie EFO-bezogene Biomarker mit Hinweisen, die über eine Ampel-Logik gesteuert werden.
 
 -----
@@ -235,6 +229,7 @@ Im Fehlerfall sollte der `text` eine Fehlermeldung enthalten und `url` `null` se
 3.  **Dev-Server starten**: `npm run dev`.
 4.  **Seite aufrufen**: Öffne deinen Browser und navigiere zu `http://localhost:3000/longevity/details/EFO_XXXXXXX?genome=<GENOME_NAME>`.
 
+---
 
 ### Longevity Sicht
 
