@@ -26,6 +26,14 @@ npm run dev
 # Longevity und PRS-Analyse starten
 # -> http://localhost:3000/patient_view
 ```
+**Voraussetzungen**
+
+- Node.js (empfohlen: v20+)
+- Next.js-App (dieses Repo)
+- Browser mit Web-Worker-Support
+- 23andMe-Rohdaten-Datei (`.txt` mit Spalten: `rsid, chromosome, position, genotype`)
+
+
 ---
 
 ## Teil 1 – Berechnung Polygenic Risk Scores (PRS)
@@ -239,7 +247,7 @@ Diese Client-Seite visualisiert einen **Longevity-Index** und ein **biologisches
 
 Die Datei ist eine **Next.js Client Component** (mit `'use client'`) und erwartet Ergebnisse im Verzeichnis `/public/results/<GENOME_NAME>/`.
 
-## Features
+#### Features
 - Longevity-Index (0–100) mit Balkenanzeige
 - Aufteilung in **Genetik** und **Biomarker**
 - Biologisches vs. chronologisches Alter inkl. **Vascular Aging Plot** (SVG)
@@ -255,12 +263,8 @@ Die Datei ist eine **Next.js Client Component** (mit `'use client'`) und erwarte
 - **PapaParse** (CSV-Parsing)
 - Layout-Komponente: `components/DashboardLayout` (lokal vorhanden)
 
-**Installation (Basis):**
-```bash
-npm install next react react-dom papaparse
-# Tailwind nur falls noch nicht eingerichtet:
-# https://tailwindcss.com/docs/guides/nextjs
-```
+**Ordner und Dateien:**
+
 ```
 /public
 /longevity_pgs.json
@@ -276,9 +280,9 @@ npm install next react react-dom papaparse
     /[genome].js # <-- diese Datei
 ```
 
-## Eingabedaten
+### Eingabedaten
 
-### 1) `/public/longevity_pgs.json`
+#### 1) `/public/longevity_pgs.json`
 Konfiguration der PGS-Komponenten (welche EFOs, Gewichte, Richtung).
 
 **Schema (Beispiel):**
@@ -347,11 +351,5 @@ Konfiguration der PGS-Komponenten (welche EFOs, Gewichte, Richtung).
   - `traits.json` – EFO-ID zu Traitnamen
   - optional: `reference_stats.json` – statistische Referenzwerte für PGS
 
-### Voraussetzungen
-
-- Node.js (empfohlen: v20+)
-- Next.js-App (dieses Repo)
-- Browser mit Web-Worker-Support
-- 23andMe-Rohdaten-Datei (`.txt` mit Spalten: `rsid, chromosome, position, genotype`)
 
 
