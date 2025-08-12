@@ -10,6 +10,22 @@ Dieses Projekt besteht aus **zwei Hauptkomponenten**:
 
 Die Kombination beider Teile ermöglicht eine vollständige **End-to-End-Pipeline** – von der Rohdatenanalyse bis zur interaktiven Risikodarstellung.
 
+### Schnellstart
+
+```bash
+# Dependencies installieren
+npm install
+
+# Dev-Server starten
+npm run dev
+# -> http://localhost:3000 
+
+# PRS-Berechnung starten
+# -> http://localhost:3000/personal_pgs
+
+# Longevity und PRS-Analyse starten
+# -> http://localhost:3000/patient_view
+```
 ---
 
 ## Teil 1 – Polygenic Risk Scores (PRS) aus 23andMe-Daten berechnen
@@ -195,21 +211,4 @@ Konfiguration der PGS-Komponenten (welche EFOs, Gewichte, Richtung).
 - Browser mit Web-Worker-Support
 - 23andMe-Rohdaten-Datei (`.txt` mit Spalten: `rsid, chromosome, position, genotype`)
 
-### Schnellstart
 
-```bash
-# Dependencies installieren
-npm install
-
-# Dev-Server starten
-npm run dev
-# -> http://localhost:3000 
-
-# PRS-Berechnung starten
-# -> http://localhost:3000/personal_pgs
-
-# Longevity und PRS-Analyse starten
-# -> http://localhost:3000/patient_view
-
-
-```
