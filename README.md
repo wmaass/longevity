@@ -54,7 +54,6 @@ Die Berechnung ist aktuell auf kardiometabolische Traits fokussiert:
 
 ### Schnellstart
 
-```bash
 # Dependencies installieren
 npm install
 
@@ -113,7 +112,6 @@ Die aktuelle Implementierung ist auf **kardiometabolische Traits** fokussiert:
 
 ### Schnellstart
 
-```bash
 # Dependencies installieren
 npm install
 
