@@ -54,12 +54,12 @@ Die App ermöglicht eine organbasierte Visualisierung, Detailansichten zu einzel
 
 ### Features
 - **Datenimport** der im PRS-Teil erzeugten CSV-Dateien:
-batch_results_cardio.csv – aggregierte PRS-Daten pro EFO
-batch_details_cardio.csv – Details zu einzelnen PGS/EFO-Kombinationen
-Organ-Map (SVG/D3): Farbige Hervorhebung von Organen entsprechend dem durchschnittlichen PRS-Perzentil
-Interaktive Tooltips und Klick-Navigation zu EFO-Detailseiten
-Balkendiagramm (chart.js) für log10(Avg PRS) pro Trait
-Patienten-Biomarker-Panel (Vitalparameter & Bluttests aus biomarkers.json)
+- - batch_results_cardio.csv – aggregierte PRS-Daten pro EFO
+- - batch_details_cardio.csv – Details zu einzelnen PGS/EFO-Kombinationen
+- Organ-Map (SVG/D3): Farbige Hervorhebung von Organen entsprechend dem durchschnittlichen PRS-Perzentil
+- Interaktive Tooltips und Klick-Navigation zu EFO-Detailseiten
+- Balkendiagramm (chart.js) für log10(Avg PRS) pro Trait
+- Patienten-Biomarker-Panel (Vitalparameter & Bluttests aus biomarkers.json)
 
 ### Risikoklassifikation basierend auf Perzentilbereichen:
 < 20 %: Unterdurchschnittlich
