@@ -28,7 +28,7 @@ npm run dev
 ```
 ---
 
-## Teil 1 – Polygenic Risk Scores (PRS) aus 23andMe-Daten berechnen
+## Teil 1 – Berechnung Polygenic Risk Scores (PRS)
 
 Dieser Teil der Anwendung lädt eine **23andMe-Rohdaten-Datei** (`.txt`), extrahiert relevante SNPs und berechnet **Polygenic Risk Scores (PRS)** für ausgewählte **EFO-Traits**.  
 Die Berechnung läuft im **Web Worker** (`/workers/prs.worker.js`), sodass die UI responsiv bleibt. Ergebnisse werden als **CSV** (aggregiert & Details) sowie als **JSON pro EFO** gespeichert.
