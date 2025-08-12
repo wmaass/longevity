@@ -90,8 +90,6 @@ Die App ermöglicht eine organbasierte Visualisierung, Detailansichten zu einzel
 
 ### Trait-PGS Detailansicht
 
-# README: CardioDetail (EFO-Detailansicht mit PGS + Biomarker)
-
 Dieses Dokument beschreibt die Einrichtung, die Datenformate und die Nutzung der EFO-Detailansicht für eine **Polygenic-Score-Analyse** inklusive Biomarker-Panel und On-Demand SNP-Zusammenfassungen.
 
 -----
