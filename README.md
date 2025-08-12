@@ -45,8 +45,9 @@ Die Berechnung ist aktuell auf kardiometabolische Traits fokussiert:
 
 > Die EFO→PGS-Zuordnung ist in der Komponente hart codiert und kann leicht erweitert werden.
 
+---
 
-## Teil – Analyse-App für kardiovaskuläre PRS-Ergebnisse
+## Teil 2 – Analyse-App für kardiovaskuläre PRS-Ergebnisse
 
 Dieser Teil der Anwendung stellt die im ersten Schritt berechneten Polygenic Risk Scores (PRS) visuell dar und verknüpft sie mit EFO-Traits, SNP-Informationen sowie optionalen Patienten-Biomarkern.
 Die App ermöglicht eine organbasierte Visualisierung, Detailansichten zu einzelnen EFOs und die Interpretation von Risikoperzentilen basierend auf wissenschaftlicher Literatur.
