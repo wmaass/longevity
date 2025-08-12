@@ -17,6 +17,8 @@ Die Kombination beider Teile ermöglicht eine vollständige **End-to-End-Pipelin
 Dieser Teil der Anwendung lädt eine **23andMe-Rohdaten-Datei** (`.txt`), extrahiert relevante SNPs und berechnet **Polygenic Risk Scores (PRS)** für ausgewählte **EFO-Traits**.  
 Die Berechnung läuft im **Web Worker** (`/workers/prs.worker.js`), sodass die UI responsiv bleibt. Ergebnisse werden als **CSV** (aggregiert & Details) sowie als **JSON pro EFO** gespeichert.
 
+![PRS Analysis](public/images/prs_analysis.png)
+
 ### Features
 
 - Upload einer 23andMe-Rohdaten-Datei (`.txt`)
@@ -95,4 +97,12 @@ npm install
 # Dev-Server starten
 npm run dev
 # -> http://localhost:3000 
+
+# PRS-Berechnung starten
+# -> http://localhost:3000/personal_pgs
+
+# Longevity und PRS-Analyse starten
+# -> http://localhost:3000/patient_view
+
+
 ```
