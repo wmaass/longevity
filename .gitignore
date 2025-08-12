@@ -56,4 +56,5 @@ PGS*.txt
 pages/.DS_Store
 af_tmp/
 
-.venv/
+.venv/ALL.chr*.vcf.gz
+public/eur_af_by_rsid.tsv
