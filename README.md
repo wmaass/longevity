@@ -72,6 +72,106 @@ Die App ermöglicht eine organbasierte Visualisierung, Detailansichten zu einzel
 
 ![Organ-PGS Übersicht](public/images/organ_pgs.jpg)
 
+### Longevity Sicht
+
+Diese Client-Seite visualisiert einen **Longevity-Index** und ein **biologisches Alter** aus  
+- genetischen PGS-Signalen (EFO-basierte z-Scores/Perzentile) und  
+- klinischen Biomarkern/Vitalparametern (z. B. Blutdruck, Lipide, Nüchternglukose, HbA1c, BMI).
+
+Die Datei ist eine **Next.js Client Component** (mit `'use client'`) und erwartet Ergebnisse im Verzeichnis `/public/results/<GENOME_NAME>/`.
+
+## Features
+- Longevity-Index (0–100) mit Balkenanzeige
+- Aufteilung in **Genetik** und **Biomarker**
+- Biologisches vs. chronologisches Alter inkl. **Vascular Aging Plot** (SVG)
+- Genomische PRS-Korrektur in **Jahren** samt Komponentenaufschlüsselung
+- Heuristische „Top-Hebel“ aus Biomarkern
+
+---
+
+## Voraussetzungen
+- **Next.js** (Pages Router; Import `useRouter` aus `next/router`)
+- **React 18**
+- **Tailwind CSS** (für Stylingklassen)
+- **PapaParse** (CSV-Parsing)
+- Layout-Komponente: `components/DashboardLayout` (lokal vorhanden)
+
+**Installation (Basis):**
+```bash
+npm install next react react-dom papaparse
+# Tailwind nur falls noch nicht eingerichtet:
+# https://tailwindcss.com/docs/guides/nextjs
+
+/public
+/longevity_pgs.json
+/results
+  /genome_Dorothy_Wolf_v4_Full_20170525101345
+    /batch_details_cardio.csv
+    /biomarkers.json
+  /components
+/DashboardLayout.jsx
+
+/pages
+  /longevity
+    /[genome].js # <-- diese Datei
+
+## Eingabedaten
+
+### 1) `/public/longevity_pgs.json`
+Konfiguration der PGS-Komponenten (welche EFOs, Gewichte, Richtung).
+
+**Schema (Beispiel):**
+```json
+[
+  { "label": "Coronary artery disease", "efo": "EFO_0001645", "weight": 1.5, "direction": "higher-worse" },
+  { "label": "Systolic BP",             "efo": "EFO_0006335", "weight": 1.2, "direction": "higher-worse" },
+  { "label": "HDL",                     "efo": "EFO_0004612", "weight": 0.4, "direction": "higher-better" }
+]
+
+### Beispiel `biomarkers.json`
+
+```json
+{
+  "person": {
+    "gender": "male",
+    "dateOfBirth": "1965-07-10"
+  },
+  "biomarkers": {
+    "dateRecorded": "2025-07-20",
+    "vitals": {
+      "bloodPressure": {
+        "systolic": 118,
+        "diastolic": 74,
+        "unit": "mmHg"
+      }
+    },
+    "bloodTests": {
+      "hdlCholesterol": {
+        "value": 52,
+        "unit": "mg/dL"
+      },
+      "ldlCholesterol": {
+        "value": 95,
+        "unit": "mg/dL"
+      },
+      "triglycerides": 110,
+      "fastingGlucose": {
+        "value": 92,
+        "unit": "mg/dL"
+      },
+      "hba1c": {
+        "value": 5.5,
+        "unit": "%"
+      }
+    },
+    "other": {
+      "bmi": {
+        "value": 24.1,
+        "unit": "kg/m²"
+      }
+    }
+  }
+}
 ### Voraussetzungen
 - Die Analyse-App benötigt Ausgabedateien aus Teil 1 im Verzeichnis:
 `/results/<genomeName>/`
