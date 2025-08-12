@@ -88,6 +88,156 @@ Die App ermöglicht eine organbasierte Visualisierung, Detailansichten zu einzel
 
 ![Organ-PGS Übersicht](public/images/organ_pgs.jpg)
 
+### Trait-PGS Detailansicht
+
+# README: CardioDetail (EFO-Detailansicht mit PGS + Biomarker)
+
+Dieses Dokument beschreibt die Einrichtung, die Datenformate und die Nutzung der EFO-Detailansicht für eine **Polygenic-Score-Analyse** inklusive Biomarker-Panel und On-Demand SNP-Zusammenfassungen.
+
+-----
+
+### Überblick
+
+Die Komponente rendert eine Detailseite für einen **EFO-Trait** (z. B. *coronary artery disease*) und stellt die folgenden Informationen dar: eine Zusammenfassung aller geladenen PGS-Modelle (Median/Min/Max Perzentil, PRS-Spanne), das **Anker-PGS** (das Modell mit dem höchsten Perzentil oder dem größten |PRS|), ein **Top-Varianten-Chart** für das Anker-PGS, eine Tabelle aller PGS-Modelle mit Perzentil-Einstufungen und Links zu **dbSNP/Publikationen**, ein **Patienten-Biomarker-Panel** (Vitalparameter, Blutwerte) sowie EFO-bezogene Biomarker mit Hinweisen, die über eine Ampel-Logik gesteuert werden.
+
+-----
+
+### Dateistruktur (erwartet)
+
+Die Anwendung erwartet, dass die folgenden Dateien im `public`-Verzeichnis abgelegt sind.
+
+```bash
+/public
+  /biomarker_efo_mapping.json
+  /biomarker_thresholds.json
+  /results
+    /<GENOME_NAME>/
+      biomarkers.json
+      /details/
+        <EFO_ID>.json
+```
+
+**Hinweis:** Die Komponente wird typischerweise unter `/pages/longevity/details/[efoId].js` eingebunden.
+
+-----
+
+### Abhängigkeiten
+
+```bash
+npm i next react react-dom
+npm i chart.js react-chartjs-2
+```
+
+Die Komponente nutzt die **Pages Router API** von Next.js und **Chart.js**.
+
+-----
+
+### Routing & Aufruf
+
+Ein Beispiel-Link zur Detailansicht sieht wie folgt aus: `<a href="/longevity/details/${efoId}?genome=${encodeURIComponent(genomeName)}">Details ansehen</a>`. Die Seite wird unter `/longevity/details/[efoId]` gerendert. **Pflichtparameter**: `?genome=<GENOME_NAME>` (z. B. `genome_Dorothy_Wolf_v4_Full_20170525101345`).
+
+-----
+
+### Erwartete Datenformate
+
+**1) `/results/<GENOME_NAME>/details/<EFO_ID>.json`**
+
+Diese Datei akzeptiert entweder ein Array von Modellen oder ein Objekt `{ "detail": [ ... ] }`. Jedes Modell sollte die folgenden Felder enthalten:
+
+```json
+[
+  {
+    "id": "PGS000123", "trait": "Coronary artery disease", "prs": 0.81234, "rawScore": 0.81234, "zScore": 2.15, "percentile": 96.3, "matches": 503421, "totalVariants": 1200000,
+    "topVariants": [
+      {
+        "variant": "chr1:12345_A_G; rs12345", "rsid": "rs12345", "score": 0.0123
+      }
+    ]
+  }
+]
+```
+
+**2) `/results/<GENOME_NAME>/biomarkers.json`**
+
+Diese Datei enthält die Biomarker-Daten des Patienten:
+
+```json
+{
+  "name": "Patientenname (optional)", "dateRecorded": "YYYY-MM-DD",
+  "biomarkers": {
+    "vitals": {
+      "bloodPressure": { "systolic": 118, "diastolic": 74, "unit": "mmHg" }
+    },
+    "bloodTests": {
+      "totalCholesterol": { "value": 180, "unit": "mg/dL" }, "hba1c": { "value": 5.4, "unit": "%" }
+    }
+  }
+}
+```
+
+**3) `/biomarker_efo_mapping.json`**
+
+Diese Datei stellt ein Mapping bereit, welche Biomarker für einen bestimmten EFO-Trait relevant sind:
+
+```json
+{
+  "bloodPressureSystolic": ["EFO_0001645", "EFO_0000537"], "ldlCholesterol": ["EFO_0001645"]
+}
+```
+
+**4) `/biomarker_thresholds.json`**
+
+Diese Datei definiert die Schwellenwerte für die Ampel-Logik:
+
+```json
+{
+  "bloodPressureSystolic": [
+    { "max": 119, "tone": "green", "note": "Optimal" },
+    { "max": 129, "tone": "yellow", "note": "Erhöht" },
+    { "max": null, "tone": "red", "note": "Hypertonie" }
+  ],
+  "hba1c": [
+    { "max": 5.6, "tone": "green", "note": "Normal" },
+    { "max": 6.4, "tone": "yellow", "note": "Prädiabetes" },
+    { "max": null, "tone": "red", "note": "Diabetesbereich" }
+  ]
+}
+```
+
+-----
+
+### UI-Logik (Kernelemente)
+
+  * **Perzentil-Badges**: `<20%` = Unterdurchschnittlich, `20-80%` = Durchschnittlich, `80-95%` = Erhöht, `>95%` = Stark erhöht.
+  * **Anker-PGS**: Das Anker-PGS ist primär das Modell mit dem höchsten Perzentil. Gibt es keine Perzentile, wird das Modell mit dem größten |PRS| als Fallback gewählt.
+  * **SNP-Zusammenfassungen**: Die Top-10-rsIDs des Anker-PGS werden vorab geladen. Zusätzliche rsIDs können **On-Demand** über einen Button abgerufen werden. Die Daten werden in einem separaten Summary-Panel angezeigt.
+
+-----
+
+### API-Endpoint (erwartet)
+
+Die Komponente erwartet einen Endpoint unter `/api/snp-summary?rsid=<RSID>`, der eine JSON-Antwort im folgenden Format liefert:
+
+```json
+{
+  "text": "Kurz- bzw. Langzusammenfassung zur Variante...",
+  "url": "https://doi.org/...",
+  "logs": ["[timestamp] ..."]
+}
+```
+
+Im Fehlerfall sollte der `text` eine Fehlermeldung enthalten und `url` `null` sein.
+
+-----
+
+### Quickstart
+
+1.  **Abhängigkeiten installieren**: `npm i next react react-dom` und `npm i chart.js react-chartjs-2`.
+2.  **Dateistruktur anlegen**: Erstelle die erforderlichen Verzeichnisse und JSON-Dateien im `public`-Ordner.
+3.  **Dev-Server starten**: `npm run dev`.
+4.  **Seite aufrufen**: Öffne deinen Browser und navigiere zu `http://localhost:3000/longevity/details/EFO_XXXXXXX?genome=<GENOME_NAME>`.
+
+
 ### Longevity Sicht
 
 Diese Client-Seite visualisiert einen **Longevity-Index** und ein **biologisches Alter** aus  
