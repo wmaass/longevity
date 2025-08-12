@@ -384,103 +384,99 @@ export default function CardioDetail() {
   }, [efoId, biomarkerMapping, patientBiomarkers, thresholds]);
 
   /* ---------- small biomarker card (same style as batch_ui_cardio) ---------- */
-  const BiomarkerPanel = ({ biomarkers, genomeName }) => {
-    const cardCls = 'bg-white border border-gray-200 rounded-lg p-4';
-    if (!biomarkers) {
-      return (
-        <div className={`${cardCls} text-sm`}>
-          <h3 className="text-lg font-semibold mb-2">Patienten-Biomarker</h3>
-          <p className="text-gray-600">
-            {genomeName ? (
-              <>
-                Keine Biomarker-Datei gefunden unter{' '}
-                <code className="font-mono">/results/{genomeName}/biomarkers.json</code>.
-              </>
-            ) : (
-              'Keine Biomarker geladen.'
-            )}
-          </p>
-        </div>
-      );
-    }
-    const v = biomarkers?.biomarkers?.vitals || {};
-    const b = biomarkers?.biomarkers?.bloodTests || {};
-    const o = biomarkers?.biomarkers?.other || {};
-    const fmtBM = (obj, key, subkey = 'value', unitKey = 'unit') => {
-      const it = obj?.[key];
-      if (!it) return '–';
-      if (typeof it === 'object' && 'systolic' in it && 'diastolic' in it) {
-        return `${it.systolic}/${it.diastolic} ${it.unit || 'mmHg'}`;
-      }
-      const val = it?.[subkey];
-      const unit = it?.[unitKey];
-      return val ?? val === 0 ? `${val}${unit ? ' ' + unit : ''}` : '–';
-    };
+  // replace the BiomarkerPanel definition's first line with:
+  const BiomarkerPanel = ({ biomarkers, genomeName, compact = false }) => {
+  const cardCls = compact
+    ? 'bg-white border border-gray-200 rounded-lg p-4 h-full'
+    : 'bg-white border border-gray-200 rounded-lg p-4 mb-6';
+
+  if (!biomarkers) {
     return (
-      <div className={`${cardCls} text-sm mb-6`}>
-        <h3 className="text-lg font-semibold mb-3">Patienten-Biomarker</h3>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <div className="text-xs uppercase text-gray-500 mb-1">Vitalparameter</div>
-            <ul className="space-y-1">
-              <li>
-                <span className="text-gray-600">Blutdruck:</span> {fmtBM(v, 'bloodPressure')}
-              </li>
-              <li>
-                <span className="text-gray-600">Herzfrequenz:</span> {fmtBM(v, 'heartRate')}
-              </li>
-              <li>
-                <span className="text-gray-600">Atemfrequenz:</span> {fmtBM(v, 'respiratoryRate')}
-              </li>
-              <li>
-                <span className="text-gray-600">Körpertemperatur:</span>{' '}
-                {fmtBM(v, 'bodyTemperature')}
-              </li>
-              <li>
-                <span className="text-gray-600">Sauerstoffsättigung:</span>{' '}
-                {fmtBM(o, 'oxygenSaturation')}
-              </li>
-              <li>
-                <span className="text-gray-600">BMI:</span> {fmtBM(o, 'bmi')}
-              </li>
-            </ul>
-          </div>
-          <div>
-            <div className="text-xs uppercase text-gray-500 mb-1">Bluttests</div>
-            <ul className="space-y-1">
-              <li>
-                <span className="text-gray-600">Gesamtcholesterin:</span>{' '}
-                {fmtBM(b, 'totalCholesterol')}
-              </li>
-              <li>
-                <span className="text-gray-600">HDL:</span> {fmtBM(b, 'hdlCholesterol')}
-              </li>
-              <li>
-                <span className="text-gray-600">LDL:</span> {fmtBM(b, 'ldlCholesterol')}
-              </li>
-              <li>
-                <span className="text-gray-600">Triglyceride:</span> {fmtBM(b, 'triglycerides')}
-              </li>
-              <li>
-                <span className="text-gray-600">Nüchternglukose:</span>{' '}
-                {fmtBM(b, 'fastingGlucose')}
-              </li>
-              <li>
-                <span className="text-gray-600">HbA1c:</span> {fmtBM(b, 'hba1c')}
-              </li>
-            </ul>
-          </div>
+      <div className={`${cardCls} text-sm`}>
+        <div className="flex items-baseline justify-between mb-2">
+          <h3 className="text-lg font-semibold">Patienten-Biomarker</h3>
         </div>
+        <p className="text-gray-600">
+          {genomeName ? (
+            <>Keine Biomarker-Datei gefunden unter <code className="font-mono">/results/{genomeName}/biomarkers.json</code>.</>
+          ) : (
+            'Keine Biomarker geladen.'
+          )}
+        </p>
+      </div>
+    );
+  }
+
+  const v = biomarkers?.biomarkers?.vitals || {};
+  const b = biomarkers?.biomarkers?.bloodTests || {};
+  const o = biomarkers?.biomarkers?.other || {};
+
+  const fmtBM = (obj, key, subkey = 'value', unitKey = 'unit') => {
+    const it = obj?.[key];
+    if (!it) return '–';
+    if (typeof it === 'object' && 'systolic' in it && 'diastolic' in it) {
+      return `${it.systolic}/${it.diastolic} ${it.unit || 'mmHg'}`;
+    }
+    const val = it?.[subkey];
+    const unit = it?.[unitKey];
+    return val ?? val === 0 ? `${val}${unit ? ' ' + unit : ''}` : '–';
+  };
+
+  return (
+    <div className={`${cardCls} text-sm`}>
+      <div className="flex items-baseline justify-between mb-2">
+        <h3 className="text-lg font-semibold">Patienten-Biomarker</h3>
         {(biomarkers?.dateRecorded || biomarkers?.name) && (
-          <div className="text-xs text-gray-500 mt-3">
+          <div className="text-xs text-gray-500">
             {biomarkers?.name ? `Patient: ${biomarkers.name}` : ''}
             {biomarkers?.name && biomarkers?.dateRecorded ? ' · ' : ''}
             {biomarkers?.dateRecorded ? `Stand: ${biomarkers.dateRecorded}` : ''}
           </div>
         )}
       </div>
-    );
-  };
+
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2">
+        {/* Vitalparameter */}
+        <div>
+          <div className="text-[11px] uppercase tracking-wide text-gray-500 mb-1">Vitalparameter</div>
+          <ul className="space-y-1">
+            <li><span className="text-gray-600">Blutdruck:</span> {fmtBM(v, 'bloodPressure')}</li>
+            <li><span className="text-gray-600">Herzfrequenz:</span> {fmtBM(v, 'heartRate')}</li>
+            <li><span className="text-gray-600">Atemfrequenz:</span> {fmtBM(v, 'respiratoryRate')}</li>
+            <li><span className="text-gray-600">Körpertemperatur:</span> {fmtBM(v, 'bodyTemperature')}</li>
+            <li><span className="text-gray-600">Sauerstoffsättigung:</span> {fmtBM(o, 'oxygenSaturation')}</li>
+            <li><span className="text-gray-600">BMI:</span> {fmtBM(o, 'bmi')}</li>
+          </ul>
+        </div>
+
+        {/* Bluttests */}
+        <div>
+          <div className="text-[11px] uppercase tracking-wide text-gray-500 mb-1">Bluttests</div>
+          <ul className="space-y-1">
+            <li><span className="text-gray-600">Gesamtcholesterin:</span> {fmtBM(b, 'totalCholesterol')}</li>
+            <li><span className="text-gray-600">HDL:</span> {fmtBM(b, 'hdlCholesterol')}</li>
+            <li><span className="text-gray-600">LDL:</span> {fmtBM(b, 'ldlCholesterol')}</li>
+            <li><span className="text-gray-600">Triglyceride:</span> {fmtBM(b, 'triglycerides')}</li>
+            <li><span className="text-gray-600">Nüchternglukose:</span> {fmtBM(b, 'fastingGlucose')}</li>
+            <li><span className="text-gray-600">HbA1c:</span> {fmtBM(b, 'hba1c')}</li>
+          </ul>
+        </div>
+
+        {/* Kurzüberblick (only on large screens) */}
+        <div className="hidden lg:block">
+          <div className="text-[11px] uppercase tracking-wide text-gray-500 mb-1">Kurzüberblick</div>
+          <ul className="space-y-1">
+            <li><span className="text-gray-600">Syst./Diast.:</span> {fmtBM(v, 'bloodPressure')}</li>
+            <li><span className="text-gray-600">LDL/HDL:</span> {`${fmtBM(b, 'ldlCholesterol')} / ${fmtBM(b, 'hdlCholesterol')}`}</li>
+            <li><span className="text-gray-600">Triglyceride:</span> {fmtBM(b, 'triglycerides')}</li>
+            <li><span className="text-gray-600">Nüchternglukose:</span> {fmtBM(b, 'fastingGlucose')}</li>
+            <li><span className="text-gray-600">HbA1c:</span> {fmtBM(b, 'hba1c')}</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+};
 
   /* guard rails */
   if (error) {

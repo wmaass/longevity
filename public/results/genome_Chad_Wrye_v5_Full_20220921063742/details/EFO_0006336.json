@@ -4,8 +4,8 @@
     "trait": "diastolic blood pressure",
     "rawScore": 23.543751,
     "prs": 23.543751,
-    "zScore": 23.543751,
-    "percentile": 99.9,
+    "zScore": -16.38585693446415,
+    "percentile": 0.1,
     "matches": 98,
     "totalVariants": 962,
     "topVariants": [

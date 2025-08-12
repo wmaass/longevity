@@ -270,15 +270,28 @@ export default function CardioDashboard() {
   };
 
   const handleFileSelect = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setGenomeName(file.name.replace(/\.txt(\.gz)?$/, ''));
-      log(`📂 Genom-Datei ausgewählt: ${file.name}`);
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Derive a clean genome name (handles .txt, .txt.gz, .vcf, .vcf.gz, .csv)
+    const base = file.name.replace(/\.(txt|vcf|csv)(\.gz)?$/i, "").replace(/\.gz$/i, "");
+
+    setGenomeName(base);
+    log(`📂 Genom-Datei ausgewählt: ${file.name} → ${base}`);
+
+    // Remember last selection for future sessions / sidebar link
+    if (typeof window !== "undefined") {
+      localStorage.setItem("genomeName", base);
     }
+
+    // Put genome into the URL so navigation can pass it along
+    const nextQuery = { ...router.query, genome: base };
+    router.replace({ pathname: router.pathname, query: nextQuery }, undefined, { shallow: true });
   };
 
+
   return (
-    <DashboardLayout>
+    <DashboardLayout genomeName={genomeName}>
       <h2 className="text-4xl font-extrabold mb-6 text-gray-800">Kardiovaskuläre PGS-Ergebnisse</h2>
 
       <div className="mb-4">

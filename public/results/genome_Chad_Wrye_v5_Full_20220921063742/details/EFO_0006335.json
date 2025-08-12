@@ -4,8 +4,8 @@
     "trait": "systolic blood pressure",
     "rawScore": 43.08531199999999,
     "prs": 43.08531199999999,
-    "zScore": 43.08531199999999,
-    "percentile": 99.9,
+    "zScore": -17.12438321767009,
+    "percentile": 0.1,
     "matches": 99,
     "totalVariants": 970,
     "topVariants": [

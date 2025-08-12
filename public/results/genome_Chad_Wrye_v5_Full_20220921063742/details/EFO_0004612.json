@@ -4,8 +4,8 @@
     "trait": "high density lipoprotein cholesterol measurement",
     "rawScore": 0.7969999999999999,
     "prs": 0.7969999999999999,
-    "zScore": 0.7969999999999999,
-    "percentile": 7.969999999999999,
+    "zScore": 1.612821897697446,
+    "percentile": 94.66084006704718,
     "matches": 26,
     "totalVariants": 46,
     "topVariants": [
@@ -76,8 +76,8 @@
     "trait": "high density lipoprotein cholesterol measurement",
     "rawScore": -0.09464040000000004,
     "prs": -0.09464040000000004,
-    "zScore": -0.09464040000000004,
-    "percentile": -0.9464040000000005,
+    "zScore": -1.5189742000614164,
+    "percentile": 6.438451931922618,
     "matches": 44,
     "totalVariants": 120,
     "topVariants": [
@@ -148,8 +148,8 @@
     "trait": "high density lipoprotein cholesterol measurement",
     "rawScore": 0.29600000000000004,
     "prs": 0.29600000000000004,
-    "zScore": 0.29600000000000004,
-    "percentile": 2.9600000000000004,
+    "zScore": -1.6482359413523873,
+    "percentile": 4.96521171817193,
     "matches": 78,
     "totalVariants": 247,
     "topVariants": [
@@ -220,8 +220,8 @@
     "trait": "high density lipoprotein cholesterol measurement",
     "rawScore": 2.70257,
     "prs": 2.70257,
-    "zScore": 2.70257,
-    "percentile": 27.0257,
+    "zScore": -13.98660985342907,
+    "percentile": 0.1,
     "matches": 37,
     "totalVariants": 549,
     "topVariants": [

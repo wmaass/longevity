@@ -4,8 +4,8 @@
     "trait": "C-reactive protein measurement",
     "rawScore": 2.1833383,
     "prs": 2.1833383,
-    "zScore": 2.1833383,
-    "percentile": 21.833383,
+    "zScore": -1.5236301393145846,
+    "percentile": 6.380058774615755,
     "matches": 18,
     "totalVariants": 77,
     "topVariants": [

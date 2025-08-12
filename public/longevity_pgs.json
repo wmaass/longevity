@@ -1,0 +1,6 @@
+[
+  { "label": "Koronare Herzkrankheit (CAD)", "efo": "EFO_0001645", "weight": 1.0, "direction": "higher-worse" },
+  { "label": "Typ-2-Diabetes",               "efo": "EFO_0001360", "weight": 0.8, "direction": "higher-worse" },
+  { "label": "LDL-Cholesterin (PGS)",        "efo": "EFO_0004611", "weight": 0.6, "direction": "lower-better" },
+  { "label": "HDL-Cholesterin (PGS)",        "efo": "EFO_0004612", "weight": 0.6, "direction": "higher-better" }
+]

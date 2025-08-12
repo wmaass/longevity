@@ -4,8 +4,8 @@
     "trait": "total cholesterol measurement",
     "rawScore": -0.6349999999999998,
     "prs": -0.6349999999999998,
-    "zScore": -0.6349999999999998,
-    "percentile": -6.349999999999998,
+    "zScore": -1.5213804919557654,
+    "percentile": 6.4082214223396825,
     "matches": 34,
     "totalVariants": 52,
     "topVariants": [
@@ -76,8 +76,8 @@
     "trait": "total cholesterol measurement",
     "rawScore": -0.33499999999999974,
     "prs": -0.33499999999999974,
-    "zScore": -0.33499999999999974,
-    "percentile": -3.349999999999997,
+    "zScore": -0.15257712224152717,
+    "percentile": 43.93658688115767,
     "matches": 88,
     "totalVariants": 234,
     "topVariants": [
@@ -148,8 +148,8 @@
     "trait": "total cholesterol measurement",
     "rawScore": 1.4012900000000001,
     "prs": 1.4012900000000001,
-    "zScore": 1.4012900000000001,
-    "percentile": 14.012900000000002,
+    "zScore": -8.43221236706941,
+    "percentile": 0.1,
     "matches": 19,
     "totalVariants": 229,
     "topVariants": [

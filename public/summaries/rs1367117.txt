@@ -1,0 +1,3 @@
+Abstract Summary:
+
+The study titled "The Impact of SNP Score on Low-Density Lipoprotein Cholesterol Concentration and Coronary Artery Disease" investigates the relationship between single nucleotide polymorphisms (SNPs) associated with lipid metabolism and the risk of Coronary Artery Disease (CAD). The researchers focus on six common LDL-cholesterol-associated SNPs in a Chinese Han population. Results suggest that an increased SNP score is significantly linked to higher levels of LDL cholesterol, and individuals with higher SNP scores have a greater risk of CAD. This study emphasizes the potential role of these SNPs in predicting LDL-cholesterol levels and CAD prevalence within this specific population.
