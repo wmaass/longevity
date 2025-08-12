@@ -43,7 +43,7 @@ Die Berechnung läuft im **Web Worker** (`/workers/prs.worker.js`), sodass die U
 
 ![PRS Analysis](public/images/prs_analysis.jpg)
 
-### Features
+**Features**
 
 - Upload einer 23andMe-Rohdaten-Datei (`.txt`)
 - PRS-Berechnung im Browser (Web Worker)
@@ -55,7 +55,7 @@ Die Berechnung läuft im **Web Worker** (`/workers/prs.worker.js`), sodass die U
   - `efoDetailsMap` → JSON pro EFO über `/api/saveEfoDetail`
 - Vergleichskomponente `ComparePGSDiffs` (optional)
 
-### Ziel-Traits (EFO) & zugehörige PGS
+**Ziel-Traits (EFO) & zugehörige PGS**
 
 Die Berechnung ist aktuell auf kardiometabolische Traits fokussiert:
 
