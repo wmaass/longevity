@@ -1,4 +1,4 @@
-# Longevity – Polygenic Risk Score Berechnung & Analyse
+# Longevity – Epigenetische und Polygenische Risiko-Berechnung & Analyse
 
 Dieses Projekt besteht aus **zwei Hauptkomponenten**:
 
