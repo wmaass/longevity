@@ -101,8 +101,8 @@ Die Datei ist eine **Next.js Client Component** (mit `'use client'`) und erwarte
 npm install next react react-dom papaparse
 # Tailwind nur falls noch nicht eingerichtet:
 # https://tailwindcss.com/docs/guides/nextjs
-````
-
+```
+```
 /public
 /longevity_pgs.json
 /results
