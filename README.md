@@ -102,7 +102,7 @@ Die Komponente rendert eine Detailseite für einen **EFO-Trait** (z. B. *coronar
 
 -----
 
-### Dateistruktur (erwartet)
+**Dateistruktur (erwartet)**
 
 Die Anwendung erwartet, dass die folgenden Dateien im `public`-Verzeichnis abgelegt sind.
 
@@ -121,7 +121,7 @@ Die Anwendung erwartet, dass die folgenden Dateien im `public`-Verzeichnis abgel
 
 -----
 
-### Abhängigkeiten
+**Abhängigkeiten**
 
 ```bash
 npm i next react react-dom
@@ -132,15 +132,15 @@ Die Komponente nutzt die **Pages Router API** von Next.js und **Chart.js**.
 
 -----
 
-### Routing & Aufruf
+**Routing & Aufruf**
 
 Ein Beispiel-Link zur Detailansicht sieht wie folgt aus: `<a href="/longevity/details/${efoId}?genome=${encodeURIComponent(genomeName)}">Details ansehen</a>`. Die Seite wird unter `/longevity/details/[efoId]` gerendert. **Pflichtparameter**: `?genome=<GENOME_NAME>` (z. B. `genome_Dorothy_Wolf_v4_Full_20170525101345`).
 
 -----
 
-### Erwartete Datenformate
+**Erwartete Datenformate**
 
-**1) `/results/<GENOME_NAME>/details/<EFO_ID>.json`**
+1) `/results/<GENOME_NAME>/details/<EFO_ID>.json`**
 
 Diese Datei akzeptiert entweder ein Array von Modellen oder ein Objekt `{ "detail": [ ... ] }`. Jedes Modell sollte die folgenden Felder enthalten:
 
@@ -157,7 +157,7 @@ Diese Datei akzeptiert entweder ein Array von Modellen oder ein Objekt `{ "detai
 ]
 ```
 
-**2) `/results/<GENOME_NAME>/biomarkers.json`**
+2) `/results/<GENOME_NAME>/biomarkers.json`**
 
 Diese Datei enthält die Biomarker-Daten des Patienten:
 
@@ -175,7 +175,7 @@ Diese Datei enthält die Biomarker-Daten des Patienten:
 }
 ```
 
-**3) `/biomarker_efo_mapping.json`**
+3) `/biomarker_efo_mapping.json`**
 
 Diese Datei stellt ein Mapping bereit, welche Biomarker für einen bestimmten EFO-Trait relevant sind:
 
@@ -185,7 +185,7 @@ Diese Datei stellt ein Mapping bereit, welche Biomarker für einen bestimmten EF
 }
 ```
 
-**4) `/biomarker_thresholds.json`**
+4) `/biomarker_thresholds.json`**
 
 Diese Datei definiert die Schwellenwerte für die Ampel-Logik:
 
@@ -206,7 +206,7 @@ Diese Datei definiert die Schwellenwerte für die Ampel-Logik:
 
 -----
 
-### UI-Logik (Kernelemente)
+**UI-Logik (Kernelemente)**
 
   * **Perzentil-Badges**: `<20%` = Unterdurchschnittlich, `20-80%` = Durchschnittlich, `80-95%` = Erhöht, `>95%` = Stark erhöht.
   * **Anker-PGS**: Das Anker-PGS ist primär das Modell mit dem höchsten Perzentil. Gibt es keine Perzentile, wird das Modell mit dem größten |PRS| als Fallback gewählt.
@@ -214,7 +214,7 @@ Diese Datei definiert die Schwellenwerte für die Ampel-Logik:
 
 -----
 
-### API-Endpoint (erwartet)
+**API-Endpoint (erwartet)**
 
 Die Komponente erwartet einen Endpoint unter `/api/snp-summary?rsid=<RSID>`, der eine JSON-Antwort im folgenden Format liefert:
 
@@ -230,7 +230,7 @@ Im Fehlerfall sollte der `text` eine Fehlermeldung enthalten und `url` `null` se
 
 -----
 
-### Quickstart
+**Quickstart**
 
 1.  **Abhängigkeiten installieren**: `npm i next react react-dom` und `npm i chart.js react-chartjs-2`.
 2.  **Dateistruktur anlegen**: Erstelle die erforderlichen Verzeichnisse und JSON-Dateien im `public`-Ordner.
@@ -247,7 +247,7 @@ Diese Client-Seite visualisiert einen **Longevity-Index** und ein **biologisches
 
 Die Datei ist eine **Next.js Client Component** (mit `'use client'`) und erwartet Ergebnisse im Verzeichnis `/public/results/<GENOME_NAME>/`.
 
-#### Features
+**Features**
 - Longevity-Index (0–100) mit Balkenanzeige
 - Aufteilung in **Genetik** und **Biomarker**
 - Biologisches vs. chronologisches Alter inkl. **Vascular Aging Plot** (SVG)
@@ -256,7 +256,7 @@ Die Datei ist eine **Next.js Client Component** (mit `'use client'`) und erwarte
 
 ---
 
-## Voraussetzungen
+**Voraussetzungen**
 - **Next.js** (Pages Router; Import `useRouter` aus `next/router`)
 - **React 18**
 - **Tailwind CSS** (für Stylingklassen)
@@ -280,9 +280,9 @@ Die Datei ist eine **Next.js Client Component** (mit `'use client'`) und erwarte
     /[genome].js # <-- diese Datei
 ```
 
-### Eingabedaten
+**Eingabedaten**
 
-#### 1) `/public/longevity_pgs.json`
+1) `/public/longevity_pgs.json`
 Konfiguration der PGS-Komponenten (welche EFOs, Gewichte, Richtung).
 
 **Schema (Beispiel):**
@@ -294,7 +294,7 @@ Konfiguration der PGS-Komponenten (welche EFOs, Gewichte, Richtung).
 ]
 ```
 
-### Beispiel `biomarkers.json`
+**Beispiel `biomarkers.json`**
 
 ```json
 {
@@ -340,7 +340,7 @@ Konfiguration der PGS-Komponenten (welche EFOs, Gewichte, Richtung).
 }
 ```
 
-### Voraussetzungen
+**Voraussetzungen**
 - Die Analyse-App benötigt Ausgabedateien aus Teil 1 im Verzeichnis:
 `/results/<genomeName>/`
   - `batch_results_cardio.csv`
