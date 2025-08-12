@@ -292,7 +292,7 @@ export default function CardioDashboard() {
 
   return (
     <DashboardLayout genomeName={genomeName}>
-      <h2 className="text-4xl font-extrabold mb-6 text-gray-800">Kardiovaskuläre PGS-Ergebnisse</h2>
+      <h2 className="text-4xl font-extrabold mb-6 text-gray-800">Organ-PGS-Analyse</h2>
 
       <div className="mb-4">
         <label className="text-sm font-medium text-gray-700 mr-2">Genom-Datei wählen:</label>

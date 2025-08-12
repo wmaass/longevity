@@ -70,6 +70,8 @@ Die App ermöglicht eine organbasierte Visualisierung, Detailansichten zu einzel
 - Log-Bereich für Lade- und Verarbeitungsstatus
 - Integration von Referenzstatistiken (`reference_stats.json`) für z-Score- und Perzentil-Berechnungen
 
+![Organ-PGS Übersicht](public/images/organ_pgs.jpg)
+
 ### Voraussetzungen
 - Die Analyse-App benötigt Ausgabedateien aus Teil 1 im Verzeichnis:
 `/results/<genomeName>/`
