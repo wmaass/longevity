@@ -254,6 +254,7 @@ Die Datei ist eine **Next.js Client Component** (mit `'use client'`) und erwarte
 - Genomische PRS-Korrektur in **Jahren** samt Komponentenaufschlüsselung
 - Heuristische „Top-Hebel“ aus Biomarkern
 
+![Longevity View](public/images/longevity.jpg)
 ---
 
 **Voraussetzungen**
