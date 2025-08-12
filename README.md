@@ -115,6 +115,7 @@ npm install next react react-dom papaparse
 /pages
   /longevity
     /[genome].js # <-- diese Datei
+```
 
 ## Eingabedaten
 
@@ -128,6 +129,7 @@ Konfiguration der PGS-Komponenten (welche EFOs, Gewichte, Richtung).
   { "label": "Systolic BP",             "efo": "EFO_0006335", "weight": 1.2, "direction": "higher-worse" },
   { "label": "HDL",                     "efo": "EFO_0004612", "weight": 0.4, "direction": "higher-better" }
 ]
+````
 
 ### Beispiel `biomarkers.json`
 
