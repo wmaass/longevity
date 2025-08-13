@@ -36,7 +36,7 @@ models/
 *.gguf
 *.h5
 *.pkl
-*.csv
+# *.csv
 *.parquet
 *.zip
 *.tar.gz

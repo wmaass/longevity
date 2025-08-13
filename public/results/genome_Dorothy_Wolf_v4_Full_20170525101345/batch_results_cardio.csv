@@ -1,0 +1,10 @@
+EFO-ID,Trait,PGS Count,Avg PRS,Max PRS,Min PRS,Avg Percentile,Max Percentile,Min Percentile,Total Variants
+EFO_0004541,HbA1c measurement,7,0.204,0.426,0.056,53.5,97.2,8.2,160
+EFO_0004611,low density lipoprotein cholesterol measurement,6,0.298,1.843,-0.829,32.2,66.9,0.5,669
+EFO_0004612,high density lipoprotein cholesterol measurement,4,1.363,3.578,0.182,21.3,35.1,0.1,962
+EFO_0004530,triglyceride measurement,4,-0.133,0.674,-0.851,35.2,78.2,0.1,465
+EFO_0001645,coronary artery disease,8,2.501,4.388,1.580,28.6,64.7,0.1,674
+EFO_0006335,systolic blood pressure,1,37.973,37.973,37.973,0.1,0.1,0.1,970
+EFO_0004574,total cholesterol measurement,3,0.225,1.687,-1.116,18.3,54.7,0.1,515
+EFO_0004458,C-reactive protein measurement,1,1.882,1.882,1.882,1.6,1.6,1.6,77
+EFO_0006336,diastolic blood pressure,1,20.285,20.285,20.285,0.1,0.1,0.1,962
