@@ -2,11 +2,11 @@
   {
     "id": "PGS000302",
     "trait": "diastolic blood pressure",
-    "rawScore": 23.543751,
-    "prs": 23.543751,
-    "zScore": -16.38585693446415,
+    "rawScore": 21.369558,
+    "prs": 21.369558,
+    "zScore": -17.058217620563703,
     "percentile": 0.1,
-    "matches": 98,
+    "matches": 93,
     "totalVariants": 962,
     "topVariants": [
       {
@@ -14,12 +14,6 @@
         "variant": "21:44829595",
         "alleles": "CC",
         "score": 1.570346
-      },
-      {
-        "rsid": "rs17080102",
-        "variant": "6:151004770",
-        "alleles": "GG",
-        "score": 1.009116
       },
       {
         "rsid": "rs73220980",
@@ -58,16 +52,22 @@
         "score": 0.590338
       },
       {
-        "rsid": "rs633185",
-        "variant": "11:100593538",
-        "alleles": "CC",
-        "score": 0.564584
-      },
-      {
         "rsid": "rs880315",
         "variant": "1:10796866",
         "alleles": "CC",
         "score": 0.523454
+      },
+      {
+        "rsid": "rs13333226",
+        "variant": "16:20365654",
+        "alleles": "AA",
+        "score": 0.512506
+      },
+      {
+        "rsid": "rs2782980",
+        "variant": "10:115781527",
+        "alleles": "CC",
+        "score": 0.48477
       }
     ]
   }

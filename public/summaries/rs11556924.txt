@@ -1,1 +1,12 @@
-This study investigates the causal relationships between four types of lipids (lipid profiles) and breast cancer risk using Mendelian randomization (MR) and bioinformatics analysis. The MR approach utilizes genetic variants associated with lipid levels as instrumental variables to estimate causal effects. The study found significant associations between higher cholesterol, triglycerides, high-density lipoproteins (HDL), and low-density lipoproteins (LDL) levels, and increased breast cancer risk. Additionally, potential mediators such as estrogen receptor status and cell proliferation markers were identified, suggesting possible mechanisms linking these lipids to breast cancer development. The study population consisted of individuals of European descent with available genomic data.
+Here is a summary of what the paper reports specifically about rs11556924:
+
+• Mention: ZC3HC1 rs11556924
+• Trait: Hypertension
+• Allele/Genotype effects:
+	+ CC genotype was associated with hypertension compared to T-allele carriers (P = 0.013)
+• Effect size: Not provided
+• Population: Finnish, 50-year-old cohort
+• Design: Case-control study using Competitive Allele Specific PCR technique
+• Limitations: None mentioned specifically about rs11556924
+
+Note that the paper does not provide an effect size (OR/HR/β +

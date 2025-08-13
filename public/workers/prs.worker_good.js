@@ -158,67 +158,41 @@ async function fetchAndDecompress(url){
 
 // NEW: try local enriched TSV first, then fall back to harmonized file
 async function fetchPGSFile(pgsId, config, emitLog){
-  // Kandidaten (lokal): enriched zuerst, dann harmonized (unpacked)
+  // Local enriched candidates
   const localCandidates = [
-    { url: `/pgs_scores/enriched/${pgsId}_hmPOS_GRCh37_with_AF.tsv`, label: 'enriched' },
-    { url: `/pgs_scores/enriched/${pgsId}_hmPOS_GRCh37_with_AF.txt`, label: 'enriched' },
-    { url: `/pgs_scores/unpacked/${pgsId}_hmPOS_GRCh37.txt`,            label: 'harmonized_local' }
+    `/pgs_scores/enriched/${pgsId}_hmPOS_GRCh37_with_AF.tsv`,
+    `/pgs_scores/enriched/${pgsId}_hmPOS_GRCh37_with_AF.txt`,
+    `/pgs_scores/unpacked/${pgsId}_hmPOS_GRCh37.txt`
   ];
-
-  // Remote (harmonized, gz)
   const remoteUrl = `https://ftp.ebi.ac.uk/pub/databases/spot/pgs/scores/${pgsId}/ScoringFiles/Harmonized/${pgsId}_hmPOS_GRCh37.txt.gz`;
 
-  const fetchLocal = async ({ url, label }) => {
-    const pretty = url.split('/').pop();
-    emitLog?.(`📁 Lade PGS-Datei: ${pretty}`);
-    emitLog?.(`🌐 Von Pfad: ${url}`);
-
-    const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok) return null; // nächster Kandidat
-
-    const blob = await res.blob();
-    const sizeMB = blob.size / 1024 / 1024;
-    if (sizeMB > MAX_FILE_SIZE_MB) {
-      throw new Error(`📦 Datei zu groß: ${sizeMB.toFixed(2)} MB`);
-    }
-
-    const txt = await blob.text();
-    emitLog?.(`✅ Datei erfolgreich geladen (${sizeMB.toFixed(2)} MB)`);
-    return { txt, source: label, url, fileName: pretty, sizeMB };
-  };
-
-  try {
-    if (config?.useLocalFiles) {
-      // Versuche lokale Kandidaten in Reihenfolge
-      for (const cand of localCandidates) {
-        try {
-          const hit = await fetchLocal(cand);
-          if (hit) return hit;
-          emitLog?.(`ℹ️ Nicht gefunden: ${cand.url}`);
-        } catch (e) {
-          // Falls z.B. Größenlimit greift → harter Abbruch
-          emitLog?.(`⚠️ Lokaler Leseversuch fehlgeschlagen (${cand.url}): ${e.message}`);
-          throw e;
-        }
+  if (config?.useLocalFiles){
+    for (const url of localCandidates){
+      try{
+        emitLog(`📁 Lade PGS-Datei: ${url.split('/').pop()}`);
+        emitLog(`🌐 Von Pfad: ${url}`);
+        const res = await fetch(url, { cache: 'no-store' });
+        if (!res.ok) { continue; }
+        const blob = await res.blob();
+        const sizeMB = blob.size / 1024 / 1024;
+        if (sizeMB > MAX_FILE_SIZE_MB) throw new Error(`📦 Datei zu groß: ${sizeMB.toFixed(2)} MB`);
+        const txt = await blob.text();
+        emitLog(`✅ Datei erfolgreich geladen (${sizeMB.toFixed(2)} MB)`);
+        return { txt, source: url.includes('/enriched/') ? 'enriched' : 'harmonized' };
+      }catch(err){
+        // try next candidate
       }
-      throw new Error(`Nicht vorhanden oder nicht lesbar (lokal): ${pgsId}`);
-    } else {
-      // Remote .gz
-      const fileName = `${pgsId}_hmPOS_GRCh37.txt.gz`;
-      emitLog?.(`📁 Lade PGS-Datei: ${pgsId}_hmPOS_GRCh37.txt`);
-      emitLog?.(`🌐 Von Pfad: ${remoteUrl}`);
-
-      const txt = await fetchAndDecompress(remoteUrl); // gibt String
-      emitLog?.(`✅ Datei erfolgreich geladen (remote .gz)`);
-
-      return { txt, source: 'harmonized_remote', url: remoteUrl, fileName, sizeMB: null };
     }
-  } catch (err) {
-    emitLog?.(`❌ Fehler beim Laden der Datei für ${pgsId}: ${err.message}`);
-    throw err;
+    throw new Error(`Nicht vorhanden oder nicht lesbar (lokal): ${pgsId}`);
+  } else {
+    const url = remoteUrl;
+    emitLog(`📁 Lade PGS-Datei: ${pgsId}_hmPOS_GRCh37.txt`);
+    emitLog(`🌐 Von Pfad: ${url}`);
+    const txt = await fetchAndDecompress(url);
+    emitLog(`✅ Datei erfolgreich geladen (remote .gz)`);
+    return { txt, source: 'harmonized' };
   }
 }
-
 
 // Reference stats: public/reference_stats.json with shape { scores: { PGSxxxx: {mu, sd, used?} } }
 async function loadReferenceStats() {
@@ -745,19 +719,7 @@ self.onmessage = async function (e) {
             .slice()
             .sort((a, b) => Math.abs(b.score) - Math.abs(a.score))
             .slice(0, MAX_TOP_VARIANTS)
-            .map(v => ({
-              rsid: v.rsid,
-              variant: v.variant,
-              alleles: v.genotype,
-              beta: v.beta,               // 👈 NEU
-              dosage: v.dosage,           // 👈 NEU
-              effectAllele: v.effectAllele || null,
-              otherAllele: v.otherAllele || null,
-              af: Number.isFinite(v.af) ? v.af : null,
-              score: v.score
-            }));
-
-
+            .map(v => ({ rsid: v.rsid, variant: v.variant, alleles: v.genotype, score: v.score }));
 
           const detail = {
             id: pgsId,

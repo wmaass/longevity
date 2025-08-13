@@ -1,3 +1,0 @@
-Title: Single-nucleotide polymorphisms (SNPs) in genes related to folate metabolism and the risk of Gestational Diabetes Mellitus (GDM)
-
-Summary: This study investigates the association between specific SNPs in genes involved in folate metabolism and the risk of developing Gestational Diabetes Mellitus (GDM). The analysis includes a diverse population, focusing on SNPs in key genes such as MTHFR, methylenetetrahydrofolate reductase; SHMT1, serine hydroxymethyltransferase 1; and MTR, methionine synthase. The findings suggest that certain SNPs may be linked to an increased risk of GDM, although more research is needed for definitive conclusions.

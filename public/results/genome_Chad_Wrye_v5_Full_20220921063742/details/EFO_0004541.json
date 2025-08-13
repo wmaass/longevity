@@ -404,11 +404,11 @@
   {
     "id": "PGS000304",
     "trait": "HbA1c measurement",
-    "rawScore": 0.45662070000000005,
-    "prs": 0.45662070000000005,
-    "zScore": -0.42245473333534245,
-    "percentile": 33.63466065633722,
-    "matches": 19,
+    "rawScore": 0.44663890000000006,
+    "prs": 0.44663890000000006,
+    "zScore": -0.5201923833673561,
+    "percentile": 30.146473459872457,
+    "matches": 18,
     "totalVariants": 43,
     "topVariants": [
       {

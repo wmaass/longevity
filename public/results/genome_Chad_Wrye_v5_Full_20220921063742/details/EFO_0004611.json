@@ -2,11 +2,11 @@
   {
     "id": "PGS000061",
     "trait": "low density lipoprotein cholesterol measurement",
-    "rawScore": -0.31170000000000003,
-    "prs": -0.31170000000000003,
-    "zScore": -0.5813138459060955,
-    "percentile": 28.051443443502354,
-    "matches": 24,
+    "rawScore": -0.3575,
+    "prs": -0.3575,
+    "zScore": -0.7267190313705826,
+    "percentile": 23.369897694982534,
+    "matches": 20,
     "totalVariants": 37,
     "topVariants": [
       {
@@ -46,12 +46,6 @@
         "score": 0.1146
       },
       {
-        "rsid": "rs2072183",
-        "variant": "7:44579180",
-        "alleles": "GG",
-        "score": 0.1004
-      },
-      {
         "rsid": "rs3757354",
         "variant": "6:16127407",
         "alleles": "CC",
@@ -68,17 +62,23 @@
         "variant": "16:56993324",
         "alleles": "CC",
         "score": -0.08
+      },
+      {
+        "rsid": "rs1800562",
+        "variant": "6:26093141",
+        "alleles": "AG",
+        "score": -0.0714
       }
     ]
   },
   {
     "id": "PGS000065",
     "trait": "low density lipoprotein cholesterol measurement",
-    "rawScore": 0.25955930000000005,
-    "prs": 0.25955930000000005,
-    "zScore": 1.2652815479501938,
-    "percentile": 89.71147218673863,
-    "matches": 40,
+    "rawScore": 0.24361980000000003,
+    "prs": 0.24361980000000003,
+    "zScore": 1.2119057551657282,
+    "percentile": 88.72257044573986,
+    "matches": 38,
     "totalVariants": 103,
     "topVariants": [
       {
@@ -146,11 +146,11 @@
   {
     "id": "PGS000115",
     "trait": "low density lipoprotein cholesterol measurement",
-    "rawScore": 0.6173504,
-    "prs": 0.6173504,
-    "zScore": 0.7425736284551254,
-    "percentile": 77.11301387376143,
-    "matches": 82,
+    "rawScore": 0.5980070999999999,
+    "prs": 0.5980070999999999,
+    "zScore": 0.699060478252384,
+    "percentile": 75.77429508516047,
+    "matches": 75,
     "totalVariants": 223,
     "topVariants": [
       {
@@ -184,12 +184,6 @@
         "score": 0.088958
       },
       {
-        "rsid": "rs964184",
-        "variant": "11:116648917",
-        "alleles": "CC",
-        "score": -0.07398
-      },
-      {
         "rsid": "rs4299376",
         "variant": "2:44072576",
         "alleles": "GT",
@@ -212,17 +206,23 @@
         "variant": "10:113933886",
         "alleles": "GG",
         "score": -0.05584
+      },
+      {
+        "rsid": "rs2081687",
+        "variant": "8:59388565",
+        "alleles": "CC",
+        "score": -0.0552716
       }
     ]
   },
   {
     "id": "PGS000310",
     "trait": "low density lipoprotein cholesterol measurement",
-    "rawScore": -0.05299999999999999,
-    "prs": -0.05299999999999999,
-    "zScore": 0.5342933197886515,
-    "percentile": 70.34307127083284,
-    "matches": 64,
+    "rawScore": 0.0009999999999998968,
+    "prs": 0.0009999999999998968,
+    "zScore": 0.5649183482023943,
+    "percentile": 71.39353823475862,
+    "matches": 59,
     "totalVariants": 194,
     "topVariants": [
       {
@@ -280,10 +280,10 @@
         "score": -0.084
       },
       {
-        "rsid": "rs964184",
-        "variant": "11:116648917",
-        "alleles": "CC",
-        "score": -0.074
+        "rsid": "rs4245791",
+        "variant": "2:44074431",
+        "alleles": "CT",
+        "score": -0.072
       }
     ]
   },

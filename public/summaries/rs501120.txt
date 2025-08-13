@@ -1,3 +1,0 @@
-Title: Variants in candidate genes and their interactions with smoking on the risk of acute coronary syndrome
-
-Summary: The study investigates the association between genetic variations (SNPs) in certain candidate genes, specifically ADRB2, CYP1A2, CYP1B1, F2, and MTHFR, and the risk of developing Acute Coronary Syndrome (ACS) in smokers. The research suggests that specific alleles of these genes may increase the susceptibility to ACS in smokers, especially for the ADRB2 Arg16Gly polymorphism and the MTHFR C677T polymorphism. While the results are significant, further studies involving larger sample sizes are recommended to confirm the findings. The study population is not explicitly stated in this abstract.

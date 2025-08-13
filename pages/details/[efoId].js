@@ -25,6 +25,7 @@ function riskMeta(p) {
       rowCls: '',
       badgeCls: 'bg-gray-100 text-gray-700 border border-gray-200',
       label: '—',
+      interp: 'Kein Perzentil vorhanden. Für eine Einordnung benötigen wir eine Referenzverteilung (μ/σ) und ausreichende Coverage.'
     };
   }
   if (v < 20) {
@@ -33,6 +34,7 @@ function riskMeta(p) {
       rowCls: 'bg-emerald-50 border-l-4 border-emerald-400',
       badgeCls: 'bg-emerald-100 text-emerald-800 border border-emerald-200',
       label: 'Unterdurchschnittlich (<20%)',
+      interp: 'Genetische Last geringer als bei ~80% der Vergleichspersonen. Das spricht gegen ein stark erhöhtes genetisches Risiko.'
     };
   }
   if (v <= 80) {
@@ -41,6 +43,7 @@ function riskMeta(p) {
       rowCls: 'bg-gray-50 border-l-4 border-gray-300',
       badgeCls: 'bg-gray-100 text-gray-800 border border-gray-200',
       label: 'Durchschnittlich (20–80%)',
+      interp: 'Typische genetische Last. Allein daraus ergibt sich keine große Abweichung vom Bevölkerungsdurchschnitt.'
     };
   }
   if (v <= 95) {
@@ -49,6 +52,7 @@ function riskMeta(p) {
       rowCls: 'bg-amber-50 border-l-4 border-amber-400',
       badgeCls: 'bg-amber-100 text-amber-800 border border-amber-200',
       label: 'Erhöht (80–95%)',
+      interp: 'Höhere genetische Last als bei den meisten Menschen. Das spricht für ein moderat erhöhtes genetisches Risiko.'
     };
   }
   return {
@@ -56,6 +60,7 @@ function riskMeta(p) {
     rowCls: 'bg-rose-50 border-l-4 border-rose-400',
     badgeCls: 'bg-rose-100 text-rose-800 border border-rose-200',
     label: 'Stark erhöht (>95%)',
+    interp: 'Sehr hohe genetische Last: höher als bei ≥95% der Vergleichspersonen. Das kann auf ein deutlich erhöhtes genetisches Risiko hindeuten.'
   };
 }
 
@@ -64,7 +69,6 @@ function rsidFromVariant(variant, rsid) {
   const m = String(variant || '').match(/rs\d+/i);
   return m ? m[0] : null;
 }
-
 
 /* ---------- Labels & links ---------- */
 const PRETTY_LABELS = {
@@ -110,14 +114,17 @@ export default function CardioDetail() {
   const [error, setError] = useState(null);
 
   /* summaries state */
-  const [summaries, setSummaries] = useState({});      // SNP summaries by rsid
-  const [activeSummary, setActiveSummary] = useState(null); // { type:'snp', rsid, text, url, logs? }
-  const [loadingRsid, setLoadingRsid] = useState({});  // per-rsid spinner
+  const [summaries, setSummaries] = useState({});
+  const [activeSummary, setActiveSummary] = useState(null);
+  const [loadingRsid, setLoadingRsid] = useState({});
 
   /* biomarkers */
   const [biomarkerMapping, setBiomarkerMapping] = useState({});
   const [patientBiomarkers, setPatientBiomarkers] = useState(null);
   const [thresholds, setThresholds] = useState(null);
+
+  /* NEW: Percentile interpretation panel state */
+  const [pctPanel, setPctPanel] = useState(null); // {pgsId, percentile, zScore, matches, totalVariants}
 
   /* initial loads */
   useEffect(() => {
@@ -196,7 +203,7 @@ export default function CardioDetail() {
     };
   }, [rows, traitQuery]);
 
-  /* prefetch summaries for anchor top SNPs (like your earlier version) */
+  /* prefetch summaries for anchor top SNPs */
   useEffect(() => {
     if (!efoSummary?.anchor) return;
 
@@ -252,10 +259,10 @@ export default function CardioDetail() {
     };
   }, [efoSummary?.anchor, summaries]);
 
-  /* ---------- on-demand SNP summary (used in table & variant list) ---------- */
+  /* ---------- on-demand SNP summary ---------- */
   async function fetchAndStoreSummary(rsid) {
-  if (!rsid) return;
-  if (loadingRsid[rsid] || summaries[rsid]) return; // 👈 prevents overlap
+    if (!rsid) return;
+    if (loadingRsid[rsid] || summaries[rsid]) return;
 
     setLoadingRsid(prev => ({ ...prev, [rsid]: true }));
 
@@ -272,8 +279,6 @@ export default function CardioDetail() {
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
 
-      console.log(`✅ Antwort erhalten für ${rsid}`);
-
       const payload = {
         text: data?.text || 'Keine Zusammenfassung verfügbar.',
         url: data?.url || null,
@@ -285,11 +290,9 @@ export default function CardioDetail() {
         [rsid]: payload,
       }));
 
-      // Optional: open immediately in the right panel
       setActiveSummary({ type: 'snp', rsid, ...payload });
     } catch (err) {
       clearTimeout(timeout);
-      console.error(`❌ Fehler bei Summary-Fetch für ${rsid}:`, err);
 
       const payload = {
         text: 'Fehler beim Laden der Zusammenfassung.',
@@ -302,15 +305,13 @@ export default function CardioDetail() {
         [rsid]: payload,
       }));
 
-      // Also reflect the error in the sidebar if user clicked
       setActiveSummary({ type: 'snp', rsid, ...payload });
     } finally {
       setLoadingRsid(prev => ({ ...prev, [rsid]: false }));
     }
   }
 
-
-  /* ---------- biomarker helpers ---------- */
+  /* ---------- biomarker helpers (unchanged) ---------- */
   const mkBadge = (tone, text) => {
     const cls =
       {
@@ -383,100 +384,96 @@ export default function CardioDetail() {
     return related;
   }, [efoId, biomarkerMapping, patientBiomarkers, thresholds]);
 
-  /* ---------- small biomarker card (same style as batch_ui_cardio) ---------- */
-  // replace the BiomarkerPanel definition's first line with:
+  /* ---------- small biomarker card ---------- */
   const BiomarkerPanel = ({ biomarkers, genomeName, compact = false }) => {
-  const cardCls = compact
-    ? 'bg-white border border-gray-200 rounded-lg p-4 h-full'
-    : 'bg-white border border-gray-200 rounded-lg p-4 mb-6';
+    const cardCls = compact
+      ? 'bg-white border border-gray-200 rounded-lg p-4 h-full'
+      : 'bg-white border border-gray-200 rounded-lg p-4 mb-6';
 
-  if (!biomarkers) {
+    if (!biomarkers) {
+      return (
+        <div className={`${cardCls} text-sm`}>
+          <div className="flex items-baseline justify-between mb-2">
+            <h3 className="text-lg font-semibold">Patienten-Biomarker</h3>
+          </div>
+          <p className="text-gray-600">
+            {genomeName ? (
+              <>Keine Biomarker-Datei gefunden unter <code className="font-mono">/results/{genomeName}/biomarkers.json</code>.</>
+            ) : (
+              'Keine Biomarker geladen.'
+            )}
+          </p>
+        </div>
+      );
+    }
+
+    const v = biomarkers?.biomarkers?.vitals || {};
+    const b = biomarkers?.biomarkers?.bloodTests || {};
+    const o = biomarkers?.biomarkers?.other || {};
+
+    const fmtBM = (obj, key, subkey = 'value', unitKey = 'unit') => {
+      const it = obj?.[key];
+      if (!it) return '–';
+      if (typeof it === 'object' && 'systolic' in it && 'diastolic' in it) {
+        return `${it.systolic}/${it.diastolic} ${it.unit || 'mmHg'}`;
+        }
+      const val = it?.[subkey];
+      const unit = it?.[unitKey];
+      return val ?? val === 0 ? `${val}${unit ? ' ' + unit : ''}` : '–';
+    };
+
     return (
       <div className={`${cardCls} text-sm`}>
         <div className="flex items-baseline justify-between mb-2">
           <h3 className="text-lg font-semibold">Patienten-Biomarker</h3>
-        </div>
-        <p className="text-gray-600">
-          {genomeName ? (
-            <>Keine Biomarker-Datei gefunden unter <code className="font-mono">/results/{genomeName}/biomarkers.json</code>.</>
-          ) : (
-            'Keine Biomarker geladen.'
+          {(biomarkers?.dateRecorded || biomarkers?.name) && (
+            <div className="text-xs text-gray-500">
+              {biomarkers?.name ? `Patient: ${biomarkers.name}` : ''}
+              {biomarkers?.name && biomarkers?.dateRecorded ? ' · ' : ''}
+              {biomarkers?.dateRecorded ? `Stand: ${biomarkers.dateRecorded}` : ''}
+            </div>
           )}
-        </p>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2">
+          <div>
+            <div className="text-[11px] uppercase tracking-wide text-gray-500 mb-1">Vitalparameter</div>
+            <ul className="space-y-1">
+              <li><span className="text-gray-600">Blutdruck:</span> {fmtBM(v, 'bloodPressure')}</li>
+              <li><span className="text-gray-600">Herzfrequenz:</span> {fmtBM(v, 'heartRate')}</li>
+              <li><span className="text-gray-600">Atemfrequenz:</span> {fmtBM(v, 'respiratoryRate')}</li>
+              <li><span className="text-gray-600">Körpertemperatur:</span> {fmtBM(v, 'bodyTemperature')}</li>
+              <li><span className="text-gray-600">Sauerstoffsättigung:</span> {fmtBM(o, 'oxygenSaturation')}</li>
+              <li><span className="text-gray-600">BMI:</span> {fmtBM(o, 'bmi')}</li>
+            </ul>
+          </div>
+
+          <div>
+            <div className="text-[11px] uppercase tracking-wide text-gray-500 mb-1">Bluttests</div>
+            <ul className="space-y-1">
+              <li><span className="text-gray-600">Gesamtcholesterin:</span> {fmtBM(b, 'totalCholesterol')}</li>
+              <li><span className="text-gray-600">HDL:</span> {fmtBM(b, 'hdlCholesterol')}</li>
+              <li><span className="text-gray-600">LDL:</span> {fmtBM(b, 'ldlCholesterol')}</li>
+              <li><span className="text-gray-600">Triglyceride:</span> {fmtBM(b, 'triglycerides')}</li>
+              <li><span className="text-gray-600">Nüchternglukose:</span> {fmtBM(b, 'fastingGlucose')}</li>
+              <li><span className="text-gray-600">HbA1c:</span> {fmtBM(b, 'hba1c')}</li>
+            </ul>
+          </div>
+
+          <div className="hidden lg:block">
+            <div className="text-[11px] uppercase tracking-wide text-gray-500 mb-1">Kurzüberblick</div>
+            <ul className="space-y-1">
+              <li><span className="text-gray-600">Syst./Diast.:</span> {fmtBM(v, 'bloodPressure')}</li>
+              <li><span className="text-gray-600">LDL/HDL:</span> {`${fmtBM(b, 'ldlCholesterol')} / ${fmtBM(b, 'hdlCholesterol')}`}</li>
+              <li><span className="text-gray-600">Triglyceride:</span> {fmtBM(b, 'triglycerides')}</li>
+              <li><span className="text-gray-600">Nüchternglukose:</span> {fmtBM(b, 'fastingGlucose')}</li>
+              <li><span className="text-gray-600">HbA1c:</span> {fmtBM(b, 'hba1c')}</li>
+            </ul>
+          </div>
+        </div>
       </div>
     );
-  }
-
-  const v = biomarkers?.biomarkers?.vitals || {};
-  const b = biomarkers?.biomarkers?.bloodTests || {};
-  const o = biomarkers?.biomarkers?.other || {};
-
-  const fmtBM = (obj, key, subkey = 'value', unitKey = 'unit') => {
-    const it = obj?.[key];
-    if (!it) return '–';
-    if (typeof it === 'object' && 'systolic' in it && 'diastolic' in it) {
-      return `${it.systolic}/${it.diastolic} ${it.unit || 'mmHg'}`;
-    }
-    const val = it?.[subkey];
-    const unit = it?.[unitKey];
-    return val ?? val === 0 ? `${val}${unit ? ' ' + unit : ''}` : '–';
   };
-
-  return (
-    <div className={`${cardCls} text-sm`}>
-      <div className="flex items-baseline justify-between mb-2">
-        <h3 className="text-lg font-semibold">Patienten-Biomarker</h3>
-        {(biomarkers?.dateRecorded || biomarkers?.name) && (
-          <div className="text-xs text-gray-500">
-            {biomarkers?.name ? `Patient: ${biomarkers.name}` : ''}
-            {biomarkers?.name && biomarkers?.dateRecorded ? ' · ' : ''}
-            {biomarkers?.dateRecorded ? `Stand: ${biomarkers.dateRecorded}` : ''}
-          </div>
-        )}
-      </div>
-
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2">
-        {/* Vitalparameter */}
-        <div>
-          <div className="text-[11px] uppercase tracking-wide text-gray-500 mb-1">Vitalparameter</div>
-          <ul className="space-y-1">
-            <li><span className="text-gray-600">Blutdruck:</span> {fmtBM(v, 'bloodPressure')}</li>
-            <li><span className="text-gray-600">Herzfrequenz:</span> {fmtBM(v, 'heartRate')}</li>
-            <li><span className="text-gray-600">Atemfrequenz:</span> {fmtBM(v, 'respiratoryRate')}</li>
-            <li><span className="text-gray-600">Körpertemperatur:</span> {fmtBM(v, 'bodyTemperature')}</li>
-            <li><span className="text-gray-600">Sauerstoffsättigung:</span> {fmtBM(o, 'oxygenSaturation')}</li>
-            <li><span className="text-gray-600">BMI:</span> {fmtBM(o, 'bmi')}</li>
-          </ul>
-        </div>
-
-        {/* Bluttests */}
-        <div>
-          <div className="text-[11px] uppercase tracking-wide text-gray-500 mb-1">Bluttests</div>
-          <ul className="space-y-1">
-            <li><span className="text-gray-600">Gesamtcholesterin:</span> {fmtBM(b, 'totalCholesterol')}</li>
-            <li><span className="text-gray-600">HDL:</span> {fmtBM(b, 'hdlCholesterol')}</li>
-            <li><span className="text-gray-600">LDL:</span> {fmtBM(b, 'ldlCholesterol')}</li>
-            <li><span className="text-gray-600">Triglyceride:</span> {fmtBM(b, 'triglycerides')}</li>
-            <li><span className="text-gray-600">Nüchternglukose:</span> {fmtBM(b, 'fastingGlucose')}</li>
-            <li><span className="text-gray-600">HbA1c:</span> {fmtBM(b, 'hba1c')}</li>
-          </ul>
-        </div>
-
-        {/* Kurzüberblick (only on large screens) */}
-        <div className="hidden lg:block">
-          <div className="text-[11px] uppercase tracking-wide text-gray-500 mb-1">Kurzüberblick</div>
-          <ul className="space-y-1">
-            <li><span className="text-gray-600">Syst./Diast.:</span> {fmtBM(v, 'bloodPressure')}</li>
-            <li><span className="text-gray-600">LDL/HDL:</span> {`${fmtBM(b, 'ldlCholesterol')} / ${fmtBM(b, 'hdlCholesterol')}`}</li>
-            <li><span className="text-gray-600">Triglyceride:</span> {fmtBM(b, 'triglycerides')}</li>
-            <li><span className="text-gray-600">Nüchternglukose:</span> {fmtBM(b, 'fastingGlucose')}</li>
-            <li><span className="text-gray-600">HbA1c:</span> {fmtBM(b, 'hba1c')}</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  );
-};
 
   /* guard rails */
   if (error) {
@@ -532,261 +529,345 @@ export default function CardioDetail() {
     indexAxis: 'y',
   };
 
+  /* helper to render interpretation text */
+  const renderPctInterpretation = (entry) => {
+    if (!entry) return null;
+    const meta = riskMeta(entry.percentile);
+    const coveragePct = isNum(entry.matches) && isNum(entry.totalVariants) && entry.totalVariants > 0
+      ? (100 * entry.matches / entry.totalVariants)
+      : null;
+
+    return (
+      <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6">
+        <div className="flex items-start justify-between">
+          <h3 className="text-lg font-semibold">Perzentil-Interpretation</h3>
+          <button
+            className="text-sm text-gray-500 hover:text-gray-700"
+            onClick={() => setPctPanel(null)}
+            aria-label="Schließen"
+          >
+            Schließen
+          </button>
+        </div>
+        <div className="mt-2 text-sm text-gray-800">
+          <p className="mb-2">
+            <span className={`px-2 py-0.5 rounded text-xs mr-2 ${meta.badgeCls}`}>{entry.percentile.toFixed(1)}% · {meta.label}</span>
+            {isNum(entry.zScore) && (
+              <span className="text-gray-600">(z = {entry.zScore.toFixed(2)})</span>
+            )}
+          </p>
+          <p className="mb-2">{meta.interp}</p>
+          <ul className="list-disc ml-5 text-gray-700 space-y-1">
+            <li>Perzentile sind <strong>bevölkerungsbezogene Ränge</strong> – sie sind keine Diagnose.</li>
+            <li>Die Einordnung gilt für das jeweilige <strong>PGS-Modell</strong>; unterschiedliche Modelle können leicht abweichen.</li>
+            {isNum(coveragePct) && (
+              <li>Ungefähre Abdeckung: {coveragePct.toFixed(0)}% der Varianten dieses Modells waren in deinen Daten verfügbar.</li>
+            )}
+            <li>Klinische Faktoren (z. B. Alter, Lebensstil, Laborwerte) sollten immer mitberücksichtigt werden.</li>
+          </ul>
+        </div>
+      </div>
+    );
+  };
+
   return (
-  <DashboardLayout>
-    <h2 className="text-3xl font-bold text-gray-800 mb-2">
-      {displayTrait}
-      <span className="block text-lg text-gray-500">(EFO-ID: {efoId})</span>
-    </h2>
+    <DashboardLayout>
+      <h2 className="text-3xl font-bold text-gray-800 mb-2">
+        {displayTrait}
+        <span className="block text-lg text-gray-500">(EFO-ID: {efoId})</span>
+      </h2>
 
-    {/* EFO-level summary */}
-    <div className="bg-white p-4 rounded-lg shadow mb-4 text-sm">
-      <div className="flex flex-wrap gap-6 items-center">
-        <div><span className="text-gray-500">PGS-Modelle:</span> <strong>{efoSummary.count}</strong></div>
-        <div><span className="text-gray-500">Ø Perzentil:</span> <strong>{fmt(efoSummary.avgPct, 1)}%</strong></div>
-        <div><span className="text-gray-500">Median:</span> <strong>{fmt(efoSummary.medPct, 1)}%</strong></div>
-        <div><span className="text-gray-500">Min/Max %:</span> <strong>{fmt(efoSummary.minPct,1)}% / {fmt(efoSummary.maxPct,1)}%</strong></div>
-        <div><span className="text-gray-500">Ø PRS:</span> <strong>{fmt(efoSummary.avgPRS, 3)}</strong></div>
-        <div><span className="text-gray-500">PRS-Spanne:</span> <strong>{fmt(efoSummary.minPRS,3)} … {fmt(efoSummary.maxPRS,3)}</strong></div>
-        {anchor && (
-          <div><span className="text-gray-500">Anker-PGS:</span> <strong>{anchor.id}</strong>{isNum(anchor.percentile) ? ` · ${anchor.percentile.toFixed(1)}%` : ''}</div>
-        )}
-        <div className="text-gray-500">Geladene SNP-Zusammenfassungen: <strong>{Object.keys(summaries).length}</strong></div>
-      </div>
-    </div>
-
-    {/* Full biomarker card (like batch_ui_cardio) */}
-    <BiomarkerPanel biomarkers={patientBiomarkers} genomeName={genomeQuery} />
-
-    {/* Related biomarkers (EFO-specific) */}
-    {relatedWithClass.length > 0 && (
-      <div className="bg-white p-4 rounded-lg shadow-md mb-6">
-        <h3 className="text-lg font-semibold mb-3">Zugehörige Biomarker</h3>
-        <ul className="space-y-1 text-sm">
-          {relatedWithClass.map((bm, idx) => (
-            <li key={idx} className="flex items-center gap-2">
-              <span className="font-medium">{bm.label}:</span>
-              <span>{bm.value}{bm.unit ? ` ${bm.unit}` : ''}</span>
-              <span className={bm.badge.badgeClass}>{bm.badge.note}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    )}
-
-    <div className="flex gap-6">
-      {/* Per-PGS table */}
-      <div className="flex-1 bg-white p-6 rounded-xl shadow-md overflow-x-auto">
-        <table className="w-full text-sm border-separate border-spacing-y-1">
-          <thead className="bg-blue-50 text-gray-700">
-            <tr>
-              {['PGS', 'PRS', 'Z-Score', 'Perzentil', 'Matches', 'Varianten', 'SNP-Zusammenfassungen / Quellen'].map((col) => (
-                <th key={col} className="px-4 py-2 text-left font-semibold">{col}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows
-              .slice()
-              .sort((a, b) => {
-                const pa = Number.isFinite(a.percentile) ? a.percentile : -Infinity;
-                const pb = Number.isFinite(b.percentile) ? b.percentile : -Infinity;
-                return pb - pa;
-              })
-              .map((r, i) => {
-                const meta = riskMeta(r.percentile);
-                const topRsidList = (r.topVariants || [])
-                  .map(v => ({ ...v, rsid: rsidFromVariant(v.variant, v.rsid) }))
-                  .filter(v => v.rsid)                                   // keep any with a detectable rsID
-                  .sort((a,b) => Math.abs(b.score ?? 0) - Math.abs(a.score ?? 0)) // prefer larger |score|
-                  .slice(0, 3)
-.map(v => v.rsid);
-
-                return (
-                  <tr key={r.id || i} className={`odd:bg-gray-50 even:bg-gray-100 hover:bg-blue-50 transition-colors ${meta.rowCls}`}>
-                    <td className="px-4 py-2 font-mono">
-                      {r.id ? (
-                        <a href={pgsLink(r.id)} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline" title="PGS Catalog">
-                          {r.id}
-                        </a>
-                      ) : '—'}
-                    </td>
-                    <td className="px-4 py-2">{fmt(r.prs, 4)}</td>
-                    <td className="px-4 py-2">{fmt(r.zScore, 2)}</td>
-                    <td className="px-4 py-2">
-                      {isNum(r.percentile) ? (
-                        <span className={`px-2 py-0.5 rounded text-xs ${meta.badgeCls}`} title={meta.label}>
-                          {r.percentile.toFixed(1)}% · {meta.label}
-                        </span>
-                      ) : '–'}
-                    </td>
-                    <td className="px-4 py-2">{isNum(r.matches) ? r.matches : '–'}</td>
-                    <td className="px-4 py-2">{isNum(r.totalVariants) ? r.totalVariants : '–'}</td>
-
-                    {/* inline summary links + Quelle */}
-                    <td className="px-4 py-2">
-                      {topRsidList.length === 0 ? (
-                        <span className="text-gray-500">—</span>
-                      ) : (
-                        <div className="flex flex-wrap gap-2 items-center">
-                          {topRsidList.map(rsid => {
-                            const loaded = !!summaries[rsid];
-                            const isLoading = !!loadingRsid[rsid];
-                            return (
-                              <span key={rsid} className="inline-flex items-center gap-1">
-                                <a
-                                  href={`https://www.ncbi.nlm.nih.gov/snp/${rsid}`}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="text-blue-600 hover:underline"
-                                  title="NCBI dbSNP"
-                                >
-                                  {rsid}
-                                </a>
-                                <span>·</span>
-                                {loaded ? (
-                                  <>
-                                    <button
-                                      className="text-green-600 hover:underline"
-                                      onClick={() =>
-                                        setActiveSummary({ type: 'snp', rsid, ...summaries[rsid] })
-                                      }
-                                      title="Zusammenfassung lesen"
-                                    >
-                                      Lesen
-                                    </button>
-                                    {summaries[rsid]?.url && (
-                                      <>
-                                        <span className="text-gray-400">·</span>
-                                        <a
-                                          href={summaries[rsid].url}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="text-blue-600 hover:underline"
-                                          title="Originalpublikation"
-                                        >
-                                          Quelle
-                                        </a>
-                                      </>
-                                    )}
-                                  </>
-                                ) : (
-                                  <button
-                                    className="text-gray-700 hover:underline disabled:text-gray-400"
-                                    disabled={isLoading}
-                                    onClick={() => fetchAndStoreSummary(rsid)}
-                                    title="Zusammenfassung holen"
-                                  >
-                                    {isLoading ? 'Lade…' : 'Holen'}
-                                  </button>
-                                )}
-                              </span>
-                            );
-                          })}
-                          {(r.topVariants || []).filter(v => v.rsid).length > topRsidList.length && (
-                            <button
-                              className="text-blue-600 hover:underline"
-                              onClick={() => fetchTopSummariesForRow(r, 6)}
-                              title="Alle (ersten) holen"
-                            >
-                              Alle holen
-                            </button>
-                          )}
-                        </div>
-                      )}
-                    </td>
-
-                  </tr>
-                );
-              })}
-          </tbody>
-        </table>
+      {/* EFO-level summary */}
+      <div className="bg-white p-4 rounded-lg shadow mb-4 text-sm">
+        <div className="flex flex-wrap gap-6 items-center">
+          <div><span className="text-gray-500">PGS-Modelle:</span> <strong>{efoSummary.count}</strong></div>
+          <div><span className="text-gray-500">Ø Perzentil:</span> <strong>{fmt(efoSummary.avgPct, 1)}%</strong></div>
+          <div><span className="text-gray-500">Median:</span> <strong>{fmt(efoSummary.medPct, 1)}%</strong></div>
+          <div><span className="text-gray-500">Min/Max %:</span> <strong>{fmt(efoSummary.minPct,1)}% / {fmt(efoSummary.maxPct,1)}%</strong></div>
+          <div><span className="text-gray-500">Ø PRS:</span> <strong>{fmt(efoSummary.avgPRS, 3)}</strong></div>
+          <div><span className="text-gray-500">PRS-Spanne:</span> <strong>{fmt(efoSummary.minPRS,3)} … {fmt(efoSummary.maxPRS,3)}</strong></div>
+          {anchor && (
+            <div><span className="text-gray-500">Anker-PGS:</span> <strong>{anchor.id}</strong>{isNum(anchor.percentile) ? ` · ${anchor.percentile.toFixed(1)}%` : ''}</div>
+          )}
+          <div className="text-gray-500">Geladene SNP-Zusammenfassungen: <strong>{Object.keys(summaries).length}</strong></div>
+        </div>
       </div>
 
-      {/* Publication summary panel (fed by /api/snp-summary) */}
-      <div className="w-1/3 bg-white p-6 rounded-xl shadow-md sticky top-10 h-fit">
-        {activeSummary ? (
-          <>
-            <h3 className="text-xl font-bold mb-4">Zusammenfassung für {activeSummary.rsid}</h3>
-            {activeSummary.url && (
-              <p className="mb-4">
-                <a href={activeSummary.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
-                  Zur Publikation
-                </a>
+      {/* === Biomarker + Zugehörige (nebeneinander, gleiche Höhe) === */}
+      <div className="flex gap-4 items-stretch mb-6">
+        {/* Linkes Panel */}
+        <div className="flex-1">
+          <BiomarkerPanel
+            compact
+            biomarkers={patientBiomarkers}
+            genomeName={genomeQuery}
+          />
+        </div>
+
+        {/* Rechtes Panel */}
+        <div className="flex-1">
+          <div className="bg-white border border-gray-200 rounded-lg p-4 h-full">
+            <h3 className="text-lg font-semibold mb-3">Zugehörige Biomarker</h3>
+
+            {relatedWithClass.length > 0 ? (
+              <ul className="space-y-1 text-sm">
+                {relatedWithClass.map((bm, idx) => (
+                  <li key={idx} className="flex items-center gap-2">
+                    <span className="font-medium">{bm.label}:</span>
+                    <span>
+                      {bm.value}
+                      {bm.unit ? ` ${bm.unit}` : ''}
+                    </span>
+                    <span className={bm.badge.badgeClass}>{bm.badge.note}</span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-gray-600">
+                Keine zugehörigen Biomarker gefunden.
               </p>
             )}
-            <p className="whitespace-pre-line text-gray-800">{activeSummary.text}</p>
-          </>
-        ) : (
-          <p className="text-gray-500">Wähle eine Variante aus, um die Zusammenfassung zu sehen.</p>
+          </div>
+        </div>
+      </div>
+
+
+      <div className="flex gap-6">
+        {/* Per-PGS table */}
+        <div className="flex-1 bg-white p-6 rounded-xl shadow-md overflow-x-auto">
+          <table className="w-full text-sm border-separate border-spacing-y-1">
+            <thead className="bg-blue-50 text-gray-700">
+              <tr>
+                {['PGS', 'PRS', 'Z-Score', 'Perzentil', 'Match/Varianten', 'SNP+Abstract'].map((col) => (
+                  <th key={col} className="px-4 py-2 text-left font-semibold">{col}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows
+                .slice()
+                .sort((a, b) => {
+                  const pa = Number.isFinite(a.percentile) ? a.percentile : -Infinity;
+                  const pb = Number.isFinite(b.percentile) ? b.percentile : -Infinity;
+                  return pb - pa;
+                })
+                .map((r, i) => {
+                  const meta = riskMeta(r.percentile);
+                  const topSnps = (r.topVariants || [])
+  .map(v => ({ ...v, rsid: rsidFromVariant(v.variant, v.rsid) }))
+  .filter(v => v.rsid)
+  .sort((a,b) => Math.abs(b.score ?? 0) - Math.abs(a.score ?? 0))
+  .slice(0, 3);
+
+                  return (
+                    <tr key={r.id || i} className={`odd:bg-gray-50 even:bg-gray-100 hover:bg-blue-50 transition-colors ${meta.rowCls}`}>
+                      <td className="px-4 py-2 font-mono">
+                        {r.id ? (
+                          <a href={pgsLink(r.id)} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline" title="PGS Catalog">
+                            {r.id}
+                          </a>
+                        ) : '—'}
+                      </td>
+                      <td className="px-4 py-2">{fmt(r.prs, 4)}</td>
+                      <td className="px-4 py-2">{fmt(r.zScore, 2)}</td>
+                      <td className="px-4 py-2 whitespace-nowrap">{isNum(r.percentile) ? (
+                          <button
+                            type="button"
+                            className={`px-2 py-0.5 rounded text-xs ${meta.badgeCls} hover:opacity-90 hover:underline focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-300`}
+                            title="Perzentil interpretieren"
+                            onClick={() => setPctPanel({
+                              pgsId: r.id,
+                              percentile: r.percentile,
+                              zScore: r.zScore,
+                              matches: r.matches,
+                              totalVariants: r.totalVariants,
+                            })}
+                          >
+                            {r.percentile.toFixed(1)}% · {meta.label}
+                          </button>
+                        ) : '–'}
+                      </td>
+                      <td className="px-4 py-2 whitespace-nowrap">{ (isNum(r.matches) || isNum(r.totalVariants)) ? ((isNum(r.matches) ? r.matches : '–') + ' / ' + (isNum(r.totalVariants) ? r.totalVariants : '–')) : '–' }</td>
+
+                      {/* inline summary links + Quelle */}
+<td className="px-4 py-2">
+  {topSnps.length === 0 ? (
+    <span className="text-gray-500">—</span>
+  ) : (
+    <div className="flex flex-wrap gap-2 items-center">
+      {topSnps.map(snp => {
+        const rsid = snp.rsid;
+        const loaded = !!summaries[rsid];
+        const isLoading = !!loadingRsid[rsid];
+        return (
+          <span key={rsid} className="inline-flex items-center gap-1">
+            <a
+              href={`https://www.ncbi.nlm.nih.gov/snp/${rsid}`}
+              target="_blank"
+              rel="noreferrer"
+              className="text-blue-600 hover:underline"
+              title="NCBI dbSNP"
+            >
+              {rsid}
+            </a>
+            <span className="text-xs text-gray-500">
+              (β {fmt(snp.beta, 3)} · Dos {snp.dosage ?? '—'} · {fmt(snp.score, 3)})
+            </span>
+            <span>·</span>
+            {loaded ? (
+              <>
+                <button
+                  className="text-green-600 hover:underline"
+                  onClick={() => setActiveSummary({ type: 'snp', rsid, ...summaries[rsid] })}
+                  title="Zusammenfassung lesen"
+                >
+                  Lesen
+                </button>
+                {summaries[rsid]?.url && (
+                  <>
+                    <span className="text-gray-400">·</span>
+                    <a
+                      href={summaries[rsid].url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                      title="Originalpublikation"
+                    >
+                      Quelle
+                    </a>
+                  </>
+                )}
+              </>
+            ) : (
+              <button
+                className="text-gray-700 hover:underline disabled:text-gray-400"
+                disabled={isLoading}
+                onClick={() => fetchAndStoreSummary(rsid)}
+                title="Zusammenfassung holen"
+              >
+                {isLoading ? 'Lade…' : 'Holen'}
+              </button>
+            )}
+          </span>
+        );
+      })}
+    </div>
+  )}
+</td>
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Rechte Spalte: Zusammenfassung + Perzentil-Interpretation übereinander */}
+        <div className="w-full lg:w-1/3 lg:sticky lg:top-10 self-start flex flex-col gap-4">
+
+          {/* Publication summary panel */}
+          <div className="bg-white p-6 rounded-xl shadow-md">
+            {activeSummary ? (
+              <>
+                <h3 className="text-xl font-bold mb-4">
+                  Zusammenfassung für {activeSummary.rsid}
+                </h3>
+
+                {activeSummary.url && (
+                  <p className="mb-4">
+                    <a
+                      href={activeSummary.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      Zur Publikation
+                    </a>
+                  </p>
+                )}
+
+                <p className="whitespace-pre-line text-gray-800">
+                  {activeSummary.text}
+                </p>
+              </>
+            ) : (
+              <p className="text-gray-500">
+                Wähle eine Variante aus, um die Zusammenfassung zu sehen.
+              </p>
+            )}
+          </div>
+
+          {/* NEW: Percentile interpretation panel */}
+          {/* Falls renderPctInterpretation bereits eine fertige Card zurückgibt,
+            nimm NUR {renderPctInterpretation(pctPanel)} ohne das umgebende <div>. */}
+            {renderPctInterpretation(pctPanel)}
+        </div>
+      </div>
+
+
+      {/* Top variants chart + clickable list */}
+      <div className="bg-white p-6 rounded-xl shadow-md mt-10">
+        <Bar data={chartData} options={chartOptions} />
+        <div className="mt-4 text-sm text-gray-600">
+          {anchor
+            ? <>Anker: <span className="font-mono">{anchor.id}</span> · PRS {fmt(anchor.prs,4)} · {isNum(anchor.percentile) ? `${anchor.percentile.toFixed(1)}%` : '–'}</>
+            : 'Kein Anker-PGS auswählbar.'}
+        </div>
+
+        {top10.length > 0 && (
+          <ul className="mt-4 text-sm">
+            {top10.map((v, i) => (
+              <li key={i} className="py-1">
+                <span className="text-gray-500 mr-2">{i + 1}.</span>
+                <span className="mr-2">{v.variant}</span>
+                {v.rsid ? (
+                  <>
+                    <a
+                      href={`https://www.ncbi.nlm.nih.gov/snp/${v.rsid}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      {v.rsid}
+                    </a>{' '}
+                    {summaries[v.rsid]?.text ? (
+                      <>
+                        <button
+                          className="text-green-600 hover:underline"
+                          onClick={() => setActiveSummary({ rsid: v.rsid, ...summaries[v.rsid] })}
+                        >
+                          Zusammenfassung
+                        </button>
+                        {summaries[v.rsid]?.url && (
+                          <>
+                            {' '}·{' '}
+                            <a
+                              href={summaries[v.rsid].url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:underline"
+                            >
+                              Quelle
+                            </a>
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      <button
+                        className="text-gray-700 hover:underline disabled:text-gray-400"
+                        disabled={!!loadingRsid[v.rsid]}
+                        onClick={() => fetchAndStoreSummary(v.rsid)}
+                      >
+                        {loadingRsid[v.rsid] ? 'Lade…' : 'Holen'}
+                      </button>
+                    )}
+                  </>
+                ) : '–'}
+                <span className="float-right font-semibold">{fmt(v.score, 3)}</span>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
-    </div>
-
-    {/* Top variants chart + clickable list that opens summaries */}
-    <div className="bg-white p-6 rounded-xl shadow-md mt-10">
-      <Bar data={chartData} options={chartOptions} />
-      <div className="mt-4 text-sm text-gray-600">
-        {anchor
-          ? <>Anker: <span className="font-mono">{anchor.id}</span> · PRS {fmt(anchor.prs,4)} · {isNum(anchor.percentile) ? `${anchor.percentile.toFixed(1)}%` : '–'}</>
-          : 'Kein Anker-PGS auswählbar.'}
-      </div>
-
-      {top10.length > 0 && (
-        <ul className="mt-4 text-sm">
-          {top10.map((v, i) => (
-            <li key={i} className="py-1">
-              <span className="text-gray-500 mr-2">{i + 1}.</span>
-              <span className="mr-2">{v.variant}</span>
-              {v.rsid ? (
-                <>
-                  <a
-                    href={`https://www.ncbi.nlm.nih.gov/snp/${v.rsid}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-blue-600 hover:underline"
-                  >
-                    {v.rsid}
-                  </a>{' '}
-                  {summaries[v.rsid]?.text ? (
-                    <>
-                      <button
-                        className="text-green-600 hover:underline"
-                        onClick={() => setActiveSummary({ rsid: v.rsid, ...summaries[v.rsid] })}
-                      >
-                        Zusammenfassung
-                      </button>
-                      {summaries[v.rsid]?.url && (
-                        <>
-                          {' '}·{' '}
-                          <a
-                            href={summaries[v.rsid].url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-600 hover:underline"
-                          >
-                            Quelle
-                          </a>
-                        </>
-                      )}
-                    </>
-                  ) : (
-                    <button
-                      className="text-gray-700 hover:underline disabled:text-gray-400"
-                      disabled={!!loadingRsid[v.rsid]}
-                      onClick={() => fetchAndStoreSummary(v.rsid)}
-                    >
-                      {loadingRsid[v.rsid] ? 'Lade…' : 'Holen'}
-                    </button>
-                  )}
-                </>
-              ) : '–'}
-              <span className="float-right font-semibold">{fmt(v.score, 3)}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  </DashboardLayout>
-);
+    </DashboardLayout>
+  );
 }

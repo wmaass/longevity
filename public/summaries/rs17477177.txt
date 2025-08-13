@@ -1,3 +1,0 @@
-Title: Role of genetics in the development of cardiac allograft vasculopathy
-
-The abstract discusses a study that investigates the genetic factors influencing the development of Cardiac Allograft Vasculopathy (CAV), a significant complication in heart transplant recipients. The research identifies several Single Nucleotide Polymorphisms (SNPs) within genes related to immune response and inflammation, suggesting they may contribute to an increased risk of CAV. Notably, the study focuses on a predominantly European population, with further exploration needed for diverse populations. The findings provide potential insights into personalized medicine approaches for managing CAV in heart transplant recipients.

@@ -1,3 +1,0 @@
-Title: Investigation of rs8106922 and rs157580 of TOMM40 Gene in Individuals with Late-Onset Alzheimer's Disease in Iran
-
-Summary: This study investigates the association between specific single nucleotide polymorphisms (SNPs), rs8106922 and rs157580, within the TOMM40 gene and late-onset Alzheimer's disease (LOAD) in an Iranian population. The analysis involves comparing the frequency of these SNPs between LOAD patients and healthy controls, aiming to identify potential genetic markers for LOAD in this demographic.

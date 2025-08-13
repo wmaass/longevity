@@ -1,3 +1,0 @@
-Title: Genome-wide association study of the common retinal disorder epiretinal membrane in three American populations
-
-Summary: This study conducted a genome-wide association analysis on three distinct American populations to identify significant risk loci associated with Epiretinal Membrane (ERM), a common retinal disorder. The research found novel genetic associations linked to ERM across the three population groups, which could potentially aid in understanding the pathogenesis of this condition and pave the way for developing targeted therapies. No specific Single Nucleotide Polymorphisms (SNPs) were mentioned in the abstract, but further analysis may reveal these genetic markers.

@@ -1,0 +1,9 @@
+Here is a summary of what this paper reports specifically about rs4737009:
+
+• Mention of: Yes, rs4737009 is mentioned as one of the three widely studied variants of the ANK1 gene.
+• Trait: Type 2 diabetes mellitus (T2DM)
+• Allele/Genotype effects: There were no differences in the expression of rs4737009 between T2DM cases and controls.
+• Effect size: Not reported
+• Population: Han Chinese population from northeast China
+• Design: Single-locus analysis
+• Limitations: None mentioned specifically for rs4737009

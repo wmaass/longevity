@@ -2,11 +2,11 @@
   {
     "id": "PGS000063",
     "trait": "triglyceride measurement",
-    "rawScore": -0.194,
-    "prs": -0.194,
-    "zScore": -0.6586214589526368,
-    "percentile": 25.506937573361604,
-    "matches": 15,
+    "rawScore": -0.22039999999999998,
+    "prs": -0.22039999999999998,
+    "zScore": -0.7488373350319326,
+    "percentile": 22.6977558926931,
+    "matches": 14,
     "totalVariants": 32,
     "topVariants": [
       {
@@ -74,11 +74,11 @@
   {
     "id": "PGS000066",
     "trait": "triglyceride measurement",
-    "rawScore": 0.36661609999999994,
-    "prs": 0.36661609999999994,
-    "zScore": 1.0377646007729702,
-    "percentile": 85.03101454399676,
-    "matches": 43,
+    "rawScore": 0.3224160999999999,
+    "prs": 0.3224160999999999,
+    "zScore": 0.8909676723181624,
+    "percentile": 81.35267757839574,
+    "matches": 42,
     "totalVariants": 101,
     "topVariants": [
       {
@@ -136,21 +136,21 @@
         "score": 0.04528
       },
       {
-        "rsid": "rs11776767",
-        "variant": "8:10683929",
-        "alleles": "CC",
-        "score": 0.0442
+        "rsid": "rs7901016",
+        "variant": "10:74637326",
+        "alleles": "CT",
+        "score": 0.0422921
       }
     ]
   },
   {
     "id": "PGS000312",
     "trait": "triglyceride measurement",
-    "rawScore": -1.046,
-    "prs": -1.046,
-    "zScore": 0.6516922165077836,
-    "percentile": 74.2700190275843,
-    "matches": 66,
+    "rawScore": -0.6280000000000001,
+    "prs": -0.6280000000000001,
+    "zScore": 0.9221254007629742,
+    "percentile": 82.17684362626557,
+    "matches": 63,
     "totalVariants": 190,
     "topVariants": [
       {
@@ -158,12 +158,6 @@
         "variant": "11:116639104",
         "alleles": "GG",
         "score": -0.52
-      },
-      {
-        "rsid": "rs964184",
-        "variant": "11:116648917",
-        "alleles": "CC",
-        "score": -0.5
       },
       {
         "rsid": "rs7350481",
@@ -212,6 +206,12 @@
         "variant": "11:61571478",
         "alleles": "CC",
         "score": 0.104
+      },
+      {
+        "rsid": "rs157580",
+        "variant": "19:45395266",
+        "alleles": "AA",
+        "score": 0.094
       }
     ]
   },

@@ -2,72 +2,122 @@
   {
     "id": "PGS000314",
     "trait": "C-reactive protein measurement",
-    "rawScore": 2.0361883,
-    "prs": 2.0361883,
-    "zScore": -1.8302468123276698,
-    "percentile": 3.360646285528568,
-    "matches": 15,
+    "rawScore": 1.7376798999999998,
+    "prs": 1.7376798999999998,
+    "zScore": -2.452249207668882,
+    "percentile": 0.7098319848963919,
+    "matches": 14,
     "totalVariants": 77,
     "topVariants": [
       {
         "rsid": "rs429358",
         "variant": "19:45411941",
         "alleles": "TT",
+        "beta": 0.2313436,
+        "dosage": 2,
+        "effectAllele": "T",
+        "otherAllele": "C",
+        "af": null,
         "score": 0.4626872
-      },
-      {
-        "rsid": "rs1800947",
-        "variant": "1:159683438",
-        "alleles": "CC",
-        "score": 0.2985084
       },
       {
         "rsid": "rs11265263",
         "variant": "1:159710517",
         "alleles": "CC",
+        "beta": 0.1403531,
+        "dosage": 2,
+        "effectAllele": "C",
+        "otherAllele": "A",
+        "af": null,
         "score": 0.2807062
       },
       {
         "rsid": "rs1800961",
         "variant": "20:43042364",
         "alleles": "CC",
+        "beta": 0.1125916,
+        "dosage": 2,
+        "effectAllele": "C",
+        "otherAllele": "T",
+        "af": null,
         "score": 0.2251832
       },
       {
         "rsid": "rs4131568",
         "variant": "1:159722056",
         "alleles": "CT",
+        "beta": 0.1971559,
+        "dosage": 1,
+        "effectAllele": "C",
+        "otherAllele": "T",
+        "af": null,
         "score": 0.1971559
       },
       {
         "rsid": "rs7310409",
         "variant": "12:121424861",
         "alleles": "AG",
+        "beta": 0.13578,
+        "dosage": 1,
+        "effectAllele": "G",
+        "otherAllele": "A",
+        "af": null,
         "score": 0.13578
       },
       {
         "rsid": "rs2836878",
         "variant": "21:40465534",
         "alleles": "GG",
+        "beta": 0.0431824,
+        "dosage": 2,
+        "effectAllele": "G",
+        "otherAllele": "A",
+        "af": null,
         "score": 0.0863648
       },
       {
         "rsid": "rs1260326",
         "variant": "2:27730940",
         "alleles": "CT",
+        "beta": 0.0733798,
+        "dosage": 1,
+        "effectAllele": "T",
+        "otherAllele": "C",
+        "af": null,
         "score": 0.0733798
       },
       {
         "rsid": "rs469772",
         "variant": "1:91530305",
         "alleles": "CC",
+        "beta": 0.030561,
+        "dosage": 2,
+        "effectAllele": "C",
+        "otherAllele": "T",
+        "af": null,
         "score": 0.061122
       },
       {
         "rsid": "rs12202641",
         "variant": "6:116314634",
         "alleles": "CC",
+        "beta": 0.0232599,
+        "dosage": 2,
+        "effectAllele": "C",
+        "otherAllele": "T",
+        "af": null,
         "score": 0.0465198
+      },
+      {
+        "rsid": "rs7121935",
+        "variant": "11:72496148",
+        "alleles": "GG",
+        "beta": 0.0226127,
+        "dosage": 2,
+        "effectAllele": "G",
+        "otherAllele": "A",
+        "af": null,
+        "score": 0.0452254
       }
     ]
   }

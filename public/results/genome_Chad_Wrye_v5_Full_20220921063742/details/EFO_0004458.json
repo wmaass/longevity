@@ -2,11 +2,11 @@
   {
     "id": "PGS000314",
     "trait": "C-reactive protein measurement",
-    "rawScore": 2.1833383,
-    "prs": 2.1833383,
-    "zScore": -1.5236301393145846,
-    "percentile": 6.380058774615755,
-    "matches": 18,
+    "rawScore": 2.1492328,
+    "prs": 2.1492328,
+    "zScore": -1.594695820194284,
+    "percentile": 5.539013782491198,
+    "matches": 17,
     "totalVariants": 77,
     "topVariants": [
       {

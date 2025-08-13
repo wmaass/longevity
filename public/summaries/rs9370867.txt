@@ -1,3 +1,0 @@
-Title: Associations between squalene epoxidase gene polymorphisms and obesity.
-
-Summary: This study explores the relationship between single nucleotide polymorphisms (SNPs) in the squalene epoxidase (SQLE) gene and obesity. The research focuses on a Han Chinese population, identifying specific SNPs that may influence body mass index (BMI), waist-hip ratio, and overall obesity prevalence. The results suggest that certain SQLE variants are associated with increased risk of obesity in the studied population. Further investigation is recommended to confirm these findings and potentially identify new targets for obesity treatments.

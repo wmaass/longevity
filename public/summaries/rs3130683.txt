@@ -1,0 +1,12 @@
+Here is a summary of what this paper reports specifically about rs3130683:
+
+• Mention of rs3130683: Yes
+• Trait: Lung cancer susceptibility
+• Allele/genotype effects:
+	+ AG genotype/AA genotype (rs3130683 A>G): OR=1.87, 95%CI: 1.13-3.09
+• Effect size: Odds ratio (OR)
+• Confidence interval (CI): 1.13-3.09
+• P-value: Not specified
+• Population: Han Chinese population
+• Design: Case-control study
+• Limitations: None mentioned specifically about

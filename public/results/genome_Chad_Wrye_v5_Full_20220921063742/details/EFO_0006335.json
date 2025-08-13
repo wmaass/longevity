@@ -2,11 +2,11 @@
   {
     "id": "PGS000301",
     "trait": "systolic blood pressure",
-    "rawScore": 43.08531199999999,
-    "prs": 43.08531199999999,
-    "zScore": -17.12438321767009,
+    "rawScore": 39.626236,
+    "prs": 39.626236,
+    "zScore": -17.766277576921528,
     "percentile": 0.1,
-    "matches": 99,
+    "matches": 95,
     "totalVariants": 970,
     "topVariants": [
       {
@@ -26,12 +26,6 @@
         "variant": "12:90060586",
         "alleles": "GG",
         "score": 1.604776
-      },
-      {
-        "rsid": "rs17080102",
-        "variant": "6:151004770",
-        "alleles": "GG",
-        "score": 1.445842
       },
       {
         "rsid": "rs61762319",
@@ -58,16 +52,22 @@
         "score": 1.063426
       },
       {
-        "rsid": "rs633185",
-        "variant": "11:100593538",
-        "alleles": "CC",
-        "score": 0.996054
-      },
-      {
         "rsid": "rs1530440",
         "variant": "10:63524591",
         "alleles": "CC",
         "score": 0.984106
+      },
+      {
+        "rsid": "rs409558",
+        "variant": "6:31708147",
+        "alleles": "TT",
+        "score": 0.884742
+      },
+      {
+        "rsid": "rs8118848",
+        "variant": "20:62461572",
+        "alleles": "GG",
+        "score": 0.815506
       }
     ]
   }

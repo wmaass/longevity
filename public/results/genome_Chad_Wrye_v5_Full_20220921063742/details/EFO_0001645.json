@@ -2,11 +2,11 @@
   {
     "id": "PGS000010",
     "trait": "coronary artery disease",
-    "rawScore": 3.278382049925086,
-    "prs": 3.278382049925086,
-    "zScore": 1.9524052277662867,
-    "percentile": 97.45550124150247,
-    "matches": 19,
+    "rawScore": 2.7096187859548824,
+    "prs": 2.7096187859548824,
+    "zScore": 0.8077353934913531,
+    "percentile": 79.03785962102117,
+    "matches": 15,
     "totalVariants": 27,
     "topVariants": [
       {
@@ -20,12 +20,6 @@
         "variant": "1:56962821",
         "alleles": "AA",
         "score": 0.3140074976193294
-      },
-      {
-        "rsid": "rs11206510",
-        "variant": "1:55496039",
-        "alleles": "TT",
-        "score": 0.27952388475031725
       },
       {
         "rsid": "rs1122608",
@@ -68,17 +62,23 @@
         "variant": "10:44775824",
         "alleles": "CT",
         "score": 0.1570037488096647
+      },
+      {
+        "rsid": "rs2259816",
+        "variant": "12:121435587",
+        "alleles": "TT",
+        "score": 0.1539220822722568
       }
     ]
   },
   {
     "id": "PGS000011",
     "trait": "coronary artery disease",
-    "rawScore": 3.49682357358657,
-    "prs": 3.49682357358657,
-    "zScore": 1.3268061828745612,
-    "percentile": 90.77135319296771,
-    "matches": 29,
+    "rawScore": 3.0524373735804224,
+    "prs": 3.0524373735804224,
+    "zScore": 0.4104320491254022,
+    "percentile": 65.92554351121822,
+    "matches": 24,
     "totalVariants": 50,
     "topVariants": [
       {
@@ -146,11 +146,11 @@
   {
     "id": "PGS000019",
     "trait": "coronary artery disease",
-    "rawScore": 2.033021,
-    "prs": 2.033021,
-    "zScore": -6.509673778032826,
+    "rawScore": 1.7776070000000002,
+    "prs": 1.7776070000000002,
+    "zScore": -6.886594567786607,
     "percentile": 0.1,
-    "matches": 15,
+    "matches": 12,
     "totalVariants": 192,
     "topVariants": [
       {
@@ -178,12 +178,6 @@
         "score": 0.22906
       },
       {
-        "rsid": "rs11206510",
-        "variant": "1:55496039",
-        "alleles": "TT",
-        "score": 0.149038
-      },
-      {
         "rsid": "rs9515203",
         "variant": "13:111049623",
         "alleles": "TT",
@@ -202,27 +196,33 @@
         "score": 0.12253
       },
       {
-        "rsid": "rs2521501",
-        "variant": "15:91437388",
-        "alleles": "AT",
-        "score": 0.059874
-      },
-      {
         "rsid": "rs12801636",
         "variant": "11:65391317",
         "alleles": "AG",
         "score": 0.04993
+      },
+      {
+        "rsid": "rs421329",
+        "variant": "6:5090056",
+        "alleles": "CT",
+        "score": 0.049675
+      },
+      {
+        "rsid": "rs35879803",
+        "variant": "4:146782837",
+        "alleles": "AC",
+        "score": 0.047793
       }
     ]
   },
   {
     "id": "PGS000057",
     "trait": "coronary artery disease",
-    "rawScore": 2.5900000000000003,
-    "prs": 2.5900000000000003,
-    "zScore": -0.7045035455990911,
-    "percentile": 24.05595522488115,
-    "matches": 22,
+    "rawScore": 1.8400000000000003,
+    "prs": 1.8400000000000003,
+    "zScore": -2.4368893134657155,
+    "percentile": 0.7407107949939984,
+    "matches": 16,
     "totalVariants": 57,
     "topVariants": [
       {
@@ -250,51 +250,51 @@
         "score": 0.2
       },
       {
-        "rsid": "rs1333049",
-        "variant": "9:22125503",
-        "alleles": "CG",
-        "score": 0.19
-      },
-      {
         "rsid": "rs9515203",
         "variant": "13:111049623",
         "alleles": "TT",
         "score": 0.16
       },
       {
-        "rsid": "rs12190287",
-        "variant": "6:134214525",
-        "alleles": "CC",
-        "score": 0.14
-      },
-      {
-        "rsid": "rs11206510",
-        "variant": "1:55496039",
-        "alleles": "TT",
-        "score": 0.12
-      },
-      {
-        "rsid": "rs4845625",
-        "variant": "1:154422067",
-        "alleles": "TT",
-        "score": 0.12
-      },
-      {
         "rsid": "rs9982601",
         "variant": "21:35599128",
         "alleles": "CT",
         "score": 0.12
+      },
+      {
+        "rsid": "rs6725887",
+        "variant": "2:203745885",
+        "alleles": "CT",
+        "score": 0.11
+      },
+      {
+        "rsid": "rs247616",
+        "variant": "16:56989590",
+        "alleles": "CC",
+        "score": 0.1
+      },
+      {
+        "rsid": "rs9369640",
+        "variant": "6:12901441",
+        "alleles": "AC",
+        "score": 0.09
+      },
+      {
+        "rsid": "rs11057830",
+        "variant": "12:125307053",
+        "alleles": "AG",
+        "score": 0.08
       }
     ]
   },
   {
     "id": "PGS000058",
     "trait": "coronary artery disease",
-    "rawScore": 5.629373114853357,
-    "prs": 5.629373114853357,
-    "zScore": -3.7899140904192246,
+    "rawScore": 5.2048164386858415,
+    "prs": 5.2048164386858415,
+    "zScore": -4.321091636697456,
     "percentile": 0.1,
-    "matches": 46,
+    "matches": 42,
     "totalVariants": 204,
     "topVariants": [
       {
@@ -352,8 +352,8 @@
         "score": 0.1539220822722568
       },
       {
-        "rsid": "rs12493885",
-        "variant": "3:153839866",
+        "rsid": "rs10953541",
+        "variant": "7:107244545",
         "alleles": "CC",
         "score": 0.1539220822722568
       }
@@ -362,11 +362,11 @@
   {
     "id": "PGS000059",
     "trait": "coronary artery disease",
-    "rawScore": 2.3899999999999997,
-    "prs": 2.3899999999999997,
-    "zScore": -1.4055707895081997,
-    "percentile": 7.992586093743381,
-    "matches": 17,
+    "rawScore": 1.9000000000000001,
+    "prs": 1.9000000000000001,
+    "zScore": -2.245826609181665,
+    "percentile": 1.23575185282086,
+    "matches": 12,
     "totalVariants": 46,
     "topVariants": [
       {
@@ -406,12 +406,6 @@
         "score": 0.16
       },
       {
-        "rsid": "rs12190287",
-        "variant": "6:134214525",
-        "alleles": "CC",
-        "score": 0.14
-      },
-      {
         "rsid": "rs264",
         "variant": "8:19813180",
         "alleles": "GG",
@@ -428,17 +422,23 @@
         "variant": "6:12903957",
         "alleles": "AG",
         "score": 0.13
+      },
+      {
+        "rsid": "rs2895811",
+        "variant": "14:100133942",
+        "alleles": "CT",
+        "score": 0.07
       }
     ]
   },
   {
     "id": "PGS000200",
     "trait": "coronary artery disease",
-    "rawScore": 3.157021527168892,
-    "prs": 3.157021527168892,
-    "zScore": 2.004051736501493,
-    "percentile": 97.74678096431674,
-    "matches": 20,
+    "rawScore": 2.619136165694372,
+    "prs": 2.619136165694372,
+    "zScore": 0.8993234692426668,
+    "percentile": 81.57598344658983,
+    "matches": 15,
     "totalVariants": 28,
     "topVariants": [
       {
@@ -484,12 +484,6 @@
         "score": 0.16551443847757333
       },
       {
-        "rsid": "rs11206510",
-        "variant": "1:55496039",
-        "alleles": "TT",
-        "score": 0.1539220822722568
-      },
-      {
         "rsid": "rs2259816",
         "variant": "12:121435587",
         "alleles": "TT",
@@ -500,17 +494,23 @@
         "variant": "7:107244545",
         "alleles": "CC",
         "score": 0.1539220822722568
+      },
+      {
+        "rsid": "rs6725887",
+        "variant": "2:203745885",
+        "alleles": "CT",
+        "score": 0.131028262406404
       }
     ]
   },
   {
     "id": "PGS000349",
     "trait": "coronary artery disease",
-    "rawScore": 0.9060002752361982,
-    "prs": 0.9060002752361982,
-    "zScore": -1.0755144545024784,
-    "percentile": 14.107226900653158,
-    "matches": 36,
+    "rawScore": 0.5358323159612435,
+    "prs": 0.5358323159612435,
+    "zScore": -1.6850962885161835,
+    "percentile": 4.5984972424445605,
+    "matches": 30,
     "totalVariants": 70,
     "topVariants": [
       {
@@ -524,12 +524,6 @@
         "variant": "1:109822166",
         "alleles": "AA",
         "score": 0.262056524812808
-      },
-      {
-        "rsid": "rs17609940",
-        "variant": "6:35034800",
-        "alleles": "CG",
-        "score": 0.17395330712343798
       },
       {
         "rsid": "rs2895811",
@@ -568,10 +562,16 @@
         "score": -0.12783337150988489
       },
       {
-        "rsid": "rs12526453",
-        "variant": "6:12927544",
-        "alleles": "CG",
-        "score": 0.12221763272424911
+        "rsid": "rs1800775",
+        "variant": "16:56995236",
+        "alleles": "AC",
+        "score": -0.11653381625595151
+      },
+      {
+        "rsid": "rs1122608",
+        "variant": "19:11163601",
+        "alleles": "GG",
+        "score": 0.0975803283388641
       }
     ]
   }

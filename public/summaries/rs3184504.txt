@@ -1,7 +1,0 @@
-Title: Reduced Function of the Adaptor SH2B3 Promotes Type 1 Diabetes (T1D) via Altered Cytokine-Regulated, T-Cell-Intrinsic Immune Tolerance.
-
-Summary: The study investigates the role of SH2B3, an adaptor protein, in the development of Type 1 Diabetes (T1D). The research suggests that reduced function of SH2B3 promotes T1D by altering cytokine-regulated immune tolerance within T-cells. The findings imply a potential genetic factor associated with T1D susceptibility and provide insights into the pathogenesis of the disease. However, the study does not explicitly mention specific Single Nucleotide Polymorphisms (SNPs) related to SH2B3 in this context. The population details are not provided in the abstract.
-
-Note: As a text-based AI model, I don't have the ability to visit websites or access external resources directly. Instead, I rely on the information available within the text you provided. If the study has identified specific SNPs, it is not mentioned in the abstract you shared.
-
-Reference: https://doi.org/10.2337/db24-0655
