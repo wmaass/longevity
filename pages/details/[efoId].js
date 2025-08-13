@@ -633,175 +633,207 @@ export default function CardioDetail() {
 
 
       <div className="flex gap-6">
-        {/* Per-PGS table */}
-        <div className="flex-1 bg-white p-6 rounded-xl shadow-md overflow-x-auto">
-          <table className="w-full text-sm border-separate border-spacing-y-1">
-            <thead className="bg-blue-50 text-gray-700">
-              <tr>
-                {['PGS', 'PRS', 'Z-Score', 'Perzentil', 'Match/Varianten', 'SNP+Abstract'].map((col) => (
-                  <th key={col} className="px-4 py-2 text-left font-semibold">{col}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {rows
-                .slice()
-                .sort((a, b) => {
-                  const pa = Number.isFinite(a.percentile) ? a.percentile : -Infinity;
-                  const pb = Number.isFinite(b.percentile) ? b.percentile : -Infinity;
-                  return pb - pa;
-                })
-                .map((r, i) => {
-                  const meta = riskMeta(r.percentile);
-                  const topSnps = (r.topVariants || [])
-  .map(v => ({ ...v, rsid: rsidFromVariant(v.variant, v.rsid) }))
-  .filter(v => v.rsid)
-  .sort((a,b) => Math.abs(b.score ?? 0) - Math.abs(a.score ?? 0))
-  .slice(0, 3);
+  {/* Per-PGS table */}
+  <div className="flex-1 bg-white p-6 rounded-xl shadow-md overflow-x-auto">
+    <table className="w-full text-sm border-separate border-spacing-y-1">
+      {/* Spaltenbreiten steuern */}
+      <colgroup>
+        <col className="w-[120px]" />   {/* PGS */}
+        <col className="w-[90px]" />    {/* PRS */}
+        <col className="w-[90px]" />    {/* Z-Score */}
+        <col className="w-[170px]" />   {/* Perzentil */}
+        <col className="w-[150px]" />   {/* Match/Varianten */}
+        <col className="w-[50%] md:w-[45%] lg:w-[40%]" /> {/* SNP+Abstract */}
+      </colgroup>
 
-                  return (
-                    <tr key={r.id || i} className={`odd:bg-gray-50 even:bg-gray-100 hover:bg-blue-50 transition-colors ${meta.rowCls}`}>
-                      <td className="px-4 py-2 font-mono">
-                        {r.id ? (
-                          <a href={pgsLink(r.id)} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline" title="PGS Catalog">
-                            {r.id}
-                          </a>
-                        ) : '—'}
-                      </td>
-                      <td className="px-4 py-2">{fmt(r.prs, 4)}</td>
-                      <td className="px-4 py-2">{fmt(r.zScore, 2)}</td>
-                      <td className="px-4 py-2 whitespace-nowrap">{isNum(r.percentile) ? (
-                          <button
-                            type="button"
-                            className={`px-2 py-0.5 rounded text-xs ${meta.badgeCls} hover:opacity-90 hover:underline focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-300`}
-                            title="Perzentil interpretieren"
-                            onClick={() => setPctPanel({
-                              pgsId: r.id,
-                              percentile: r.percentile,
-                              zScore: r.zScore,
-                              matches: r.matches,
-                              totalVariants: r.totalVariants,
-                            })}
-                          >
-                            {r.percentile.toFixed(1)}% · {meta.label}
-                          </button>
-                        ) : '–'}
-                      </td>
-                      <td className="px-4 py-2 whitespace-nowrap">{ (isNum(r.matches) || isNum(r.totalVariants)) ? ((isNum(r.matches) ? r.matches : '–') + ' / ' + (isNum(r.totalVariants) ? r.totalVariants : '–')) : '–' }</td>
+      <thead className="bg-blue-50 text-gray-700 text-[13px] leading-5">
+        <tr>
+          {['PGS', 'PRS', 'Z-Score', 'Perzentil', 'Match/ Varianten', 'SNP+Abstract'].map((col) => (
+            <th key={col} className="px-4 py-2 text-left font-semibold">{col}</th>
+          ))}
+        </tr>
+      </thead>
 
-                      {/* inline summary links + Quelle */}
-<td className="px-4 py-2">
-  {topSnps.length === 0 ? (
-    <span className="text-gray-500">—</span>
-  ) : (
-    <div className="flex flex-wrap gap-2 items-center">
-      {topSnps.map(snp => {
-        const rsid = snp.rsid;
-        const loaded = !!summaries[rsid];
-        const isLoading = !!loadingRsid[rsid];
-        return (
-          <span key={rsid} className="inline-flex items-center gap-1">
-            <a
-              href={`https://www.ncbi.nlm.nih.gov/snp/${rsid}`}
-              target="_blank"
-              rel="noreferrer"
-              className="text-blue-600 hover:underline"
-              title="NCBI dbSNP"
-            >
-              {rsid}
-            </a>
-            <span className="text-xs text-gray-500">
-              (β {fmt(snp.beta, 3)} · Dos {snp.dosage ?? '—'} · {fmt(snp.score, 3)})
-            </span>
-            <span>·</span>
-            {loaded ? (
-              <>
-                <button
-                  className="text-green-600 hover:underline"
-                  onClick={() => setActiveSummary({ type: 'snp', rsid, ...summaries[rsid] })}
-                  title="Zusammenfassung lesen"
-                >
-                  Lesen
-                </button>
-                {summaries[rsid]?.url && (
-                  <>
-                    <span className="text-gray-400">·</span>
-                    <a
-                      href={summaries[rsid].url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline"
-                      title="Originalpublikation"
-                    >
-                      Quelle
-                    </a>
-                  </>
-                )}
-              </>
-            ) : (
-              <button
-                className="text-gray-700 hover:underline disabled:text-gray-400"
-                disabled={isLoading}
-                onClick={() => fetchAndStoreSummary(rsid)}
-                title="Zusammenfassung holen"
+      <tbody>
+        {rows
+          .slice()
+          .sort((a, b) => {
+            const pa = Number.isFinite(a.percentile) ? a.percentile : -Infinity;
+            const pb = Number.isFinite(b.percentile) ? b.percentile : -Infinity;
+            return pb - pa;
+          })
+          .map((r, i) => {
+            const meta = riskMeta(r.percentile);
+            const topSnps = (r.topVariants || [])
+              .map(v => ({ ...v, rsid: rsidFromVariant(v.variant, v.rsid) }))
+              .filter(v => v.rsid)
+              .sort((a,b) => Math.abs(b.score ?? 0) - Math.abs(a.score ?? 0))
+              .slice(0, 3);
+
+            return (
+              <tr
+                key={r.id || i}
+                className={`align-top odd:bg-gray-50 even:bg-gray-100 hover:bg-blue-50 transition-colors ${meta.rowCls}`}
               >
-                {isLoading ? 'Lade…' : 'Holen'}
-              </button>
-            )}
-          </span>
-        );
-      })}
-    </div>
-  )}
-</td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Rechte Spalte: Zusammenfassung + Perzentil-Interpretation übereinander */}
-        <div className="w-full lg:w-1/3 lg:sticky lg:top-10 self-start flex flex-col gap-4">
-
-          {/* Publication summary panel */}
-          <div className="bg-white p-6 rounded-xl shadow-md">
-            {activeSummary ? (
-              <>
-                <h3 className="text-xl font-bold mb-4">
-                  Zusammenfassung für {activeSummary.rsid}
-                </h3>
-
-                {activeSummary.url && (
-                  <p className="mb-4">
+                <td className="px-4 py-2 font-mono">
+                  {r.id ? (
                     <a
-                      href={activeSummary.url}
+                      href={pgsLink(r.id)}
                       target="_blank"
-                      rel="noopener noreferrer"
+                      rel="noreferrer"
                       className="text-blue-600 hover:underline"
+                      title="PGS Catalog"
                     >
-                      Zur Publikation
+                      {r.id}
                     </a>
-                  </p>
-                )}
+                  ) : '—'}
+                </td>
 
-                <p className="whitespace-pre-line text-gray-800">
-                  {activeSummary.text}
-                </p>
-              </>
-            ) : (
-              <p className="text-gray-500">
-                Wähle eine Variante aus, um die Zusammenfassung zu sehen.
-              </p>
-            )}
-          </div>
+                <td className="px-4 py-2">{fmt(r.prs, 4)}</td>
+                <td className="px-4 py-2">{fmt(r.zScore, 2)}</td>
 
-          {/* NEW: Percentile interpretation panel */}
-          {/* Falls renderPctInterpretation bereits eine fertige Card zurückgibt,
-            nimm NUR {renderPctInterpretation(pctPanel)} ohne das umgebende <div>. */}
-            {renderPctInterpretation(pctPanel)}
-        </div>
-      </div>
+                <td className="px-4 py-2 whitespace-nowrap">
+                  {isNum(r.percentile) ? (
+                    <button
+                      type="button"
+                      className={`px-2 py-0.5 rounded text-xs ${meta.badgeCls} hover:opacity-90 hover:underline focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-blue-300`}
+                      title="Perzentil interpretieren"
+                      onClick={() => setPctPanel({
+                        pgsId: r.id,
+                        percentile: r.percentile,
+                        zScore: r.zScore,
+                        matches: r.matches,
+                        totalVariants: r.totalVariants,
+                      })}
+                    >
+                      {r.percentile.toFixed(1)}% · {meta.label}
+                    </button>
+                  ) : '–'}
+                </td>
+
+                <td className="px-4 py-2 whitespace-nowrap">
+                  {(isNum(r.matches) || isNum(r.totalVariants))
+                    ? `${isNum(r.matches) ? r.matches : '–'} / ${isNum(r.totalVariants) ? r.totalVariants : '–'}`
+                    : '–'}
+                </td>
+
+                {/* SNP + Abstract (luftig, gestapelt) */}
+                <td className="px-4 py-2 align-top whitespace-normal break-words leading-relaxed
+                               min-w-[300px] md:min-w-[420px] lg:min-w-[520px]">
+                  {topSnps.length === 0 ? (
+                    <span className="text-gray-500">—</span>
+                  ) : (
+                    <div className="flex flex-col gap-3">
+                      {topSnps.map((snp, idx) => {
+                        const rsid = snp.rsid;
+                        const loaded = !!summaries[rsid];
+                        const isLoading = !!loadingRsid[rsid];
+
+                        return (
+                          <div key={rsid} className="rounded-md">
+                            {/* Zeile 1: SNP-ID + Rang */}
+                            <div className="flex flex-wrap items-center gap-2">
+                              <a
+                                href={`https://www.ncbi.nlm.nih.gov/snp/${rsid}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="font-mono text-blue-700 hover:underline"
+                                title="NCBI dbSNP"
+                              >
+                                {rsid}
+                              </a>
+                              <span className="text-xs text-gray-500">Rank {idx + 1}</span>
+                            </div>
+
+                            {/* Zeile 2: Kennzahlen */}
+                            <div className="mt-0.5 text-[13px] text-gray-700">
+                              β {fmt(snp.beta, 3)} &middot; Dos {snp.dosage ?? '—'} &middot; Score {fmt(snp.score, 3)}
+                            </div>
+
+                            {/* Zeile 3: Aktionen */}
+                            <div className="mt-1 text-sm">
+                              {loaded ? (
+                                <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                  <button
+                                    className="text-green-700 hover:underline"
+                                    onClick={() => setActiveSummary({ type: 'snp', rsid, ...summaries[rsid] })}
+                                    title="Zusammenfassung lesen"
+                                  >
+                                    Lesen
+                                  </button>
+                                  {summaries[rsid]?.url && (
+                                    <>
+                                      <span className="text-gray-300">·</span>
+                                      <a
+                                        href={summaries[rsid].url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="text-blue-700 hover:underline"
+                                        title="Originalpublikation"
+                                      >
+                                        Quelle
+                                      </a>
+                                    </>
+                                  )}
+                                </div>
+                              ) : (
+                                <button
+                                  className="text-gray-800 hover:underline disabled:text-gray-400"
+                                  disabled={isLoading}
+                                  onClick={() => fetchAndStoreSummary(rsid)}
+                                  title="Zusammenfassung holen"
+                                >
+                                  {isLoading ? 'Lade…' : 'Holen'}
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
+      </tbody>
+    </table>
+  </div>
+
+  {/* Rechte Spalte: Zusammenfassung + Perzentil-Interpretation übereinander */}
+  <div className="w-full lg:w-1/3 lg:sticky lg:top-10 self-start flex flex-col gap-4">
+    {/* Publication summary panel */}
+    <div className="bg-white p-6 rounded-xl shadow-md">
+      {activeSummary ? (
+        <>
+          <h3 className="text-xl font-bold mb-4">Zusammenfassung für {activeSummary.rsid}</h3>
+
+          {activeSummary.url && (
+            <p className="mb-4">
+              <a
+                href={activeSummary.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                Zur Publikation
+              </a>
+            </p>
+          )}
+
+          <p className="whitespace-pre-line text-gray-800">
+            {activeSummary.text}
+          </p>
+        </>
+      ) : (
+        <p className="text-gray-500">Wähle eine Variante aus, um die Zusammenfassung zu sehen.</p>
+      )}
+    </div>
+
+    {/* Percentile interpretation */}
+    {renderPctInterpretation(pctPanel)}
+  </div>
+</div>
 
 
       {/* Top variants chart + clickable list */}

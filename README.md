@@ -21,9 +21,6 @@ ollama serve   (startet den Dienst (einmalig))
 # Llama 3 installieren
 ollama pull llama3
 
-# Ollama mit Llama 3 starten
-ollama run llama3
-
 # Dependencies installieren
 npm install
 
