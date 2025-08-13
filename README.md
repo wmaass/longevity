@@ -13,6 +13,17 @@ Die Kombination beider Teile ermöglicht eine vollständige **End-to-End-Pipelin
 ### Schnellstart
 
 ```bash
+
+# Ollama installieren
+brew install ollama
+ollama serve   (startet den Dienst (einmalig))
+
+# Llama 3 installieren
+ollama pull llama3
+
+# Ollama mit Llama 3 starten
+ollama run llama3
+
 # Dependencies installieren
 npm install
 
