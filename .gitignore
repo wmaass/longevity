@@ -58,3 +58,10 @@ af_tmp/
 
 .venv/ALL.chr*.vcf.gz
 public/eur_af_by_rsid.tsv
+
+# Apple Watch Exporte (riesig, nicht versionieren)
+public/results/**/apple_watch/apple_health_export/
+public/results/**/apple_watch/workout-routes/
+public/results/**/apple_watch/electrocardiograms/
+public/results/**/apple_watch/Export.xml
+public/results/**/apple_watch/export_cda.xml
