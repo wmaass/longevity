@@ -1,14 +1,14 @@
 {
   "patientId": "123456",
   "name": "Chad Wrye",
-  "dateOfBirth": "1960-05-14",
-  "age": 55,
+  "dateOfBirth": "1955-07-22",
+  "age": 70,
   "gender": "male",
-  "placeOfBirth": "Atlanta, USA",
+  "placeOfBirth": "Chicago, USA",
   "nationality": "US",
   "maritalStatus": "married",
   "contactInformation": {
-    "address": "123 Main Street, Atlanta, USA",
+    "address": "123 Main Street, New York, USA",
     "phone": "+49 221 123456",
     "email": "chad.wrye@example.com"
   },
@@ -16,57 +16,153 @@
   "biomarkers": {
     "vitals": {
       "bloodPressure": {
-        "systolic": 160,
-        "diastolic": 120,
-        "unit": "mmHg"
+        "systolic": 180,
+        "diastolic": 110,
+        "unit": "mmHg",
+        "flag": "high"
       },
       "heartRate": {
-        "value": 122,
-        "unit": "bpm"
+        "value": 105,
+        "unit": "bpm",
+        "flag": "high"
       },
       "respiratoryRate": {
-        "value": 25,
+        "value": 22,
         "unit": "breaths/min"
       },
       "bodyTemperature": {
-        "value": 37.7,
+        "value": 36.9,
         "unit": "°C"
       }
     },
     "bloodTests": {
       "totalCholesterol": {
-        "value": 240,
-        "unit": "mg/dL"
+        "value": 260,
+        "unit": "mg/dL",
+        "flag": "high"
       },
       "hdlCholesterol": {
-        "value": 20,
-        "unit": "mg/dL"
+        "value": 35,
+        "unit": "mg/dL",
+        "flag": "low"
       },
       "ldlCholesterol": {
-        "value": 150,
-        "unit": "mg/dL"
+        "value": 170,
+        "unit": "mg/dL",
+        "flag": "high"
       },
       "triglycerides": {
-        "value": 190,
-        "unit": "mg/dL"
+        "value": 220,
+        "unit": "mg/dL",
+        "flag": "high"
       },
       "fastingGlucose": {
-        "value": 190,
-        "unit": "mg/dL"
+        "value": 125,
+        "unit": "mg/dL",
+        "flag": "high"
       },
       "hba1c": {
-        "value": 8.4,
+        "value": 6.8,
+        "unit": "%",
+        "flag": "high"
+      },
+
+      "hemoglobin": {
+        "value": 15.6,
+        "unit": "g/dL"
+      },
+      "hematocrit": {
+        "value": 44,
         "unit": "%"
+      },
+      "rbc": {
+        "value": 5.0,
+        "unit": "10^6/µL"
+      },
+      "wbc": {
+        "value": 9.5,
+        "unit": "10^3/µL",
+        "flag": "high"
+      },
+      "platelets": {
+        "value": 300,
+        "unit": "10^3/µL"
+      },
+      "mcv": {
+        "value": 88.0,
+        "unit": "fL"
+      },
+      "mchc": {
+        "value": 35.3,
+        "unit": "g/dL"
+      },
+      "mch": {
+        "value": 31.1,
+        "unit": "pg"
+      },
+      "rdw": {
+        "value": 13,
+        "unit": "%"
+      },
+
+      "differential": {
+        "neutrophils": {
+          "percent": 60.0,
+          "absolute": {
+            "value": 5.7,
+            "unit": "10^3/µL"
+          }
+        },
+        "lymphocytes": {
+          "percent": 25.0,
+          "absolute": {
+            "value": 2.3,
+            "unit": "10^3/µL"
+          }
+        },
+        "monocytes": {
+          "percent": 10.0,
+          "absolute": {
+            "value": 0.95,
+            "unit": "10^3/µL"
+          }
+        },
+        "eosinophils": {
+          "percent": 4.0,
+          "absolute": {
+            "value": 0.38,
+            "unit": "10^3/µL"
+          }
+        },
+        "basophils": {
+          "percent": 1.0,
+          "absolute": {
+            "value": 0.09,
+            "unit": "10^3/µL"
+          }
+        }
+      },
+
+      "crp": {
+        "value": 4.5,
+        "unit": "mg/dL",
+        "flag": "high"
+      },
+      "procalcitonin": {
+        "value": 0.12,
+        "unit": "ng/mL"
       }
     },
     "other": {
       "oxygenSaturation": {
-        "value": 90,
-        "unit": "%"
+        "value": 95,
+        "unit": "%",
+        "flag": "low"
       },
       "bmi": {
-        "value": 36.0,
-        "unit": "kg/m²"
+        "value": 29.0,
+        "unit": "kg/m²",
+        "flag": "overweight"
       }
     }
   }

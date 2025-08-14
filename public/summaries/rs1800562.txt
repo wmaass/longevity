@@ -1,7 +1,7 @@
 Here is a summary of what the paper reports specifically about rs1800562:
 
 • Mention: The paper mentions rs1800562 as part of the HFE p.C282Y genotype.
-• Trait: The study focuses on mean corpuscular volume (MCV) and macrocytosis.
-• Allele/Genotype Effects: The study examines relationships between MCV and macrocytosis with factors other than transferrin saturation (TS), but does not report any specific effects of rs1800562 on these traits.
+• Trait: The study examines mean corpuscular volume (MCV) and macrocytosis (MCV > 100 fL).
+• Allele/Genotype Effects: The paper does not report any specific effects of rs1800562 on MCV or macrocytosis.
 
-No effect size, population, design, or limitations are reported specifically about rs1800562.
+Note that there is no mention of effect size, population, design, limitations, or any other relevant information about rs1800562 in the provided text.

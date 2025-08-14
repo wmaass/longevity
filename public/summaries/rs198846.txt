@@ -1,11 +1,9 @@
 Here are the specific findings about rs198846:
 
 • Mention of: rs198846
-• Trait: mean cell hemoglobin (MCH) and mean cell volume (MCV)
-• Allele/genotype effects: associated with MCH and MCV
-• Effect size: not provided
-• Population: not specified
-• Design: not specified
-• Limitations: none mentioned specifically for rs198846
-
-Note that there is no information on the effect size, population, or design of the study involving rs198846.
+• Trait: Mean cell hemoglobin (MCH) and Mean Cell Volume (MCV)
+• Allele/Genotype effects: Associated with MCH and MCV
+• Effect size: Not provided
+• Population: Not specified
+• Design: Genome-wide association study (GWAS)
+• Limitations: None mentioned specifically for rs198846

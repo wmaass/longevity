@@ -36,6 +36,9 @@ function pick(row, keys) {
   return null;
 }
 
+
+
+
 /*********************************
  * Apple Watch loader (summary.json)
  *********************************/
@@ -88,63 +91,82 @@ const get = (obj, path, def = null) =>
  *********************************/
 function computeBiomarkerGoodness01(bm) {
   const vitals = get(bm, 'biomarkers.vitals', {});
-  const blood = get(bm, 'biomarkers.bloodTests', {});
-  const other = get(bm, 'biomarkers.other', {});
+  const blood  = get(bm, 'biomarkers.bloodTests', {});
+  const other  = get(bm, 'biomarkers.other', {});
 
-  const systolic = get(vitals, 'bloodPressure.systolic', null);
+  const systolic  = get(vitals, 'bloodPressure.systolic', null);
   const diastolic = get(vitals, 'bloodPressure.diastolic', null);
-  const bmi = get(other, 'bmi.value', get(other, 'bmi', null));
-  const hdl = get(blood, 'hdlCholesterol.value', get(blood, 'hdlCholesterol', null));
-  const ldl = get(blood, 'ldlCholesterol.value', get(blood, 'ldlCholesterol', null));
-  const tg = get(blood, 'triglycerides.value', get(blood, 'triglycerides', null));
-  const glu = get(blood, 'fastingGlucose.value', get(blood, 'fastingGlucose', null));
-  const a1c = get(blood, 'hba1c.value', get(blood, 'hba1c', null));
+  const bmi       = get(other,  'bmi.value', get(other, 'bmi', null));
+  const hdl       = get(blood,  'hdlCholesterol.value', get(blood, 'hdlCholesterol', null));
+  const ldl       = get(blood,  'ldlCholesterol.value', get(blood, 'ldlCholesterol', null));
+  const tg        = get(blood,  'triglycerides.value', get(blood, 'triglycerides', null));
+  const glu       = get(blood,  'fastingGlucose.value', get(blood, 'fastingGlucose', null));
+  const a1c       = get(blood,  'hba1c.value', get(blood, 'hba1c', null));
 
   const comp = [];
 
+  // Blutdruck
   if (systolic != null && diastolic != null) {
     const s = clamp01((160 - systolic) / (160 - 110));
     const d = clamp01((100 - diastolic) / (100 - 70));
-    comp.push({ key: 'Blutdruck', score: clamp01(0.6 * s + 0.4 * d) });
+    comp.push({
+      key: 'Blutdruck',
+      score: clamp01(0.6 * s + 0.4 * d),
+      displayValue: `${systolic}/${diastolic}`,
+      unit: 'mmHg',
+    });
   }
+
+  // BMI
   if (bmi != null) {
     let score;
     if (bmi >= 20 && bmi <= 25) score = 1;
     else if (bmi >= 18 && bmi < 20) score = clamp01((bmi - 18) / 2);
     else if (bmi > 25 && bmi <= 30) score = clamp01((30 - bmi) / 5);
     else score = 0;
-    comp.push({ key: 'BMI', score });
+    comp.push({ key: 'BMI', score, displayValue: bmi, unit: 'kg/m²' });
   }
+
+  // HDL
   if (hdl != null) {
     const score = clamp01((hdl - 40) / 30);
-    comp.push({ key: 'HDL', score });
+    comp.push({ key: 'HDL', score, displayValue: hdl, unit: 'mg/dL' });
   }
+
+  // LDL
   if (ldl != null) {
     const score = clamp01((160 - ldl) / 90);
-    comp.push({ key: 'LDL', score });
+    comp.push({ key: 'LDL', score, displayValue: ldl, unit: 'mg/dL' });
   }
+
+  // Triglyceride
   if (tg != null) {
     const score = clamp01((300 - tg) / 220);
-    comp.push({ key: 'Triglyceride', score });
+    comp.push({ key: 'Triglyceride', score, displayValue: tg, unit: 'mg/dL' });
   }
+
+  // Nüchternglukose
   if (glu != null) {
     let score;
     if (glu <= 99 && glu >= 70) score = 1;
     else if (glu > 99 && glu <= 125) score = clamp01((125 - glu) / 26);
     else score = 0;
-    comp.push({ key: 'Nüchternglukose', score });
+    comp.push({ key: 'Nüchternglukose', score, displayValue: glu, unit: 'mg/dL' });
   }
+
+  // HbA1c
   if (a1c != null) {
     let score;
     if (a1c < 5.7) score = 1;
     else if (a1c < 6.5) score = clamp01((6.5 - a1c) / 0.8);
     else score = 0;
-    comp.push({ key: 'HbA1c', score });
+    comp.push({ key: 'HbA1c', score, displayValue: a1c, unit: '%' });
   }
 
   const overall = comp.length ? mean(comp.map((c) => c.score)) : 0;
   return { overall, components: comp };
 }
+
 
 /*********************************
  * GENETICS — hazard-based contribution using β × z
@@ -238,11 +260,50 @@ function computeLifestyleScores(bm, mode = 'z', cfg = LIFESTYLE_CONFIG) {
 /*********************************
  * UI widgets
  *********************************/
-const Bar = ({ value01 }) => (
-  <div className="w-full h-2 rounded bg-gray-200 overflow-hidden">
-    <div className="h-full bg-emerald-500" style={{ width: `${toPct(value01)}%` }} aria-hidden />
-  </div>
-);
+
+/** 10-stufige Farbskala (rot→grün) für 0–100 % */
+function colorClassForPct(pct) {
+  const palette = [
+    'bg-red-600',     // 0–9
+    'bg-red-500',     // 10–19
+    'bg-orange-500',  // 20–29
+    'bg-amber-500',   // 30–39
+    'bg-yellow-500',  // 40–49
+    'bg-lime-500',    // 50–59
+    'bg-lime-600',    // 60–69
+    'bg-green-500',   // 70–79
+    'bg-green-600',   // 80–89
+    'bg-emerald-600', // 90–100
+  ];
+  const i = Math.max(0, Math.min(9, Math.floor((pct ?? 0) / 10)));
+  return palette[i];
+}
+
+const MIN_VISIBLE_PCT = 5; // Mindestbreite für "sehr schlecht"
+
+const Bar = ({ value01, colorClass, forceVisible = false }) => {
+  const hasValue = Number.isFinite(value01);
+  if (!hasValue) {
+    // fehlender Wert → nur Hintergrund, kein farbiger Balken
+    return <div className="w-full h-2 rounded bg-gray-200" />;
+  }
+
+  // value01: 0..1 → Prozent
+  let pct = Math.round(100 * clamp01(value01));
+
+  // Sichtbaren roten Balken auch bei 0–10 % erzwingen
+  if (forceVisible && pct < MIN_VISIBLE_PCT) pct = MIN_VISIBLE_PCT;
+
+  const width = `${pct}%`;
+  const barColor = colorClass || 'bg-emerald-600';
+
+  return (
+    <div className="w-full h-2 rounded bg-gray-200 overflow-hidden">
+      <div className={`h-full ${barColor}`} style={{ width }} aria-hidden />
+    </div>
+  );
+};
+
 
 const AgeCompareBar = ({ chrono, bio }) => {
   if (chrono == null || bio == null) return null;
@@ -295,6 +356,8 @@ export default function LongevityPage() {
   const [whatIf, setWhatIf] = useState({});
   const [loading, setLoading] = useState(true);
   const [showMethods, setShowMethods] = useState(false);
+  const [showMethodsBiomarker, setShowMethodsBiomarker] = useState(false);
+
 
   // load config once
   useEffect(() => {
@@ -524,17 +587,77 @@ export default function LongevityPage() {
     return computeBiomarkerGoodness01(overlay);
   }, [biomarkers, whatIf]);
 
-  // Longevity index (ONLY genetics + clinical; genetics uses hazard→visual index)
+    /** Linearer Mix */
+  const lerp = (a, b, t) => a + (b - a) * Math.max(0, Math.min(1, t));
+
+  /** Altersabhängige Gewichte (Anker: 30/50/70 J.) */
+  function ageWeightedWeights(age) {
+    // Defaults falls Alter unbekannt
+    if (!Number.isFinite(age)) return { g: 0.5, b: 0.35, l: 0.15 };
+
+    // Anker:
+    // 30 J: Genetik 0.70 · Biomarker 0.20 · Lifestyle 0.10
+    // 50 J: Genetik 0.50 · Biomarker 0.35 · Lifestyle 0.15
+    // 70 J: Genetik 0.30 · Biomarker 0.50 · Lifestyle 0.20
+
+    if (age <= 40) {
+      const t = (age - 30) / 20; // 30→50
+      return {
+        g: lerp(0.70, 0.50, t),
+        b: lerp(0.20, 0.35, t),
+        l: lerp(0.10, 0.15, t),
+      };
+    } else if (age <= 60) {
+      const t = (age - 50) / 20; // 50→70
+      return {
+        g: lerp(0.50, 0.30, t),
+        b: lerp(0.35, 0.50, t),
+        l: lerp(0.15, 0.20, t),
+      };
+    } else {
+      // >70: halte die 70er-Gewichte konstant
+      return { g: 0.30, b: 0.50, l: 0.20 };
+    }
+  }
+
+
+  // Longevity index (altersabhängige Gewichte; alle drei Beiträge integriert)
   const longevityIndex01 = useMemo(() => {
-    // Dynamically renormalize weights: if genetics unavailable, use biomarker only
-    const hasGen = Number.isFinite(geneticHazard.index01) && (geneticHazard.components?.length > 0);
-    const wG = hasGen ? Math.abs(OVERALL_WEIGHTS.genetic || 0.5) : 0;
-    const wB = Math.abs(OVERALL_WEIGHTS.biomarker || 0.5);
-    const Z = (wG + wB) || 1;
-    const g = hasGen ? geneticHazard.index01 : 0; // contributes only if hasGen
-    const b = biomarkerSummary.overall;
-    return clamp01((wG * g + wB * b) / Z);
-  }, [geneticHazard.index01, geneticHazard.components, biomarkerSummary.overall]);
+    // 1) Teil-Scores sammeln
+    const hasGen  = Number.isFinite(geneticHazard.index01) && (geneticHazard.components?.length > 0);
+    const hasBio  = Number.isFinite(biomarkerSummary?.overall);
+    const hasLife = Number.isFinite(lifestyleSummary?.index01);
+
+    const g = hasGen  ? geneticHazard.index01    : null; // 0..1 (höher besser)
+    const b = hasBio  ? biomarkerSummary.overall : null; // 0..1
+    const l = hasLife ? lifestyleSummary.index01 : null; // 0..1
+
+    // 2) Alter bestimmen (aus biomarkers.json)
+    const dob = biomarkers?.dateOfBirth || biomarkers?.person?.dateOfBirth;
+    const ref = biomarkers?.dateRecorded || biomarkers?.biomarkers?.dateRecorded;
+    const age = calcAge(dob, ref);
+
+    // 3) Altersabhängige Basis-Gewichte holen
+    const base = ageWeightedWeights(age); // { g,b,l }
+
+    // 4) Gewichte auf tatsächlich vorhandene Anteile renormalisieren
+    const w = {
+      g: hasGen  ? Math.abs(base.g) : 0,
+      b: hasBio  ? Math.abs(base.b) : 0,
+      l: hasLife ? Math.abs(base.l) : 0,
+    };
+    const Z = (w.g + w.b + w.l) || 1;
+    const wg = w.g / Z, wb = w.b / Z, wl = w.l / Z;
+
+    // 5) Index berechnen (fehlt etwas → Gewicht 0)
+    const idx =
+      (hasGen  ? wg * g : 0) +
+      (hasBio  ? wb * b : 0) +
+      (hasLife ? wl * l : 0);
+
+    return clamp01(idx);
+  }, [geneticHazard.index01, geneticHazard.components, biomarkerSummary?.overall, lifestyleSummary?.index01, biomarkers]);
+
 
   // Ages (heuristic mapping retained but de-emphasized)
   const { chronoAge, bioAge, bioDelta } = useMemo(() => {
@@ -546,6 +669,7 @@ export default function LongevityPage() {
     const bAge = (cAge != null) ? cAge + delta : null;
     return { chronoAge: cAge, bioAge: bAge, bioDelta: delta };
   }, [biomarkers, longevityIndex01]);
+
 
   if (loading) {
     return (
@@ -582,23 +706,38 @@ export default function LongevityPage() {
                 <div className={`text-3xl font-extrabold ${bioDelta <= 0 ? 'text-emerald-600' : 'text-rose-600'}`}>{bioDelta > 0 ? `+${bioDelta}` : bioDelta} Jahre</div>
               </div>
             </div>
-            <AgeCompareBar chrono={chronoAge} bio={bioAge} />
+            {/* <AgeCompareBar chrono={chronoAge} bio={bioAge} /> */}
             <div className="mt-3 text-xs text-gray-600">Heuristische Schätzung, nur zur Veranschaulichung. Validierte Kalibration ausstehend.</div>
           </>
         )}
       </div>
 
-      {/* Top cards: Longevity Index · Genetic · Biomarker · Lifestyle (separate) */}
+      {/* Top cards: Longevity · Genetic · Biomarker · Lifestyle */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+
         {/* Longevity Index */}
-        <div className="bg-white p-5 rounded-lg shadow h-full">
-          <div className="flex items-baseline justify-between mb-2">
-            <h3 className="text-lg font-semibold">Longevity Index</h3>
-            <div className="text-sm text-gray-500">Genetik {Number.isFinite(geneticHazard.index01) ? toPct(geneticHazard.index01) : '—'} · Biomarker {toPct(biomarkerSummary.overall)}</div>
+        <div className="bg-white p-5 rounded-lg shadow h-full flex flex-col">
+          {/* Titel */}
+          <h3 className="text-lg font-semibold mb-2">Longevity Index</h3>
+
+          {/* Große Zahl */}
+          <div className="h-16 flex items-end">
+            <div className="text-5xl font-extrabold leading-none tabular-nums">
+              {toPct(longevityIndex01)}
+            </div>
           </div>
-          <div className="text-5xl font-extrabold mb-2">{toPct(longevityIndex01)}</div>
-          <Bar value01={longevityIndex01} />
-          <div className="mt-3 text-xs text-gray-600">0–100 Skala (höher ist besser). Nicht-diagnostisch.</div>
+
+          {/* Untertitel-Zeile wie (experimentell) */}
+          <div className="text-sm text-gray-500 mt-2">
+            Genetik {Number.isFinite(geneticHazard.index01) ? toPct(geneticHazard.index01) : '—'} ·
+            Biomarker {toPct(biomarkerSummary.overall)} ·
+            Lifestyle {Number.isFinite(lifestyleSummary.index01) ? toPct(lifestyleSummary.index01) : '—'}
+          </div>
+
+          {/* Erklärung */}
+          <div className="mt-3 text-xs text-gray-600">
+            0–100 Skala (höher ist besser). Nicht-diagnostisch.
+          </div>
         </div>
 
         {/* Genetic (hazard-based) */}
@@ -609,12 +748,21 @@ export default function LongevityPage() {
               Methoden & Referenzen
             </button>
           </div>
+
+          {/* Index-Zahl für Genetik (für die gemeinsame Linie) */}
+          <div className="h-16 flex items-end">
+            <div className="text-5xl font-extrabold leading-none tabular-nums">
+              {Number.isFinite(geneticHazard.index01) ? toPct(geneticHazard.index01) : '—'}
+            </div>
+          </div>
+
+          {/* Zusatzinfos darunter */}
           {selectedPgsRows.length === 0 ? (
-            <p className="text-gray-500 text-sm">Keine PGS-Zeilen gefunden.</p>
+            <p className="text-gray-500 text-sm mt-3">Keine PGS-Zeilen gefunden.</p>
           ) : geneticHazard.components.length ? (
             <>
-              <div className="text-sm text-gray-600">Relatives Risiko (vs. Median):</div>
-              <div className="text-3xl font-bold">{geneticHazard.RR_genetic.toFixed(2)}×</div>
+              <div className="text-sm text-gray-600 mt-3">Relatives Risiko (vs. Median):</div>
+              <div className="text-2xl font-bold">{geneticHazard.RR_genetic.toFixed(2)}×</div>
               <div className="text-xs text-gray-500">log(HR) gesamt: {geneticHazard.logHR_genetic.toFixed(3)} (z winsorized ±3)</div>
               <ul className="mt-3 text-sm text-gray-700 list-disc ml-4">
                 {geneticHazard.components.map((c) => {
@@ -627,127 +775,265 @@ export default function LongevityPage() {
                   );
                 })}
               </ul>
-              <div className="mt-3 text-xs text-amber-600">Hinweis: Aggregation beruht auf publizierten β pro SD; z-Scores werden bei ±3 gekappt, um Ausreißer zu begrenzen.</div>
+              <div className="mt-3 text-xs text-amber-600">
+                Hinweis: Aggregation beruht auf publizierten β pro SD; z-Scores werden bei ±3 gekappt.
+              </div>
             </>
           ) : (
             <>
-              <div className="text-sm text-gray-600">Keine validierten β-Koeffizienten gefunden – genetischer Risikobeitrag wird nicht aggregiert. Bitte β/SD bereitstellen (CSV oder pgs_beta_map.json).</div>
-              <ul className="mt-3 text-sm text-gray-700 list-disc ml-4">
-                {selectedPgsRows.map((c) => (
-                  <li key={c.pgsId}><span className="font-medium">{c.trait}</span> · PGS {c.pgsId} — z={Number.isFinite(c.zScore) ? c.zScore.toFixed(2) : '—'}</li>
-                ))}
-              </ul>
-              <div className="mt-3 text-xs text-gray-500">Um Hazard-Modelle zu aktivieren, ergänze in der CSV eine der Spalten: <code>betaPerSD</code>, <code>beta_per_sd</code>, <code>HR_per_SD</code>, <code>OR_per_SD</code> (oder lege <code>/pgs_beta_map.json</code> mit <code>{'{ pgsId: betaPerSD }'}</code> an).</div>
+              <div className="text-sm text-gray-600 mt-3">
+                Keine validierten β-Koeffizienten gefunden – genetischer Beitrag wird nicht aggregiert.
+              </div>
             </>
           )}
         </div>
 
-        {/* Biomarker components */}
+        {/* Biomarker */}
         <div className="bg-white p-5 rounded-lg shadow h-full">
-          <h3 className="text-lg font-semibold mb-3">Biomarker-Beitrag</h3>
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-lg font-semibold">Biomarker</h3>
+            <button
+              type="button"
+              className="text-xs text-blue-600 hover:underline"
+              onClick={() => setShowMethodsBiomarker(true)}
+            >
+              Methoden & Referenzen
+            </button>
+          </div>
+
+            {/* Gesamt-Index (große Zahl, für Ausrichtung h-16) */}
+          <div className="h-16 flex items-end">
+            <div className="text-5xl font-extrabold leading-none tabular-nums">
+              {toPct(biomarkerSummary.overall)}
+            </div>
+          </div>
+
           {biomarkerSummary.components.length ? (
-            <ul className="space-y-2">
-              {biomarkerSummary.components.map((c, i) => (
-                <li key={i}>
-                  <div className="flex items-center justify-between">
-                    <div className="text-sm">{c.key}</div>
-                    <div className="text-sm font-mono">{toPct(c.score)}</div>
-                  </div>
-                  <Bar value01={c.score} />
-                </li>
-              ))}
-            </ul>
+            <>
+              <div className="mt-3 text-xs text-gray-600">
+                0–100 Skala (höher ist besser). Nicht-diagnostisch.
+              </div>
+              <ul className="mt-3 space-y-4">
+                {biomarkerSummary.components.map((c, i) => {
+                  const pct = toPct(c.score); // für Farbe/Balkenbreite
+                  const right = c.displayValue != null
+                    ? `${c.displayValue}${c.unit ? ` ${c.unit}` : ''}`
+                    : '—';
+                  return (
+                    <li key={i} className="relative">
+                      <div className="flex justify-between px-1 mb-0.5">
+                        <span className="text-sm">{c.key}</span>
+                        <span className="text-sm font-mono">{right}</span>
+                      </div>
+                      <Bar
+                        value01={c.score}
+                        colorClass={colorClassForPct(pct)}
+                        forceVisible
+                      />
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
           ) : (
-            <div className="text-gray-500 text-sm">Keine verwertbaren Biomarker gefunden.</div>
+            <div className="text-gray-500 text-sm mt-3">Keine verwertbaren Biomarker gefunden.</div>
           )}
         </div>
 
-        {/* Lifestyle/Vitals (separate, experimental) */}
-        <div className="bg-white p-5 rounded-lg shadow h-full">
-          <div className="flex items-baseline justify-between mb-2">
-            <h3 className="text-lg font-semibold">Lifestyle/Vitals (experimentell)</h3>
-            {appleVitals && (
-              <div className="text-xs text-gray-500 mb-2">
-                Quelle: Apple Watch{appleVitals.window ? ` · ${appleVitals.window}` : ''}{appleVitals.asOf ? ` · Stand: ${new Date(appleVitals.asOf).toLocaleDateString()}` : ''}
-              </div>
-            )}
+        {/* Vitalwerte (Lifestyle) */}
+        <div className="bg-white p-5 rounded-lg shadow h-full flex flex-col">
+          <h3 className="text-lg font-semibold mb-2">Vitalwerte</h3>
 
-            {lifestyleSummary.overallZ != null && (
-              <div className="text-xs text-gray-500">Gesamt-z (worse↑): {lifestyleSummary.overallZ.toFixed(2)}</div>
-            )}
+          {/* große Zahl */}
+          <div className="h-16 flex items-end">
+            <div className="text-5xl font-extrabold leading-none tabular-nums">
+              {Number.isFinite(lifestyleSummary.index01) ? toPct(lifestyleSummary.index01) : '—'}
+            </div>
           </div>
+
+          {appleVitals && (
+            <div className="text-xs text-gray-500 mt-2">
+              Quelle: Apple Watch
+              {appleVitals.window ? ` · ${appleVitals.window}` : ''}
+              {appleVitals.asOf ? ` · Stand: ${new Date(appleVitals.asOf).toLocaleDateString()}` : ''}
+            </div>
+          )}
+          {lifestyleSummary.overallZ != null && (
+            <div className="text-xs text-gray-500 mt-1">
+              Gesamt-z (worse↑): {lifestyleSummary.overallZ.toFixed(2)}
+            </div>
+          )}
           {lifestyleSummary.components.length ? (
             <>
-              {lifestyleSummary.index01 != null && (
-                <>
-                  <div className="text-3xl font-extrabold mb-2">{toPct(lifestyleSummary.index01)}</div>
-                  <Bar value01={lifestyleSummary.index01} />
-                </>
-              )}
               <ul className="mt-3 space-y-2">
-                {lifestyleSummary.components.map((c) => (
-                  <li key={c.key}>
-                    <div className="flex items-center justify-between">
-                      <div className="text-sm">{c.label}</div>
-                      <div className="text-xs text-gray-600">{c.value}{c.unit ? ` ${c.unit}` : ''} · z={c.z.toFixed(2)}</div>
-                    </div>
-                    <Bar value01={c.display01} />
-                  </li>
-                ))}
+                {lifestyleSummary.components.map((c) => {
+                  const pct = toPct(c.display01);
+                  return (
+                    <li key={c.key}>
+                      <div className="flex items-center justify-between">
+                        <div className="text-sm">{c.label}</div>
+                        <div className="text-xs text-gray-600">
+                          {c.value}{c.unit ? ` ${c.unit}` : ''} · z={c.z.toFixed(2)}
+                        </div>
+                      </div>
+                     <Bar
+                        value01={c.display01}
+                        colorClass={colorClassForPct(toPct(c.display01))}
+                        forceVisible
+                      />
+                    </li>
+                  );
+                })}
               </ul>
-              <div className="mt-3 text-xs text-gray-500">* Z-Score relativ zu Zielwerten (Demo). Für wissenschaftliche Nutzung durch kohortenspezifische Referenzwerte/Hazard-Modelle ersetzen.</div>
-              <div className="mt-1 text-xs text-amber-600">Wearable-basierte Scores sind experimentell und nicht diagnostisch.</div>
+              <div className="mt-3 text-xs text-gray-500">
+                * Z-Score relativ zu Zielwerten (Demo).
+              </div>
+              <div className="mt-1 text-xs text-amber-600">
+                Wearable-basierte Scores sind experimentell.
+              </div>
             </>
           ) : (
-            <div className="text-gray-500 text-sm">Keine Lifestyle-/Vitals-Metriken gefunden.</div>
+            <div className="text-gray-500 text-sm mt-3">Keine Lifestyle-/Vitals-Metriken gefunden.</div>
           )}
-
         </div>
+
       </div>
+
 
       {/* Methoden & Referenzen Modal */}
       {showMethods && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        <div
+          className="absolute inset-0 bg-black/50"
+          onClick={() => setShowMethods(false)}
+        />
+        <div className="relative bg-white rounded-xl shadow-xl max-w-2xl w-full mx-4 p-6">
+          <div className="flex items-start justify-between mb-4">
+            <h4 className="text-xl font-semibold">Genetischer Beitrag – Methoden & Referenzen</h4>
+            <button
+              className="text-gray-500 hover:text-gray-700"
+              onClick={() => setShowMethods(false)}
+            >
+              ✕
+            </button>
+          </div>
+          <div className="prose prose-sm max-w-none text-gray-700">
+            <ul>
+              <li>
+                <h5 className="text-lg font-bold mt-4 mb-2">Datenquellen:</h5>
+                PGS Catalog <em>Performance Metrics</em> (<code>pgs_all_metadata_performance_metrics.csv</code>) und 
+                <em> Evaluation Sample Sets</em> (<code>pgs_all_metadata_evaluation_sample_sets.csv</code>).
+              </li>
+              <li>
+                <h5 className="text-lg font-bold mt-4 mb-2">Effektgrößen:</h5>
+                Für jedes PGS wird die publizierte Effektgröße pro 1 SD verwendet. Falls als HR/OR angegeben, 
+                wird <code>β/SD = ln(HR)</code> bzw. <code>ln(OR)</code> berechnet. Auswahl: Beta → HR → OR, 
+                priorisiert nach größerer Stichprobe.
+              </li>
+              <li>
+                <h5 className="text-lg font-bold mt-4 mb-2">Ancestry-Filter:</h5>
+                Nur Evaluations-Sets mit Ancestry, die „Europe“ enthält (konfigurierbar über <code>ANCESTRY_FILTER</code>).
+              </li>
+              <li>
+                <h5 className="text-lg font-bold mt-4 mb-2">Aggregation:</h5>
+                Pro Trait wird ein PGS mit größtem |z| gewählt. Z-Scores werden bei ±3 SD gekappt. 
+                Gesamtlog-HR: <code>Σ(β/SD × z)</code>, relatives Risiko <code>RR = exp(logHR)</code>.
+              </li>
+              <li>
+                <h5 className="text-lg font-bold mt-4 mb-2">Interpretation:</h5>
+                RR &lt; 1 protektiv, RR &gt; 1 erhöhtes Risiko. 
+                <span className="text-red-600">
+                  Ergebnisse sind explorativ und dienen ausschließlich zu Forschungs- und Informationszwecken. 
+                  Sie sind nicht für medizinische Diagnosen geeignet und dürfen nicht als Ersatz für ärztliche Beratung oder Behandlung verwendet werden.
+                </span>
+              </li>
+            </ul>
+
+            <h5 className="text-lg font-bold mt-4 mb-2">Primärreferenzen</h5>
+            <ul>
+              <li>
+                PGS Catalog – <a href="https://www.pgscatalog.org/downloads/" target="_blank" rel="noreferrer">Downloads</a>:
+                Dokumentation zu Scoring Files & Performance Metrics.
+              </li>
+            </ul>
+
+            <h5 className="text-lg font-bold mt-4 mb-2">Limitierungen</h5>
+            <ul>
+              <li>Effektgrößen sind studien-/kohortenspezifisch.</li>
+              <li>Z-Score-Standardisierung setzt μ=0/σ=1 in der Referenzpopulation voraus.</li>
+              <li>Explorativ; keine medizinische Beratung.</li>
+            </ul>
+          </div>
+          <div className="mt-4 flex justify-end gap-2">
+            <button
+              className="px-3 py-1.5 rounded-md bg-gray-100 hover:bg-gray-200"
+              onClick={() => setShowMethods(false)}
+            >
+              Schließen
+            </button>
+          </div>
+        </div>
+      </div>
+    )}
+
+
+      {showMethodsBiomarker && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="absolute inset-0 bg-black/50" onClick={() => setShowMethods(false)} />
+          <div
+            className="absolute inset-0 bg-black/50"
+            onClick={() => setShowMethodsBiomarker(false)}
+          />
           <div className="relative bg-white rounded-xl shadow-xl max-w-2xl w-full mx-4 p-6">
             <div className="flex items-start justify-between mb-4">
-              <h4 className="text-xl font-semibold">Genetischer Beitrag – Methoden & Referenzen</h4>
-              <button className="text-gray-500 hover:text-gray-700" onClick={() => setShowMethods(false)}>✕</button>
+              <h4 className="text-xl font-semibold">Biomarker – Methoden & Referenzen</h4>
+              <button
+                className="text-gray-500 hover:text-gray-700"
+                onClick={() => setShowMethodsBiomarker(false)}
+              >
+                ✕
+              </button>
             </div>
             <div className="prose prose-sm max-w-none text-gray-700">
-              <h5>Kurzes Methoden-Statement</h5>
               <ul>
-                <li><strong>Datenquellen:</strong> PGS Catalog <em>Performance Metrics</em> (<code>pgs_all_metadata_performance_metrics.csv</code>) und <em>Evaluation Sample Sets</em> (<code>pgs_all_metadata_evaluation_sample_sets.csv</code>), lokal unter <code>/public/pgs_scores/metadata/</code>.</li>
-                <li><strong>Effektgrößen:</strong> Für jedes PGS wird die publizierte Effektgröße pro 1&nbsp;SD verwendet. Falls als Hazard-/Odds Ratio angegeben, wird <code>β/SD = ln(HR)</code> bzw. <code>ln(OR)</code> berechnet. Wenn mehrere Angaben existieren, wird <em>Beta &gt; HR &gt; OR</em> bevorzugt und ggf. nach größerer Stichprobe priorisiert.</li>
-                <li><strong>Ancestry-Filter:</strong> Es werden nur Evaluations-Sets mit Ancestry, die <code>"Europe"</code> enthält, berücksichtigt (konfigurierbar über <code>ANCESTRY_FILTER</code>).</li>
-                <li><strong>Aggregation:</strong> Pro Trait wird ein PGS mit größtem |z| gewählt. Z‑Scores werden zur Robustheit bei ±3&nbsp;SD gekappt. Der genetische Gesamteffekt wird auf der log‑Hazard‑Skala addiert: <code>log(HR)<sub>gesamt</sub> = Σ(β/SD × z)</code>, relatives Risiko <code>RR = exp(log(HR)<sub>gesamt</sub>)</code>.</li>
-                <li><strong>Interpretation:</strong> RR &lt; 1 protektiv, RR &gt; 1 erhöhtes relatives Risiko gegenüber dem Median. Die Ausgabe ist populations- und modellabhängig und dient nicht der Diagnostik.</li>
+                <li><h5 className="text-lg font-bold mt-4 mb-2">Datenquellen:</h5> Blutdruck, BMI, Lipidprofil (HDL, LDL, Triglyceride), Nüchternglukose, HbA1c – gemäß AHA „Life’s Essential 8“ und Kriterien des metabolischen Syndroms.</li>
+                <li><h5 className="text-lg font-bold mt-4 mb-2">Skalierung:</h5> Jeder Marker wird auf 0–100 skaliert anhand evidenzbasierter Zielwerte (Leitlinien). 100 = optimaler Zielwert, 0 = stark abweichend. Zwischenwerte linear interpoliert.</li>
+                <li><h5 className="text-lg font-bold mt-4 mb-2">Aggregation:</h5> Der Biomarker-Index ist der ungewichtete Mittelwert aller verfügbaren Einzel-Scores. Fehlende Werte werden ignoriert, sodass der Index nur aus vorhandenen Daten gebildet wird.</li>
+                <li><h5 className="text-lg font-bold mt-4 mb-2">Interpretation:</h5> Höherer Score = besserer kardiometabolischer Status. 
+                  <span className="text-red-600">
+                    Ergebnisse sind explorativ und dienen ausschließlich zu Forschungs- und Informationszwecken. 
+                    Sie sind nicht für medizinische Diagnosen geeignet und dürfen nicht als Ersatz für ärztliche Beratung oder Behandlung verwendet werden.
+                  </span></li>
               </ul>
 
-              <h5>Primärreferenzen (PGS Catalog)</h5>
+              <h5 className="text-lg font-bold mt-4 mb-2">Primärreferenzen</h5>
               <ul>
-                <li>PGS Catalog – <a href="https://www.pgscatalog.org/downloads/" target="_blank" rel="noreferrer">Downloads</a>: Dokumentation zu Scoring Files & Performance Metrics. Hinweis: „Author‑reported effect sizes can be supplied… if no other effect_weight is given the weight is calculated using the log(OR) or log(HR).“</li>
-                <li>Bulk Metadata: <code>pgs_all_metadata_performance_metrics.csv</code> (Effektgrößen wie HR/OR/Beta per SD) und <code>pgs_all_metadata_evaluation_sample_sets.csv</code> (Ancestry der Evaluationssets).</li>
-                <li>PGS Scoring Files & Metadata (Variantenebene) – für Score-Berechnung, nicht für per‑SD‑Effektkalibrierung gedacht.</li>
+                <li>Lloyd-Jones, D. M. et al. & American Heart Association. (2022). Life’s essential 8: updating and enhancing the American Heart Association’s construct of cardiovascular health: a presidential advisory from the American Heart Association. <em>Circulation</em>, 146(5), e18-e43.</li>
+                <li>Alberti, K. G. et al. (2009). Harmonizing the metabolic syndrome: a joint interim statement of the international diabetes federation task force on epidemiology and prevention; national heart, lung, and blood institute; American heart association; world heart federation; international atherosclerosis society; and international association for the study of obesity. Circulation, 120(16), 1640-1645.</li>
               </ul>
 
-              <h5>Limitierungen</h5>
+              <h5 className="text-lg font-bold mt-4 mb-2">Limitierungen</h5>
               <ul>
-                <li>Effektgrößen sind studien‑/kohortenspezifisch; Generalisierbarkeit kann eingeschränkt sein.</li>
-                <li>Z‑Score‑Standardisierung setzt μ=0/σ=1 in der Referenzpopulation voraus.</li>
-                <li>Keine medizinische Beratung; Ergebnisse sind explorativ.</li>
+                <li>Referenzwerte können populationsspezifisch variieren.</li>
+                <li>Einzelmessungen können Tages- und Messschwankungen unterliegen.</li>
+                <li>Explorativ; keine medizinische Beratung.</li>
               </ul>
             </div>
             <div className="mt-4 flex justify-end gap-2">
-              <button className="px-3 py-1.5 rounded-md bg-gray-100 hover:bg-gray-200" onClick={() => setShowMethods(false)}>Schließen</button>
+              <button
+                className="px-3 py-1.5 rounded-md bg-gray-100 hover:bg-gray-200"
+                onClick={() => setShowMethodsBiomarker(false)}
+              >
+                Schließen
+              </button>
             </div>
           </div>
         </div>
       )}
 
+
       {/* What-if row (clinical only for now) */}
-      <div className="bg-white p-5 rounded-lg shadow mb-6">
-        <h3 className="text-lg font-semibold mb-3">What-if (sofortige Vorschau)</h3>
+      {/* <div className="bg-white p-5 rounded-lg shadow mb-6">
+        <h3 className="text-lg font-semibold mb-3">Zusätzliche Vitalparameter</h3>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
             <div className="text-sm text-gray-700 mb-1">Blutdruck (Syst./Diast.)</div>
@@ -767,7 +1053,7 @@ export default function LongevityPage() {
           </div>
         </div>
         <div className="mt-4 text-sm text-gray-600">Der Index und die Subscores oben aktualisieren sich live basierend auf den Eingaben. <button className="ml-3 text-blue-600 hover:underline" onClick={() => setWhatIf({})}>Zurücksetzen</button></div>
-      </div>
+      </div> */}
 
       {/* ROI suggestions (clinical heuristics retained) */}
       <div className="bg-white p-5 rounded-lg shadow">

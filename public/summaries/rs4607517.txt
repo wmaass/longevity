@@ -1,7 +1,0 @@
-Here is a summary of what the paper reports specifically about rs4607517:
-
-• Mention: rs4607517
-• Trait: Gestational diabetes mellitus (GDM)
-• Allele/genotype effects:
-	+ The A allele was significantly associated with GDM (OR 1·35, 95 % CI 1·03, 1·77; P = 0·028)
-	+ The A allele increased the risk of GDM only in women who had a habitual consumption of sweet foods (sweets consumption ≥ once per week) (OR 1·61, 95 % CI 1·17

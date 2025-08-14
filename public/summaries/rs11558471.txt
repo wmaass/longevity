@@ -1,9 +1,0 @@
-Here is the summary of what the paper reports specifically about rs11558471:
-
-• Mention: rs11558471
-• Trait: Type 2 Diabetes (T2DM)
-• Allele/Genotype effects: Associated with T2DM
-• Effect size: OR = 1.29, 95% CI [not specified], p [not specified]
-• Population: Asian populations
-• Design: Meta-analysis
-• Limitations: None mentioned specifically for rs11558471

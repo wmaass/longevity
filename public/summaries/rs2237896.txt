@@ -1,7 +1,0 @@
-Based on the abstract, here are the key points regarding rs2237896:
-
-* Yes, rs2237896 is mentioned as one of the KCNQ1 polymorphisms investigated.
-* No specific genetic context or associated feature/phenotype is mentioned for rs2237896.
-* The study found a significant difference in allele frequencies between rs2283228 (C) and rs2237896 (P > 0.05) in the Turkish Cypriot population.
-* No risk/schutzalleles or genotype effects are specified for rs2237896.
-* No effect size (OR/HR/β), 95

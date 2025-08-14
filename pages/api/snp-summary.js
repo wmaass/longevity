@@ -227,72 +227,307 @@ export default async function handler(req, res) {
   log(`🧪 OLLAMA_URL=${OLLAMA_URL} OLLAMA_MODEL=${OLLAMA_MODEL} SPEECH_MODE=${SPEECH_MODE}`);
   log(`⏱️ OLLAMA_TIMEOUT_MS=${OLLAMA_TIMEOUT_MS}`);
 
-  async function fetchEuropePMCPapers(rsid) {
-    log(`🔍 Suche Paper zu ${rsid} auf EuropePMC…`);
+  // async function fetchEuropePMCPapers(rsid) {
+  //   log(`🔍 Suche Paper zu ${rsid} auf EuropePMC…`);
 
-    // präzisere Query: Suche in Titel ODER Abstract, resultType=core liefert eher abstractText
-    const query =
-      `https://www.ebi.ac.uk/europepmc/webservices/rest/search` +
-      `?query=(TITLE:${encodeURIComponent(rsid)}%20OR%20ABSTRACT:${encodeURIComponent(rsid)})` +
-      `&format=json&pageSize=20&resultType=core`;
+  //   // präzisere Query: Suche in Titel ODER Abstract, resultType=core liefert eher abstractText
+  //   const query =
+  //     `https://www.ebi.ac.uk/europepmc/webservices/rest/search` +
+  //     `?query=(TITLE:${encodeURIComponent(rsid)}%20OR%20ABSTRACT:${encodeURIComponent(rsid)})` +
+  //     `&format=json&pageSize=20&resultType=core`;
 
-    try {
-      const r = await fetch(query);
-      const json = await r.json();
-      const papers = json.resultList?.result || [];
+  //   try {
+  //     const r = await fetch(query);
+  //     const json = await r.json();
+  //     const papers = json.resultList?.result || [];
 
-      if (papers.length === 0) {
-        log(`⚠️ Kein Paper gefunden zu ${rsid}`);
-        return { combinedText: '', url: null };
-      }
+  //     if (papers.length === 0) {
+  //       log(`⚠️ Kein Paper gefunden zu ${rsid}`);
+  //       return { combinedText: '', url: null };
+  //     }
 
-      const scored = papers.map(p => {
-        const title = p.title || '';
-        const abstractText = (p.abstractText || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-        const year = Number(p.pubYear) || 0;
-        const hasAbstract = abstractText.length > 0;
+  //     const scored = papers.map(p => {
+  //       const title = p.title || '';
+  //       const abstractText = (p.abstractText || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  //       const year = Number(p.pubYear) || 0;
+  //       const hasAbstract = abstractText.length > 0;
 
-        return {
-          p,
-          abstractText,
-          score:
-            (p.doi ? 4 : 0) +
-            (p.pmid ? 3 : 0) +
-            (p.pmcid ? 2 : 0) +
-            (title.toLowerCase().includes(rsid.toLowerCase()) ? 2 : 0) +
-            (abstractText.toLowerCase().includes(rsid.toLowerCase()) ? 3 : 0) +
-            (hasAbstract ? 2 : -2) +
-            (year / 10000),
-        };
-      }).sort((a, b) => b.score - a.score);
+  //       return {
+  //         p,
+  //         abstractText,
+  //         score:
+  //           (p.doi ? 4 : 0) +
+  //           (p.pmid ? 3 : 0) +
+  //           (p.pmcid ? 2 : 0) +
+  //           (title.toLowerCase().includes(rsid.toLowerCase()) ? 2 : 0) +
+  //           (abstractText.toLowerCase().includes(rsid.toLowerCase()) ? 3 : 0) +
+  //           (hasAbstract ? 2 : -2) +
+  //           (year / 10000),
+  //       };
+  //     }).sort((a, b) => b.score - a.score);
 
-      const best = scored[0];
-      const paper = best.p;
-      const title = paper.title || 'Untitled';
-      const abstract = best.abstractText;
+  //     const best = scored[0];
+  //     const paper = best.p;
+  //     const title = paper.title || 'Untitled';
+  //     const abstract = best.abstractText;
 
-      let url = null;
-      if (paper.doi)       url = `https://doi.org/${paper.doi}`;
-      else if (paper.pmid) url = `https://pubmed.ncbi.nlm.nih.gov/${paper.pmid}/`;
-      else if (paper.pmcid) url = `https://www.ncbi.nlm.nih.gov/pmc/articles/${paper.pmcid}/`;
-      else if (paper.id && paper.source) url = `https://europepmc.org/article/${paper.source}/${paper.id}`;
-      else if (paper.fullTextUrlList?.fullTextUrl?.[0]?.url) url = paper.fullTextUrlList.fullTextUrl[0].url;
-      else url = `https://europepmc.org/search?query=${encodeURIComponent(rsid)}`;
+  //     let url = null;
+  //     if (paper.doi)       url = `https://doi.org/${paper.doi}`;
+  //     else if (paper.pmid) url = `https://pubmed.ncbi.nlm.nih.gov/${paper.pmid}/`;
+  //     else if (paper.pmcid) url = `https://www.ncbi.nlm.nih.gov/pmc/articles/${paper.pmcid}/`;
+  //     else if (paper.id && paper.source) url = `https://europepmc.org/article/${paper.source}/${paper.id}`;
+  //     else if (paper.fullTextUrlList?.fullTextUrl?.[0]?.url) url = paper.fullTextUrlList.fullTextUrl[0].url;
+  //     else url = `https://europepmc.org/search?query=${encodeURIComponent(rsid)}`;
 
-      log(`📄 Gefunden: ${title}`);
-      log(`🔗 URL: ${url}`);
-      log(`📏 Abstract-Länge: ${abstract.length} Zeichen`);
+  //     log(`📄 Gefunden: ${title}`);
+  //     log(`🔗 URL: ${url}`);
+  //     log(`📏 Abstract-Länge: ${abstract.length} Zeichen`);
 
-      const combinedText = abstract && abstract.length > 0
-        ? `Title: ${title}\nAbstract: ${abstract}`
-        : `Title: ${title}`; // Titel-only Fallback
+  //     const combinedText = abstract && abstract.length > 0
+  //       ? `Title: ${title}\nAbstract: ${abstract}`
+  //       : `Title: ${title}`; // Titel-only Fallback
 
-      return { combinedText, url };
-    } catch (err) {
-      log(`❌ Fehler beim Europe PMC Fetch: ${err.message}`);
+  //     return { combinedText, url };
+  //   } catch (err) {
+  //     log(`❌ Fehler beim Europe PMC Fetch: ${err.message}`);
+  //     return { combinedText: '', url: null };
+  //   }
+  // }
+
+  // Ersetzt deine bisherige fetchEuropePMCPapers-Funktion 1:1
+async function fetchEuropePMCPapers(rsid) {
+  log(`🔍 Suche Paper zu ${rsid} auf EuropePMC…`);
+
+  // 1) Suche in Titel ODER Abstract (Core liefert u. a. abstractText, IDs)
+  const query =
+    `https://www.ebi.ac.uk/europepmc/webservices/rest/search` +
+    `?query=(TITLE:${encodeURIComponent(rsid)}%20OR%20ABSTRACT:${encodeURIComponent(rsid)})` +
+    `&format=json&pageSize=20&resultType=core`;
+
+  try {
+    const r = await fetch(query);
+    const json = await r.json();
+    const papers = json.resultList?.result || [];
+
+    if (papers.length === 0) {
+      log(`⚠️ Kein Paper gefunden zu ${rsid}`);
       return { combinedText: '', url: null };
     }
+
+    // 2) Scoring wie gehabt (leicht erweitert); wähle bestes Paper
+    const scored = papers.map(p => {
+      const title = p.title || '';
+      const abstractText = (p.abstractText || '')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      const year = Number(p.pubYear) || 0;
+      const hasAbstract = abstractText.length > 0;
+      const hasPMCID = !!p.pmcid;
+
+      return {
+        p,
+        abstractText,
+        score:
+          (p.doi ? 4 : 0) +
+          (p.pmid ? 3 : 0) +
+          (hasPMCID ? 3 : 0) +
+          (title.toLowerCase().includes(rsid.toLowerCase()) ? 2 : 0) +
+          (abstractText.toLowerCase().includes(rsid.toLowerCase()) ? 3 : 0) +
+          (hasAbstract ? 2 : -2) +
+          (year / 10000),
+      };
+    }).sort((a, b) => b.score - a.score);
+
+    const best = scored[0];
+    const paper = best.p;
+    const title = paper.title || 'Untitled';
+    const abstract = best.abstractText;
+
+    // 3) Kanonische URL bestimmen
+    let url = null;
+    if (paper.doi)            url = `https://doi.org/${paper.doi}`;
+    else if (paper.pmid)      url = `https://pubmed.ncbi.nlm.nih.gov/${paper.pmid}/`;
+    else if (paper.pmcid)     url = `https://www.ncbi.nlm.nih.gov/pmc/articles/${paper.pmcid}/`;
+    else if (paper.id && paper.source)
+                              url = `https://europepmc.org/article/${paper.source}/${paper.id}`;
+    else if (paper.fullTextUrlList?.fullTextUrl?.[0]?.url)
+                              url = paper.fullTextUrlList.fullTextUrl[0].url;
+    else                      url = `https://europepmc.org/search?query=${encodeURIComponent(rsid)}`;
+
+    log(`📄 Gefunden: ${title}`);
+    log(`🔗 URL: ${url}`);
+    log(`📏 Abstract-Länge: ${abstract.length} Zeichen`);
+
+    // 4) Volltext laden (wenn möglich): bevorzugt Europe PMC fullTextXML
+    let fullText = '';
+    let triedFulltext = false;
+
+    // a) Europe PMC Volltext-XML (JATS), wenn source+id verfügbar (z. B. PMC / PMCID)
+    if (paper.source && paper.id) {
+      const fullXmlUrl = `https://www.ebi.ac.uk/europepmc/webservices/rest/${paper.source}/${paper.id}/fullTextXML`;
+      triedFulltext = true;
+      try {
+        const xmlRes = await fetch(fullXmlUrl);
+        if (xmlRes.ok) {
+          const xml = await xmlRes.text();
+          fullText = extractPlainTextFromJATS(xml);
+          log(`📚 Volltext (XML) extrahiert: ${fullText.length} Zeichen`);
+        } else {
+          log(`ℹ️ Volltext-XML nicht verfügbar (HTTP ${xmlRes.status}).`);
+        }
+      } catch (e) {
+        log(`ℹ️ Fehler beim Laden des Volltext-XML: ${e.message}`);
+      }
+    }
+
+    // Versuch: Fulltext-PDF (wenn XML fehlt)
+    if (!fullText && paper.source && paper.id) {
+      const pdfUrl = `https://www.ebi.ac.uk/europepmc/webservices/rest/${paper.source}/${paper.id}/fullTextPDF`;
+      try {
+        const pdfRes = await fetch(pdfUrl);
+        if (pdfRes.ok) {
+          const pdfArray = await pdfRes.arrayBuffer();
+          // -> Optional: per PDF-Parser (z. B. pdf-parse) in Text umwandeln
+          // const { text } = await pdfParse(Buffer.from(pdfArray));
+          // fullText = sanitize(text);
+          log(`📄 Volltext (PDF) geladen – Textumwandlung noch implementieren.`);
+        }
+      } catch (e) { log(`ℹ️ PDF-Fetch fehlgeschlagen: ${e.message}`); }
+    }
+
+    // b) Falls kein JATS-XML extrahierbar: versuche HTML-Volltext (falls Link vorhanden)
+    if (!fullText && paper.fullTextUrlList?.fullTextUrl?.length) {
+      const htmlEntry = paper.fullTextUrlList.fullTextUrl.find(u => /html/i.test(u.documentStyle || '') || /text\/html/i.test(u.availability || ''));
+      if (htmlEntry?.url) {
+        triedFulltext = true;
+        try {
+          const htmlRes = await fetch(htmlEntry.url);
+          if (htmlRes.ok) {
+            const html = await htmlRes.text();
+            fullText = extractPlainTextFromHTML(html);
+            log(`📰 Volltext (HTML) extrahiert: ${fullText.length} Zeichen`);
+          } else {
+            log(`ℹ️ HTML-Volltext nicht verfügbar (HTTP ${htmlRes.status}).`);
+          }
+        } catch (e) {
+          log(`ℹ️ Fehler beim Laden des HTML-Volltexts: ${e.message}`);
+        }
+      }
+    }
+
+    // 5) combinedText zusammenbauen (Titel + Abstract + optional FullText)
+    let combinedText;
+    if (abstract && fullText) {
+      combinedText = [
+        `Title: ${title}`,
+        `Abstract: ${abstract}`,
+        `FullText:`,
+        trimForCtx(fullText, 30000),
+      ].join('\n');
+    } else if (fullText) {
+      combinedText = [
+        `Title: ${title}`,
+        `FullText:`,
+        trimForCtx(fullText, 30000),
+      ].join('\n');
+    } else if (abstract) {
+      combinedText = `Title: ${title}\nAbstract: ${abstract}`;
+    } else {
+      combinedText = `Title: ${title}`; // minimaler Fallback
+    }
+
+    if (!triedFulltext) {
+      log(`ℹ️ Kein geeigneter Volltext-Endpunkt gefunden; nur Titel/Abstract verfügbar.`);
+    }
+
+    return { combinedText, url };
+  } catch (err) {
+    log(`❌ Fehler beim Europe PMC Fetch: ${err.message}`);
+    return { combinedText: '', url: null };
   }
+}
+
+/* ---------- Helfer: JATS-XML & HTML in Plaintext ---------- */
+
+/**
+ * Extrahiert lesbaren Text aus JATS (Europe PMC fullTextXML).
+ * Leichtgewichtig (regex-basiert), reicht für LLM-Kontext.
+ * Für höhere Präzision kann später ein echter XML-Parser ergänzt werden.
+ */
+function extractPlainTextFromJATS(xml) {
+  if (!xml) return '';
+
+  let s = xml;
+
+  // Unnötige/aufblähende Bereiche entfernen
+  s = s.replace(/<table[\s\S]*?<\/table>/gi, '');         // Tabellen
+  s = s.replace(/<fig[\s\S]*?<\/fig>/gi, '');             // Abbildungen
+  s = s.replace(/<ref-list[\s\S]*?<\/ref-list>/gi, '');   // Referenzen
+  s = s.replace(/<license[\s\S]*?<\/license>/gi, '');     // Lizenzblöcke
+  s = s.replace(/<front[\s\S]*?<\/front>/gi, '');         // Titelseite/Meta
+
+  // Abschnittstitel hervorheben
+  s = s.replace(/<title[^>]*>([\s\S]*?)<\/title>/gi, '\n\n$1\n');
+
+  // Zeilenumbrüche an Absätzen/Abschnittsgrenzen
+  s = s.replace(/<\/?p[^>]*>/gi, '\n');
+  s = s.replace(/<\/?sec[^>]*>/gi, '\n');
+  s = s.replace(/<\/?abstract[^>]*>/gi, '\n');
+
+  // Alle übrigen Tags entfernen
+  s = s.replace(/<[^>]+>/g, ' ');
+
+  // HTML-Entities (ein paar häufige)
+  s = s.replace(/&nbsp;/g, ' ')
+       .replace(/&amp;/g, '&')
+       .replace(/&lt;/g, '<')
+       .replace(/&gt;/g, '>')
+       .replace(/&quot;/g, '"')
+       .replace(/&#39;/g, "'");
+
+  // Whitespace säubern
+  s = s.replace(/\s+\n/g, '\n')
+       .replace(/\n{3,}/g, '\n\n')
+       .replace(/[ \t]{2,}/g, ' ')
+       .trim();
+
+  return s;
+}
+
+/**
+ * Sehr einfacher HTML-zu-Text Fallback (falls kein JATS vorhanden).
+ * Schneidet <script>/<style> weg und entfernt Tags.
+ */
+function extractPlainTextFromHTML(html) {
+  if (!html) return '';
+  let s = html;
+
+  s = s.replace(/<script[\s\S]*?<\/script>/gi, '')
+       .replace(/<style[\s\S]*?<\/style>/gi, '');
+
+  // Absätze/Überschriften als Zeilenumbrüche
+  s = s.replace(/<\/?(p|div|section|article|br|h[1-6])[^>]*>/gi, '\n');
+
+  // Restliche Tags entfernen
+  s = s.replace(/<[^>]+>/g, ' ');
+
+  // Entities
+  s = s.replace(/&nbsp;/g, ' ')
+       .replace(/&amp;/g, '&')
+       .replace(/&lt;/g, '<')
+       .replace(/&gt;/g, '>')
+       .replace(/&quot;/g, '"')
+       .replace(/&#39;/g, "'");
+
+  s = s.replace(/\s+\n/g, '\n')
+       .replace(/\n{3,}/g, '\n\n')
+       .replace(/[ \t]{2,}/g, ' ')
+       .trim();
+
+  return s;
+}
+
 
   // eine Request-Funktion (mit Optionen) + 1 Retry
   async function ollamaGenerateOnce(model, prompt) {
@@ -395,17 +630,12 @@ async function generateWithOllama(rsid, text) {
   }
 }
 
+async function generateWithDistilBART(text, rsid) {
+  const summarizer = await getSummarizerBackup(log);
+  const result = await summarizer(buildPrompt(text, rsid));
+  return result?.[0]?.summary_text?.trim() || '';
+}
 
-
-
-  async function generateWithDistilBART(text) {
-    const summarizer = await getSummarizerBackup(log);
-    log(`⚙️ Generiere Fallback-Zusammenfassung…`);
-    const result = await summarizer(buildPrompt(text));
-    const summary = result?.[0]?.summary_text?.trim() || '';
-    log(`✅ Fallback-Zusammenfassung erfolgreich (${summary.length} Zeichen)`);
-    return summary;
-  }
 
   function loadCachedSummary(rsid) {
     const cachePath = path.join(process.cwd(), 'public', 'summaries', `${rsid}.txt`);
@@ -427,7 +657,7 @@ async function generateWithOllama(rsid, text) {
 
     const summary =
       (await generateWithOllama(rsid, textForLLM)) ||
-      (await generateWithDistilBART(textForLLM));
+      (await generateWithDistilBART(textForLLM, rsid));
 
     if (!summary) log(`⚠️ Keine Zusammenfassung erzeugt`);
     return { text: summary, url: fetched.url, local: false };

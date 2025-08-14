@@ -15,59 +15,146 @@
   "dateRecorded": "2025-08-10",
   "biomarkers": {
     "vitals": {
-      "bloodPressure": { "systolic": 120, "diastolic": 80, "unit": "mmHg" },
-      "heartRate": { "value": 72, "unit": "bpm" },
-      "respiratoryRate": { "value": 16, "unit": "breaths/min" },
-      "bodyTemperature": { "value": 36.7, "unit": "°C" }
+      "bloodPressure": {
+        "systolic": 120,
+        "diastolic": 80,
+        "unit": "mmHg"
+      },
+      "heartRate": {
+        "value": 72,
+        "unit": "bpm"
+      },
+      "respiratoryRate": {
+        "value": 16,
+        "unit": "breaths/min"
+      },
+      "bodyTemperature": {
+        "value": 36.7,
+        "unit": "°C"
+      }
     },
     "bloodTests": {
-      "totalCholesterol": { "value": 180, "unit": "mg/dL" },
-      "hdlCholesterol": { "value": 55, "unit": "mg/dL" },
-      "ldlCholesterol": { "value": 100, "unit": "mg/dL" },
-      "triglycerides": { "value": 120, "unit": "mg/dL" },
-      "fastingGlucose": { "value": 90, "unit": "mg/dL" },
-      "hba1c": { "value": 5.4, "unit": "%" },
+      "totalCholesterol": {
+        "value": 180,
+        "unit": "mg/dL"
+      },
+      "hdlCholesterol": {
+        "value": 55,
+        "unit": "mg/dL"
+      },
+      "ldlCholesterol": {
+        "value": 100,
+        "unit": "mg/dL"
+      },
+      "triglycerides": {
+        "value": 120,
+        "unit": "mg/dL"
+      },
+      "fastingGlucose": {
+        "value": 90,
+        "unit": "mg/dL"
+      },
+      "hba1c": {
+        "value": 5.4,
+        "unit": "%"
+      },
 
-      "hemoglobin": { "value": 15.6, "unit": "g/dL" },
-      "hematocrit": { "value": 44, "unit": "%" },
-      "rbc": { "value": 5.0, "unit": "10^6/µL" },
-      "wbc": { "value": 7.5, "unit": "10^3/µL" },
-      "platelets": { "value": 288, "unit": "10^3/µL" },
-      "mcv": { "value": 88.0, "unit": "fL" },
-      "mchc": { "value": 35.3, "unit": "g/dL" },
-      "mch": { "value": 31.1, "unit": "pg" },
-      "rdw": { "value": 13, "unit": "%" },
+      "hemoglobin": {
+        "value": 15.6,
+        "unit": "g/dL"
+      },
+      "hematocrit": {
+        "value": 44,
+        "unit": "%"
+      },
+      "rbc": {
+        "value": 5.0,
+        "unit": "10^6/µL"
+      },
+      "wbc": {
+        "value": 7.5,
+        "unit": "10^3/µL"
+      },
+      "platelets": {
+        "value": 288,
+        "unit": "10^3/µL"
+      },
+      "mcv": {
+        "value": 88.0,
+        "unit": "fL"
+      },
+      "mchc": {
+        "value": 35.3,
+        "unit": "g/dL"
+      },
+      "mch": {
+        "value": 31.1,
+        "unit": "pg"
+      },
+      "rdw": {
+        "value": 13,
+        "unit": "%"
+      },
 
       "differential": {
         "neutrophils": {
           "percent": 52.7,
-          "absolute": { "value": 4.0, "unit": "10^3/µL" }
+          "absolute": {
+            "value": 4.0,
+            "unit": "10^3/µL"
+          }
         },
         "lymphocytes": {
           "percent": 26.4,
-          "absolute": { "value": 2.0, "unit": "10^3/µL" }
+          "absolute": {
+            "value": 2.0,
+            "unit": "10^3/µL"
+          }
         },
         "monocytes": {
           "percent": 14.3,
           "flag": "high",
-          "absolute": { "value": 1.07, "unit": "10^3/µL", "flag": "high" }
+          "absolute": {
+            "value": 1.07,
+            "unit": "10^3/µL",
+            "flag": "high"
+          }
         },
         "eosinophils": {
           "percent": 5.9,
-          "absolute": { "value": 0.44, "unit": "10^3/µL" }
+          "absolute": {
+            "value": 0.44,
+            "unit": "10^3/µL"
+          }
         },
         "basophils": {
           "percent": 0.7,
-          "absolute": { "value": 0.05, "unit": "10^3/µL" }
+          "absolute": {
+            "value": 0.05,
+            "unit": "10^3/µL"
+          }
         }
       },
 
-      "crp": { "value": 2.35, "unit": "mg/dL", "flag": "high" },
-      "procalcitonin": { "value": 0.07, "unit": "ng/mL" }
+      "crp": {
+        "value": 2.35,
+        "unit": "mg/dL",
+        "flag": "high"
+      },
+      "procalcitonin": {
+        "value": 0.07,
+        "unit": "ng/mL"
+      }
     },
     "other": {
-      "oxygenSaturation": { "value": 98, "unit": "%" },
-      "bmi": { "value": 24.0, "unit": "kg/m²" }
+      "oxygenSaturation": {
+        "value": 98,
+        "unit": "%"
+      },
+      "bmi": {
+        "value": 24.0,
+        "unit": "kg/m²"
+      }
     }
   }
 }

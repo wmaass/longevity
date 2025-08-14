@@ -1,11 +1,7 @@
-Here are the specific findings about rs11248914:
+The paper reports specifically about rs11248914 as follows:
 
-• Mention of: rs11248914
-• Trait: α 0 -thalassemia (SEA deletion)
-• Allele/genotype effects: Examined as one of five SNPs encompassing the (- SEA ) using high-resolution melting assays
-• Effect size: Not reported
-• Population: Southeast Asian populations (Thai, Laotian, and Cambodian)
-• Design: Haplotype and phylogenetic analyses
-• Limitations: No specific limitations mentioned regarding rs11248914
-
-Note that there is no mention of the effect size (e.g., OR,
+* Mention of rs11248914: Yes, it is mentioned as one of the five SNPs examined using high-resolution melting assays.
+* Trait: α 0 -thalassemia (SEA deletion)
+* Allele/genotype effects: Not explicitly stated, but it is mentioned that 94.0% of Thai, 100% of Laotian and 100% of Cambodian α 0 -thalassemia alleles were linked to the same haplotype.
+* Effect size: Not provided
+* Population: Southeast Asian populations (Thai, Laot
