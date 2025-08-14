@@ -13,6 +13,11 @@ import {
   Legend,
 } from 'chart.js';
 import DashboardLayout from '../../components/DashboardLayout';
+// at top of the file
+import DOMPurify from 'isomorphic-dompurify';
+
+import { marked } from 'marked'; // fallback if html is missing
+
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -103,6 +108,58 @@ const median = (arr) => {
   return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
 };
 const fmt = (v, d = 1) => (isNum(v) ? v.toFixed(d) : '–');
+
+
+
+// Promotes common section titles to headings and makes bullet items real list items.
+function normalizeLLMMarkdown(md) {
+  let s = String(md || '').replace(/\r\n/g, '\n').trim();
+
+  s = s
+    .replace(/(^|\n)\s*(Summary of Mentions[^\n]*)/i, '\n\n# $2')
+    .replace(/(^|\n)\s*(Mention of [^\n]*)/i, '\n\n## $2')
+    .replace(/(^|\n)\s*(Reported Information Related to [^\n]*)/i, '\n\n## $2')
+    .replace(/(^|\n)\s*(Bulleted Summary[^\n]*)/i, '\n\n## $2');
+
+  s = s.replace(/(\*\*[^*\n]+?:\*\*)(?!\n)/g, '\n\n$1');                // break before bold labels
+  s = s.replace(/(\[[A-Z]+\])\s+(?=\*\*[^*\n]+?:\*\*)/g, '$1\n\n');     // break after provenance tag → next label
+  s = s.replace(/\n(Study design:)/gi, '\n\n**$1**')
+       .replace(/\n(Limitations[^:]*:)/gi, '\n\n**$1**');
+
+  s = s.replace(/(##\s*Bulleted Summary[^\n]*\n)([\s\S]*?)(?=\n##|\n#|$)/i, (m, head, body) => {
+    const lines = body.split('\n').map(l => l.trim()).filter(Boolean);
+    const items = lines.map(l => (/^[-*]\s/.test(l) ? l : `- ${l}`));
+    return `${head}\n${items.join('\n')}\n`;
+  });
+
+  s = s.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n');
+  return s.trim();
+}
+
+
+
+// After HTML conversion, wrap provenance tags as small badges.
+function badgeProvenance(html) {
+  if (!html) return '';
+  return html.replace(
+    /\[(TITLE|ABSTRACT|INTRO|METHODS|RESULTS|DISCUSSION|FULLTEXT)\]/g,
+    '<span class="provenance-badge">$1</span>'
+  );
+}
+
+
+const toHTML = (s) => {
+  const prefer = s && typeof s.html === 'string' ? s.html.trim() : '';
+  if (prefer) {
+    // still add badges on server-provided HTML
+    return badgeProvenance(prefer);
+  }
+  const md = s && typeof s.text === 'string' ? s.text.trim() : '';
+  if (!md) return '';
+  const normalized = normalizeLLMMarkdown(md);
+  const html = marked.parse(normalized, { mangle: false, headerIds: false });
+  return badgeProvenance(html);
+};
 
 export default function CardioDetail() {
   const router = useRouter();
@@ -221,18 +278,24 @@ export default function CardioDetail() {
 
         const controller = new AbortController();
         const timeout = setTimeout(() => controller.abort(), 120000);
+
         try {
           const res = await fetch(`/api/snp-summary?rsid=${encodeURIComponent(rsid)}`, {
             signal: controller.signal,
+            headers: { Accept: 'application/json' },
           });
           clearTimeout(timeout);
           if (!res.ok) throw new Error(`HTTP ${res.status}`);
           const data = await res.json();
+
           if (!cancelled) {
-            setSummaries((prev) => ({
+            setSummaries(prev => ({
               ...prev,
               [rsid]: {
+                // keep markdown for debugging/export
                 text: data?.text || 'Keine Zusammenfassung verfügbar.',
+                // NEW: store HTML returned by the API
+                html: data?.html || null,
                 url: data?.url || null,
                 logs: data?.logs || [],
               },
@@ -241,12 +304,13 @@ export default function CardioDetail() {
         } catch (err) {
           clearTimeout(timeout);
           if (!cancelled) {
-            setSummaries((prev) => ({
+            setSummaries(prev => ({
               ...prev,
               [rsid]: {
                 text: 'Fehler beim Laden der Zusammenfassung.',
+                html: null,
                 url: null,
-                logs: [`❌ Fehler beim Laden: ${err.message}`],
+                logs: [`❌ Fehler beim Laden: ${err instanceof Error ? err.message : String(err)}`],
               },
             }));
           }
@@ -254,17 +318,16 @@ export default function CardioDetail() {
       }
     })();
 
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, [efoSummary?.anchor, summaries]);
 
   /* ---------- on-demand SNP summary ---------- */
-  async function fetchAndStoreSummary(rsid) {
+  /* ---------- on-demand SNP summary ---------- */
+  const fetchAndStoreSummary = async (rsid) => {
     if (!rsid) return;
     if (loadingRsid[rsid] || summaries[rsid]) return;
 
-    setLoadingRsid(prev => ({ ...prev, [rsid]: true }));
+    setLoadingRsid((prev) => ({ ...prev, [rsid]: true }));
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 120000);
@@ -272,6 +335,7 @@ export default function CardioDetail() {
     try {
       const response = await fetch(`/api/snp-summary?rsid=${encodeURIComponent(rsid)}`, {
         signal: controller.signal,
+        headers: { Accept: 'application/json' },
       });
 
       clearTimeout(timeout);
@@ -281,35 +345,29 @@ export default function CardioDetail() {
 
       const payload = {
         text: data?.text || 'Keine Zusammenfassung verfügbar.',
+        html: data?.html || null, // <-- store HTML too
         url: data?.url || null,
         logs: data?.logs || [],
       };
 
-      setSummaries(prev => ({
-        ...prev,
-        [rsid]: payload,
-      }));
-
+      setSummaries((prev) => ({ ...prev, [rsid]: payload }));
       setActiveSummary({ type: 'snp', rsid, ...payload });
     } catch (err) {
       clearTimeout(timeout);
 
       const payload = {
         text: 'Fehler beim Laden der Zusammenfassung.',
+        html: null,
         url: null,
-        logs: [`❌ Fehler beim Laden: ${err.message}`],
+        logs: [`❌ Fehler beim Laden: ${err instanceof Error ? err.message : String(err)}`],
       };
 
-      setSummaries(prev => ({
-        ...prev,
-        [rsid]: payload,
-      }));
-
+      setSummaries((prev) => ({ ...prev, [rsid]: payload }));
       setActiveSummary({ type: 'snp', rsid, ...payload });
     } finally {
-      setLoadingRsid(prev => ({ ...prev, [rsid]: false }));
+      setLoadingRsid((prev) => ({ ...prev, [rsid]: false }));
     }
-  }
+  }; // <-- important semicolon
 
   /* ---------- biomarker helpers (unchanged) ---------- */
   const mkBadge = (tone, text) => {
@@ -821,9 +879,27 @@ export default function CardioDetail() {
             </p>
           )}
 
-          <p className="whitespace-pre-line text-gray-800">
-            {activeSummary.text}
-          </p>
+          <div
+            className="prose prose-sm max-w-none text-gray-800
+                      prose-h1:text-2xl prose-h1:mt-0 prose-h1:mb-3
+                      prose-h2:text-xl prose-h2:mt-5 prose-h2:mb-3
+                      prose-p:my-2 prose-ul:my-2 prose-li:my-1"
+            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(toHTML(activeSummary), { ADD_ATTR: ['target','rel'] }) }}
+          />
+
+          <style jsx>{`
+            :global(.provenance-badge) {
+              display: inline-block;
+              font-size: 11px;
+              line-height: 1;
+              padding: 2px 6px;
+              margin-left: 6px;
+              border-radius: 6px;
+              background: #eef2ff;
+              color: #3730a3;
+              white-space: nowrap;
+            }
+          `}</style>
         </>
       ) : (
         <p className="text-gray-500">Wähle eine Variante aus, um die Zusammenfassung zu sehen.</p>

@@ -1,9 +1,23 @@
-Here are the specific findings about rs198846:
+## Erwähnung von rs198846
 
-• Mention of: rs198846
-• Trait: Mean cell hemoglobin (MCH) and Mean Cell Volume (MCV)
-• Allele/Genotype effects: Associated with MCH and MCV
-• Effect size: Not provided
-• Population: Not specified
-• Design: Genome-wide association study (GWAS)
-• Limitations: None mentioned specifically for rs198846
+Antwort: Ja [FULLTEXT]
+
+## Berichtete Informationen zu rs198846
+
+**Untersuchter Phänotyp/Outcome:** Erythrocyte parameter(s) [FULLTEXT]
+**Allel-/Genotyp-Effekte:** rs130624 and rs198846 (MCH, MCV) [FULLTEXT]
+**Effektgrößen (OR/β/HR, mit KI und p-Werten):**
+- nicht berichtet [FULLTEXT]
+- keine weitere Statistiken [FULLTEXT]
+**Untersuchte Population:** n = 126-49,488; Caucasian/mixed-ethnic descent; no important exclusions mentioned [FULLTEXT]
+**Studiendesign:** candidate gene studies and genome-wide association studies (GWASes) [FULLTEXT]
+**Limitationen:** nicht berichtet [FULLTEXT]
+
+## Stichpunktartige Kurzfassung
+
+- rs198846 erwähnt? Ja [FULLTEXT]
+- Phänotyp: Erythrocyte parameter(s) [FULLTEXT]
+- Genotyp/Allel: rs130624 and rs198846 (MCH, MCV) [FULLTEXT]
+- Wichtige Zahlen: nicht berichtet [FULLTEXT]
+- Population/Design: n = 126-49,488; Caucasian/mixed-ethnic descent; no important exclusions mentioned [FULLTEXT]
+- Limitationen: nicht berichtet [FULLTEXT]

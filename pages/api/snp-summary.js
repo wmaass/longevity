@@ -11,80 +11,157 @@ const OLLAMA_URL        = process.env.OLLAMA_URL        || 'http://127.0.0.1:114
 const OLLAMA_MODEL      = process.env.OLLAMA_MODEL      || 'llama3';
 const OLLAMA_TIMEOUT_MS = Number(process.env.OLLAMA_TIMEOUT_MS || 20000); // erhöht
 const SPEECH_MODE       = (process.env.SPEECH_MODE || 'deutsch').toLowerCase();
+const OLLAMA_NUM_PREDICT = Number(process.env.OLLAMA_NUM_PREDICT || 768);
+
+
 
 // Sprachmodus festlegen: "fachlich", "einfach", "deutsch", "englisch"
 // Sprachmodus: "fachlich", "einfach", "deutsch", "englisch"
 // rsid ist optional; ohne rsid fällt es auf "the SNP of interest" zurück.
+// Unified GPT5-style, with sectioned output and source-location tags.
+// Produces the same structure across all modes; wording varies by language.
+// GPT-5 style structured prompt, compatible with all modes.
+// Call as: buildPrompt(text, rsid)
 function buildPrompt(text, rsid) {
-  const snp = rsid ? String(rsid) : 'the SNP of interest';
+  const snp  = rsid ? String(rsid) : 'the SNP of interest';
+  const mode = (SPEECH_MODE || 'englisch').toLowerCase(); // ← use the constant
 
-  switch (SPEECH_MODE) {
-    case 'fachlich':
-      return [
-        `You are a careful scientific summarizer. Based ONLY on the provided title/abstract (do not invent data), extract findings specifically about ${snp}.`,
-        `Answer in concise bullet points. Include, if present:`,
-        `• Is ${snp} explicitly mentioned (yes/no)? Gene/context`,
-        `• Associated trait/phenotype`,
-        `• Risk/protective allele and genotype effects (e.g., AA vs AG vs GG)`,
-        `• Effect size (OR/HR/β), 95% CI, p-value`,
-        `• Population/cohort (n, ancestry)`,
-        `• Study design`,
-        `• Limitations / caveats`,
-        `If ${snp} is not mentioned, say so explicitly and do NOT infer beyond the text.`,
-        ``,
-        text
-      ].join('\n');
+  const L = {
+    deutsch: {
+      header:        `Zusammenfassung der Erwähnungen von ${snp} im Paper`,
+      mentionTitle:  `Erwähnung von ${snp}`,
+      reportedInfo:  `Berichtete Informationen zu ${snp}`,
+      trait:         `Untersuchter Phänotyp/Outcome`,
+      allele:        `Allel-/Genotyp-Effekte`,
+      effects:       `Effektgrößen (OR/β/HR, mit KI und p-Werten)`,
+      population:    `Untersuchte Population`,
+      design:        `Studiendesign`,
+      limits:        `Limitationen (vom Paper genannt)`,
+      recap:         `Stichpunktartige Kurzfassung`,
+      sys: [
+        `Du bist ein sorgfältiger wissenschaftlicher Zusammenfasser.`,
+        `Nutze AUSSCHLIESSLICH den bereitgestellten Text (Titel/Abstract/Volltext).`,
+        `Erfinde nichts; falls Informationen fehlen, schreibe „nicht berichtet“.`,
+        `Kennzeichne jede Aussage mit genau einem Tag: [TITLE], [ABSTRACT], [INTRO], [METHODS], [RESULTS], [DISCUSSION], [FULLTEXT].`,
+        `Keine externen Quellen nennen.`,
+        `Falls ${snp} nicht vorkommt, schreibe das explizit und lasse abhängige Abschnitte aus.`,
+        `Zahlen wörtlich übernehmen, wenn vorhanden.`,
+      ].join('\n'),
+      strict: [
+        `Halte die Vorlage exakt ein. Keine Abschnitte hinzufügen oder entfernen.`,
+        `Keine externen Quellen nennen.`,
+        `Nur diese Herkunftstags verwenden: [TITLE], [ABSTRACT], [INTRO], [METHODS], [RESULTS], [DISCUSSION], [FULLTEXT].`,
+      ].join('\n'),
+      mentionHint: `- Antworte mit „Ja“ oder „Nein“ und gib die Fundstelle als Tag an (z. B. [ABSTRACT] oder [FULLTEXT]).`,
+      recapBullets: [
+        `- ${snp} erwähnt? <Ja/Nein> [TAG]`,
+        `- Phänotyp: <…> [TAG]`,
+        `- Genotyp/Allel: <…> [TAG]`,
+        `- Wichtige Zahlen: <…> [TAG]`,
+        `- Population/Design: <…> [TAG]`,
+        `- Limitationen: <…> [TAG]`,
+      ],
+      // German phrasing for placeholders below:
+      effectLine1: `- <Kennzahl + Wert + KI + p, wörtlich falls vorhanden> [TAG]`,
+      effectLine2: `- <weitere Statistiken, falls vorhanden> [TAG]`,
+      popLine:     `**Untersuchte Population:** <n, Abstammung, wichtige Ausschlüsse> [TAG]`,
+      designLine:  `**Studiendesign:** <z. B. Querschnitt, RCT> [TAG]`,
+      limitsLine:  `**Limitationen:** <vom Paper genannt; sonst „nicht berichtet“> [TAG]`,
+      traitLine:   `**Untersuchter Phänotyp/Outcome:** <eine Aussage> [TAG]`,
+      alleleLine:  `**Allel-/Genotyp-Effekte:** <rsID/Allel/Genotyp, falls vorhanden> [TAG]`,
+    },
 
-    case 'einfach':
-      return [
-        `Erkläre **nur auf Basis des Textes** und ohne etwas dazuzuerfinden, was diese Studie speziell über ${snp} aussagt.`,
-        `Nutze 4–6 einfache Stichpunkte:`,
-        `• Wurde ${snp} genannt?`,
-        `• Worum geht es (Merkmal/Krankheit)?`,
-        `• Welche Variante/Allele ist betroffen (falls erwähnt)?`,
-        `• Richtung/Größe des Effekts (falls erwähnt)`,
-        `• Für wen gilt das (Population) und was sind Grenzen der Studie?`,
-        `Wenn ${snp} nicht erwähnt wird, schreibe: „Im Text wird ${snp} nicht explizit erwähnt.“`,
-        ``,
-        text
-      ].join('\n');
+    englisch: {
+      header:        `Summary of Mentions of ${snp} in the Paper`,
+      mentionTitle:  `Mention of ${snp}`,
+      reportedInfo:  `Reported Information Related to ${snp}`,
+      trait:         `Trait studied`,
+      allele:        `Allele/genotype effects`,
+      effects:       `Effect sizes (OR/β/HR, with CI and p-values)`,
+      population:    `Population studied`,
+      design:        `Study design`,
+      limits:        `Limitations (as acknowledged in the paper)`,
+      recap:         `Bulleted Summary (Concise)`,
+      sys: [
+        `You are a careful scientific summarizer.`,
+        `Base your answer ONLY on the provided content (title, abstract, and any available full text).`,
+        `Do NOT fabricate facts; if something is missing, write "not reported".`,
+        `Tag provenance for each claim with ONE of: [TITLE], [ABSTRACT], [INTRO], [METHODS], [RESULTS], [DISCUSSION], [FULLTEXT].`,
+        `Do not reference external sources or websites.`,
+        `If ${snp} does not appear, say so explicitly and omit dependent sections.`,
+        `Quote statistics verbatim when available.`,
+      ].join('\n'),
+      strict: [
+        `Follow the template exactly. Do not add or remove sections.`,
+        `Do not reference external sources.`,
+        `Only use provenance tags from: [TITLE], [ABSTRACT], [INTRO], [METHODS], [RESULTS], [DISCUSSION], [FULLTEXT].`,
+      ].join('\n'),
+      mentionHint: `- State "Yes" or "No", and cite where it appears using a tag (e.g., [ABSTRACT] or [FULLTEXT]).`,
+      recapBullets: [
+        `- ${snp} mentioned? <Yes/No> [TAG]`,
+        `- Trait: <…> [TAG]`,
+        `- Genotype/allele: <…> [TAG]`,
+        `- Key stats: <…> [TAG]`,
+        `- Population/design: <…> [TAG]`,
+        `- Limitations: <…> [TAG]`,
+      ],
+      effectLine1: `- <metric + value + CI + p, verbatim if present> [TAG]`,
+      effectLine2: `- <additional stats if present> [TAG]`,
+      popLine:     `**Population studied:** <n, ancestry, key exclusions if reported> [TAG]`,
+      designLine:  `**Study design:** <e.g., cross-sectional, RCT> [TAG]`,
+      limitsLine:  `**Limitations (as acknowledged in the paper):** <…; if none, write "not reported"> [TAG]`,
+      traitLine:   `**Trait studied:** <one sentence> [TAG]`,
+      alleleLine:  `**Allele/genotype effects:** <one sentence (mention rsID, allele/genotype if available)> [TAG]`,
+    },
 
-    case 'deutsch':
-      return [
-        `Fasse **ausschließlich** anhand des bereitgestellten Titels/Abstracts prägnant zusammen, was diese Publikation speziell zu ${snp} berichtet.`,
-        `Stichpunkte (fachlich):`,
-        `• Erwähnung von ${snp} (ja/nein), Gen/Kontext`,
-        `• Assoziiertes Merkmal/Phänotyp`,
-        `• Risiko-/Schutzallel und Genotyp-Effekte`,
-        `• Effektgröße (OR/HR/β), 95%-KI, p-Wert`,
-        `• Population/Kohorte (n, Abstammung) und Studiendesign`,
-        `• Limitationen`,
-        `Falls ${snp} nicht erwähnt wird, schreibe dies explizit und erfinde keine Werte.`,
-        ``,
-        text
-      ].join('\n');
+    // Map the other modes to German defaults unless you want separate wording
+    einfach: null,
+    fachlich: null,
+  };
 
-    case 'englisch':
-      return [
-        `Summarize ONLY from the provided text what this paper reports specifically about ${snp}.`,
-        `Use concise bullets and include (if available): mention of ${snp}, trait, allele/genotype effects, effect size (OR/HR/β + CI + p), population, design, limitations.`,
-        `If ${snp} is not mentioned, say so explicitly and do not infer beyond the text.`,
-        ``,
-        text
-      ].join('\n');
+  const P = L[mode] || L.deutsch; // deutsch default
 
-    default:
-      return [
-        `Summarize what this paper finds specifically about ${snp}, based only on the provided text. If it is not mentioned, say so.`,
-        ``,
-        text
-      ].join('\n');
-  }
+  const body = [
+    P.sys,
+    '',
+    '=== PROVIDED TEXT START ===',
+    String(text || '').trim(),
+    '=== PROVIDED TEXT END ===',
+    '',
+    `# ${P.header}`,
+    '',
+    `## ${P.mentionTitle}`,
+    P.mentionHint,
+    '',
+    `## ${P.reportedInfo}`,
+    P.traitLine,
+    P.alleleLine,
+    `**${P.effects}:**`,
+    P.effectLine1,
+    P.effectLine2,
+    P.popLine,
+    P.designLine,
+    P.limitsLine,
+    '',
+    `## ${P.recap}`,
+    ...P.recapBullets,
+  ].join('\n');
+
+  return [P.strict, body].join('\n\n');
 }
 
 
 
 // ==== Helfer ====
+
+  function badgeProvenance(html) {
+    if (!html) return '';
+    return html.replace(
+      /\[(TITLE|ABSTRACT|INTRO|METHODS|RESULTS|DISCUSSION|FULLTEXT)\]/g,
+      '<span class="provenance-badge">$1</span>'
+    );
+  }
+
 async function fetchWithTimeout(url, opts = {}, ms = OLLAMA_TIMEOUT_MS) {
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), ms);
@@ -116,6 +193,17 @@ async function modelExists(name) {
     return false;
   }
 }
+
+import { marked } from 'marked'; // npm install marked
+
+function formatSummaryToHTML(markdownText) {
+  // Convert markdown to HTML
+  return marked.parse(markdownText, {
+    mangle: false,
+    headerIds: false,
+  });
+}
+
 
 // === HMR-sichere Singletons ===
 function nextOllamaSeq() {
@@ -190,8 +278,12 @@ function trimForCtx(text, maxChars = 8000) {
   return `${head}\n…\n${tail}`;
 }
 
-async function ensureOllamaWarmedUp(log) {
+// define once near your helpers
+const noopLog = () => {};
+
+async function ensureOllamaWarmedUp(log = noopLog) {
   if (globalThis.__ollamaWarmedUp) return true;
+
   try {
     const res = await fetch(`${OLLAMA_URL}/api/generate`, {
       method: 'POST',
@@ -200,131 +292,140 @@ async function ensureOllamaWarmedUp(log) {
         model: OLLAMA_MODEL,
         prompt: 'OK',
         stream: false,
-        options: { num_predict: 1, temperature: 0, keep_alive: '5m' },
+        options: {
+          num_predict: Number(process.env.OLLAMA_NUM_PREDICT || 1024),
+          num_ctx: Number(process.env.OLLAMA_NUM_CTX || 4096),
+          temperature: Number(process.env.OLLAMA_TEMPERATURE || 0.2),
+          keep_alive: process.env.OLLAMA_KEEP_ALIVE || '5m',
+        },
       }),
     });
+
     if (res.ok) {
       globalThis.__ollamaWarmedUp = true;
       log('🔥 Ollama warm-up erfolgreich (Modell im Speicher).');
       return true;
     }
   } catch (e) {
-    log(`⚠️ Warm-up fehlgeschlagen: ${e.message}`);
+    log(`⚠️ Warm-up fehlgeschlagen: ${e?.message || e}`);
   }
+
   return false;
 }
 
+
 // 📡 API-Handler
+// 📡 Unified API handler (single export)
 export default async function handler(req, res) {
   const requestLogs = [];
   const log = (msg) => {
-    const timestamp = new Date().toISOString();
-    const entry = `[${timestamp}] ${msg}`;
+    const ts = new Date().toISOString();
+    const entry = `[${ts}] ${msg}`;
     requestLogs.push(entry);
     console.log(entry);
   };
 
-  log(`🧪 OLLAMA_URL=${OLLAMA_URL} OLLAMA_MODEL=${OLLAMA_MODEL} SPEECH_MODE=${SPEECH_MODE}`);
-  log(`⏱️ OLLAMA_TIMEOUT_MS=${OLLAMA_TIMEOUT_MS}`);
+  try {
+    log(`🧪 OLLAMA_URL=${OLLAMA_URL} OLLAMA_MODEL=${OLLAMA_MODEL} SPEECH_MODE=${SPEECH_MODE}`);
+    log(`⏱️ OLLAMA_TIMEOUT_MS=${OLLAMA_TIMEOUT_MS}`);
 
-  // async function fetchEuropePMCPapers(rsid) {
-  //   log(`🔍 Suche Paper zu ${rsid} auf EuropePMC…`);
+    const { rsid } = req.query || {};
+    if (!rsid || typeof rsid !== 'string') {
+      return res.status(400).json({ error: 'Missing rsid parameter', logs: requestLogs });
+    }
 
-  //   // präzisere Query: Suche in Titel ODER Abstract, resultType=core liefert eher abstractText
-  //   const query =
-  //     `https://www.ebi.ac.uk/europepmc/webservices/rest/search` +
-  //     `?query=(TITLE:${encodeURIComponent(rsid)}%20OR%20ABSTRACT:${encodeURIComponent(rsid)})` +
-  //     `&format=json&pageSize=20&resultType=core`;
+    // Cache setup
+    const cachePath = path.join(process.cwd(), 'public', 'summaries', `${rsid}.txt`);
+    let rawSummary = null;
+    let htmlSummary = null;
+    let url = null;
+    let isLocal = false;
 
-  //   try {
-  //     const r = await fetch(query);
-  //     const json = await r.json();
-  //     const papers = json.resultList?.result || [];
+    if (fs.existsSync(cachePath)) {
+      // Cache hit
+      log(`📦 Cache-Hit: Lade gespeicherte Zusammenfassung für ${rsid}`);
+      rawSummary = fs.readFileSync(cachePath, 'utf8');
+      // Refresh canonical URL (optional)
+      const { url: cachedUrl } = await fetchEuropePMCPapers(rsid);
+      url = cachedUrl ?? null;
+      isLocal = true;
+    } else {
+      // No cache → fetch paper content
+      log(`📤 Keine Zusammenfassung im Cache. Generiere neue für ${rsid}`);
+      const fetched = await fetchEuropePMCPapers(rsid);
+      const combinedText = String(fetched?.combinedText || '').trim();
+      url = fetched?.url ?? null;
 
-  //     if (papers.length === 0) {
-  //       log(`⚠️ Kein Paper gefunden zu ${rsid}`);
-  //       return { combinedText: '', url: null };
-  //     }
+      if (!combinedText) {
+        log(`⚠️ Keine Paper gefunden für ${rsid}`);
+        const msg = `No Europe PMC papers available for SNP ${rsid}.`;
+        return res.status(200).json({ text: msg, html: toHTMLSafe(msg, log), url: null, local: false, logs: requestLogs });
+      }
 
-  //     const scored = papers.map(p => {
-  //       const title = p.title || '';
-  //       const abstractText = (p.abstractText || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-  //       const year = Number(p.pubYear) || 0;
-  //       const hasAbstract = abstractText.length > 0;
+      const textForLLM = combinedText.includes('Abstract:')
+        ? combinedText
+        : `${combinedText}\n\n(Only title available for ${rsid})\n${url ?? ''}`;
 
-  //       return {
-  //         p,
-  //         abstractText,
-  //         score:
-  //           (p.doi ? 4 : 0) +
-  //           (p.pmid ? 3 : 0) +
-  //           (p.pmcid ? 2 : 0) +
-  //           (title.toLowerCase().includes(rsid.toLowerCase()) ? 2 : 0) +
-  //           (abstractText.toLowerCase().includes(rsid.toLowerCase()) ? 3 : 0) +
-  //           (hasAbstract ? 2 : -2) +
-  //           (year / 10000),
-  //       };
-  //     }).sort((a, b) => b.score - a.score);
+      rawSummary =
+        (await generateWithOllama(rsid, textForLLM)) ||
+        (await generateWithDistilBART(textForLLM, rsid));
 
-  //     const best = scored[0];
-  //     const paper = best.p;
-  //     const title = paper.title || 'Untitled';
-  //     const abstract = best.abstractText;
+      if (!rawSummary?.trim()) {
+        log(`⚠️ Keine Zusammenfassung erzeugt`);
+        const msg = `No summary could be generated for ${rsid}.`;
+        return res.status(200).json({ text: msg, html: toHTMLSafe(msg, log), url, local: false, logs: requestLogs });
+      }
 
-  //     let url = null;
-  //     if (paper.doi)       url = `https://doi.org/${paper.doi}`;
-  //     else if (paper.pmid) url = `https://pubmed.ncbi.nlm.nih.gov/${paper.pmid}/`;
-  //     else if (paper.pmcid) url = `https://www.ncbi.nlm.nih.gov/pmc/articles/${paper.pmcid}/`;
-  //     else if (paper.id && paper.source) url = `https://europepmc.org/article/${paper.source}/${paper.id}`;
-  //     else if (paper.fullTextUrlList?.fullTextUrl?.[0]?.url) url = paper.fullTextUrlList.fullTextUrl[0].url;
-  //     else url = `https://europepmc.org/search?query=${encodeURIComponent(rsid)}`;
+      // Persist cache (raw markdown)
+      fs.mkdirSync(path.dirname(cachePath), { recursive: true });
+      fs.writeFileSync(cachePath, rawSummary, 'utf8');
+      log(`💾 Zusammenfassung gespeichert unter: ${cachePath}`);
+    }
 
-  //     log(`📄 Gefunden: ${title}`);
-  //     log(`🔗 URL: ${url}`);
-  //     log(`📏 Abstract-Länge: ${abstract.length} Zeichen`);
+    // Markdown → HTML, then badge provenance tags
+    htmlSummary = badgeProvenance(toHTMLSafe(rawSummary, log));
 
-  //     const combinedText = abstract && abstract.length > 0
-  //       ? `Title: ${title}\nAbstract: ${abstract}`
-  //       : `Title: ${title}`; // Titel-only Fallback
+    return res.status(200).json({
+      text: String(rawSummary || '').trim(),
+      html: htmlSummary,
+      url,
+      local: isLocal,
+      logs: requestLogs,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      text: 'Fehler beim Generieren der Zusammenfassung.',
+      html: 'Fehler beim Generieren der Zusammenfassung.',
+      url: null,
+      local: false,
+      logs: requestLogs,
+    });
+  }
+}
 
-  //     return { combinedText, url };
-  //   } catch (err) {
-  //     log(`❌ Fehler beim Europe PMC Fetch: ${err.message}`);
-  //     return { combinedText: '', url: null };
-  //   }
-  // }
 
-  // Ersetzt deine bisherige fetchEuropePMCPapers-Funktion 1:1
+/* ============================ Europe PMC fetch ============================ */
+
 async function fetchEuropePMCPapers(rsid) {
-  log(`🔍 Suche Paper zu ${rsid} auf EuropePMC…`);
-
-  // 1) Suche in Titel ODER Abstract (Core liefert u. a. abstractText, IDs)
-  const query =
+  const q =
     `https://www.ebi.ac.uk/europepmc/webservices/rest/search` +
     `?query=(TITLE:${encodeURIComponent(rsid)}%20OR%20ABSTRACT:${encodeURIComponent(rsid)})` +
     `&format=json&pageSize=20&resultType=core`;
 
   try {
-    const r = await fetch(query);
+    const r = await fetch(q);
     const json = await r.json();
-    const papers = json.resultList?.result || [];
+    const papers = json?.resultList?.result || [];
+    if (papers.length === 0) return { combinedText: '', url: null };
 
-    if (papers.length === 0) {
-      log(`⚠️ Kein Paper gefunden zu ${rsid}`);
-      return { combinedText: '', url: null };
-    }
-
-    // 2) Scoring wie gehabt (leicht erweitert); wähle bestes Paper
-    const scored = papers.map(p => {
+    // Score best candidate
+    const scored = papers.map((p) => {
       const title = p.title || '';
-      const abstractText = (p.abstractText || '')
-        .replace(/<[^>]+>/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim();
-      const year = Number(p.pubYear) || 0;
+      const abstractText = String(p.abstractText || '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
       const hasAbstract = abstractText.length > 0;
       const hasPMCID = !!p.pmcid;
-
+      const year = Number(p.pubYear) || 0;
       return {
         p,
         abstractText,
@@ -344,61 +445,50 @@ async function fetchEuropePMCPapers(rsid) {
     const title = paper.title || 'Untitled';
     const abstract = best.abstractText;
 
-    // 3) Kanonische URL bestimmen
+    // Canonical URL
     let url = null;
-    if (paper.doi)            url = `https://doi.org/${paper.doi}`;
-    else if (paper.pmid)      url = `https://pubmed.ncbi.nlm.nih.gov/${paper.pmid}/`;
-    else if (paper.pmcid)     url = `https://www.ncbi.nlm.nih.gov/pmc/articles/${paper.pmcid}/`;
-    else if (paper.id && paper.source)
-                              url = `https://europepmc.org/article/${paper.source}/${paper.id}`;
-    else if (paper.fullTextUrlList?.fullTextUrl?.[0]?.url)
-                              url = paper.fullTextUrlList.fullTextUrl[0].url;
-    else                      url = `https://europepmc.org/search?query=${encodeURIComponent(rsid)}`;
+    if (paper.doi) url = `https://doi.org/${paper.doi}`;
+    else if (paper.pmid) url = `https://pubmed.ncbi.nlm.nih.gov/${paper.pmid}/`;
+    else if (paper.pmcid) url = `https://www.ncbi.nlm.nih.gov/pmc/articles/${paper.pmcid}/`;
+    else if (paper.id && paper.source) url = `https://europepmc.org/article/${paper.source}/${paper.id}`;
+    else if (paper.fullTextUrlList?.fullTextUrl?.[0]?.url) url = paper.fullTextUrlList.fullTextUrl[0].url;
+    else url = `https://europepmc.org/search?query=${encodeURIComponent(rsid)}`;
 
-    log(`📄 Gefunden: ${title}`);
-    log(`🔗 URL: ${url}`);
-    log(`📏 Abstract-Länge: ${abstract.length} Zeichen`);
-
-    // 4) Volltext laden (wenn möglich): bevorzugt Europe PMC fullTextXML
+    // Try full text: XML → PDF (placeholder) → HTML
     let fullText = '';
     let triedFulltext = false;
 
-    // a) Europe PMC Volltext-XML (JATS), wenn source+id verfügbar (z. B. PMC / PMCID)
+    // XML/JATS
     if (paper.source && paper.id) {
-      const fullXmlUrl = `https://www.ebi.ac.uk/europepmc/webservices/rest/${paper.source}/${paper.id}/fullTextXML`;
+      const xmlUrl = `https://www.ebi.ac.uk/europepmc/webservices/rest/${paper.source}/${paper.id}/fullTextXML`;
       triedFulltext = true;
       try {
-        const xmlRes = await fetch(fullXmlUrl);
+        const xmlRes = await fetch(xmlUrl);
         if (xmlRes.ok) {
           const xml = await xmlRes.text();
           fullText = extractPlainTextFromJATS(xml);
-          log(`📚 Volltext (XML) extrahiert: ${fullText.length} Zeichen`);
-        } else {
-          log(`ℹ️ Volltext-XML nicht verfügbar (HTTP ${xmlRes.status}).`);
         }
-      } catch (e) {
-        log(`ℹ️ Fehler beim Laden des Volltext-XML: ${e.message}`);
-      }
+      } catch {}
     }
 
-    // Versuch: Fulltext-PDF (wenn XML fehlt)
+    // PDF (optional – needs PDF parser to convert to text)
     if (!fullText && paper.source && paper.id) {
       const pdfUrl = `https://www.ebi.ac.uk/europepmc/webservices/rest/${paper.source}/${paper.id}/fullTextPDF`;
       try {
         const pdfRes = await fetch(pdfUrl);
         if (pdfRes.ok) {
-          const pdfArray = await pdfRes.arrayBuffer();
-          // -> Optional: per PDF-Parser (z. B. pdf-parse) in Text umwandeln
-          // const { text } = await pdfParse(Buffer.from(pdfArray));
+          // const pdfBuf = Buffer.from(await pdfRes.arrayBuffer());
+          // const { text } = await pdfParse(pdfBuf); // if you add pdf-parse
           // fullText = sanitize(text);
-          log(`📄 Volltext (PDF) geladen – Textumwandlung noch implementieren.`);
         }
-      } catch (e) { log(`ℹ️ PDF-Fetch fehlgeschlagen: ${e.message}`); }
+      } catch {}
     }
 
-    // b) Falls kein JATS-XML extrahierbar: versuche HTML-Volltext (falls Link vorhanden)
+    // HTML
     if (!fullText && paper.fullTextUrlList?.fullTextUrl?.length) {
-      const htmlEntry = paper.fullTextUrlList.fullTextUrl.find(u => /html/i.test(u.documentStyle || '') || /text\/html/i.test(u.availability || ''));
+      const htmlEntry = paper.fullTextUrlList.fullTextUrl.find(
+        (u) => /html/i.test(u.documentStyle || '') || /text\/html/i.test(u.availability || '')
+      );
       if (htmlEntry?.url) {
         triedFulltext = true;
         try {
@@ -406,131 +496,165 @@ async function fetchEuropePMCPapers(rsid) {
           if (htmlRes.ok) {
             const html = await htmlRes.text();
             fullText = extractPlainTextFromHTML(html);
-            log(`📰 Volltext (HTML) extrahiert: ${fullText.length} Zeichen`);
-          } else {
-            log(`ℹ️ HTML-Volltext nicht verfügbar (HTTP ${htmlRes.status}).`);
           }
-        } catch (e) {
-          log(`ℹ️ Fehler beim Laden des HTML-Volltexts: ${e.message}`);
-        }
+        } catch {}
       }
     }
 
-    // 5) combinedText zusammenbauen (Titel + Abstract + optional FullText)
-    let combinedText;
-    if (abstract && fullText) {
-      combinedText = [
-        `Title: ${title}`,
-        `Abstract: ${abstract}`,
-        `FullText:`,
-        trimForCtx(fullText, 30000),
-      ].join('\n');
-    } else if (fullText) {
-      combinedText = [
-        `Title: ${title}`,
-        `FullText:`,
-        trimForCtx(fullText, 30000),
-      ].join('\n');
-    } else if (abstract) {
-      combinedText = `Title: ${title}\nAbstract: ${abstract}`;
-    } else {
-      combinedText = `Title: ${title}`; // minimaler Fallback
-    }
+    // Compose combined text
+    let combinedText = `Title: ${title}`;
+    if (abstract) combinedText += `\nAbstract: ${abstract}`;
+    if (fullText) combinedText += `\nFullText:\n${trimForCtx(fullText, 30000)}`;
+    if (!abstract && !fullText) combinedText = `Title: ${title}`; // minimal fallback
 
-    if (!triedFulltext) {
-      log(`ℹ️ Kein geeigneter Volltext-Endpunkt gefunden; nur Titel/Abstract verfügbar.`);
+    if (!triedFulltext && !fullText) {
+      // no fulltext endpoint usable → proceed with title/abstract only
     }
 
     return { combinedText, url };
-  } catch (err) {
-    log(`❌ Fehler beim Europe PMC Fetch: ${err.message}`);
+  } catch (e) {
     return { combinedText: '', url: null };
   }
 }
 
-/* ---------- Helfer: JATS-XML & HTML in Plaintext ---------- */
+/* =============================== Helpers =============================== */
 
-/**
- * Extrahiert lesbaren Text aus JATS (Europe PMC fullTextXML).
- * Leichtgewichtig (regex-basiert), reicht für LLM-Kontext.
- * Für höhere Präzision kann später ein echter XML-Parser ergänzt werden.
- */
+// Convert Markdown → HTML if converter exists; otherwise return original
+// in /pages/api/snp-summary.js
+// Convert loosely formatted LLM text into real Markdown
+function normalizeSummaryMarkdown(md) {
+  let s = String(md || '').replace(/\r\n/g, '\n').trim();
+
+  // Headings (robust to extra text)
+  s = s
+    .replace(/(^|\n)\s*(Summary of Mentions[^\n]*)/i, '\n\n# $2')
+    .replace(/(^|\n)\s*(Mention of [^\n]*)/i, '\n\n## $2')
+    .replace(/(^|\n)\s*(Reported Information Related to [^\n]*)/i, '\n\n## $2')
+    .replace(/(^|\n)\s*(Bulleted Summary[^\n]*)/i, '\n\n## $2');
+
+  // Put each **Label:** on its own paragraph (double newline required)
+  // e.g., **Trait studied:**, **Allele/genotype effects:**, **Study design:**, **Limitations ...:**
+  s = s.replace(/(\*\*[^*\n]+?:\*\*)(?!\n)/g, '\n\n$1');
+
+  // If a provenance tag is right before the next label, also break
+  s = s.replace(/(\[[A-Z]+\])\s+(?=\*\*[^*\n]+?:\*\*)/g, '$1\n\n');
+
+  // Fallback: if some labels are NOT bold, bold + split them
+  s = s.replace(/\n(Study design:)/gi, '\n\n**$1**')
+       .replace(/\n(Limitations[^:]*:)/gi, '\n\n**$1**');
+
+  // Turn the "Bulleted Summary" section into a proper list
+  s = s.replace(/(##\s*Bulleted Summary[^\n]*\n)([\s\S]*?)(?=\n##|\n#|$)/i, (m, head, body) => {
+    const lines = body.split('\n').map(l => l.trim()).filter(Boolean);
+    if (!lines.length) return head + '\n';
+    const items = lines.map(l => (/^[-*]\s/.test(l) ? l : `- ${l}`));
+    return `${head}\n${items.join('\n')}\n`;
+  });
+
+  // Tidy whitespace
+  s = s.replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n');
+  return s.trim();
+}
+
+
+// then in your toHTMLSafe (server)
+function toHTMLSafe(markdown, log) {
+  try {
+    if (typeof formatSummaryToHTML === 'function') {
+      const normalized = normalizeSummaryMarkdown(markdown);
+      return formatSummaryToHTML(normalized);
+    }
+  } catch (e) {
+    log?.(`ℹ️ HTML conversion failed: ${e.message}`);
+  }
+  return markdown;
+}
+
+
 function extractPlainTextFromJATS(xml) {
   if (!xml) return '';
-
-  let s = xml;
-
-  // Unnötige/aufblähende Bereiche entfernen
-  s = s.replace(/<table[\s\S]*?<\/table>/gi, '');         // Tabellen
-  s = s.replace(/<fig[\s\S]*?<\/fig>/gi, '');             // Abbildungen
-  s = s.replace(/<ref-list[\s\S]*?<\/ref-list>/gi, '');   // Referenzen
-  s = s.replace(/<license[\s\S]*?<\/license>/gi, '');     // Lizenzblöcke
-  s = s.replace(/<front[\s\S]*?<\/front>/gi, '');         // Titelseite/Meta
-
-  // Abschnittstitel hervorheben
-  s = s.replace(/<title[^>]*>([\s\S]*?)<\/title>/gi, '\n\n$1\n');
-
-  // Zeilenumbrüche an Absätzen/Abschnittsgrenzen
-  s = s.replace(/<\/?p[^>]*>/gi, '\n');
-  s = s.replace(/<\/?sec[^>]*>/gi, '\n');
-  s = s.replace(/<\/?abstract[^>]*>/gi, '\n');
-
-  // Alle übrigen Tags entfernen
-  s = s.replace(/<[^>]+>/g, ' ');
-
-  // HTML-Entities (ein paar häufige)
-  s = s.replace(/&nbsp;/g, ' ')
-       .replace(/&amp;/g, '&')
-       .replace(/&lt;/g, '<')
-       .replace(/&gt;/g, '>')
-       .replace(/&quot;/g, '"')
-       .replace(/&#39;/g, "'");
-
-  // Whitespace säubern
-  s = s.replace(/\s+\n/g, '\n')
-       .replace(/\n{3,}/g, '\n\n')
-       .replace(/[ \t]{2,}/g, ' ')
-       .trim();
-
+  let s = xml
+    .replace(/<table[\s\S]*?<\/table>/gi, '')
+    .replace(/<fig[\s\S]*?<\/fig>/gi, '')
+    .replace(/<ref-list[\s\S]*?<\/ref-list>/gi, '')
+    .replace(/<license[\s\S]*?<\/license>/gi, '')
+    .replace(/<front[\s\S]*?<\/front>/gi, '')
+    .replace(/<title[^>]*>([\s\S]*?)<\/title>/gi, '\n\n$1\n')
+    .replace(/<\/?p[^>]*>/gi, '\n')
+    .replace(/<\/?sec[^>]*>/gi, '\n')
+    .replace(/<\/?abstract[^>]*>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\s+\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/[ \t]{2,}/g, ' ')
+    .trim();
   return s;
 }
 
-/**
- * Sehr einfacher HTML-zu-Text Fallback (falls kein JATS vorhanden).
- * Schneidet <script>/<style> weg und entfernt Tags.
- */
 function extractPlainTextFromHTML(html) {
   if (!html) return '';
-  let s = html;
+  let s = html
+    .replace(/<script[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[\s\S]*?<\/style>/gi, '')
+    .replace(/<noscript[\s\S]*?<\/noscript>/gi, '')
+    .replace(/<!--[\s\S]*?-->/g, '');
 
-  s = s.replace(/<script[\s\S]*?<\/script>/gi, '')
-       .replace(/<style[\s\S]*?<\/style>/gi, '');
+  const candidates = [
+    /<article[\s\S]*?<\/article>/i,
+    /<div[^>]+class="[^"]*(article[-_\s]?body|articleContent|content[-_\s]?body|main[-_\s]?content|article|post[-_\s]?content)[^"]*"[\s\S]*?<\/div>/i,
+    /<main[\s\S]*?<\/main>/i,
+  ];
+  let picked = '';
+  for (const rx of candidates) {
+    const m = s.match(rx);
+    if (m?.[0]) { picked = m[0]; break; }
+  }
+  if (!picked) {
+    const body = s.match(/<body[\s\S]*?<\/body>/i);
+    picked = body ? body[0] : s;
+  }
 
-  // Absätze/Überschriften als Zeilenumbrüche
-  s = s.replace(/<\/?(p|div|section|article|br|h[1-6])[^>]*>/gi, '\n');
+  picked = picked
+    .replace(/<header[\s\S]*?<\/header>/gi, '')
+    .replace(/<footer[\s\S]*?<\/footer>/gi, '')
+    .replace(/<nav[\s\S]*?<\/nav>/gi, '')
+    .replace(/<aside[\s\S]*?<\/aside>/gi, '')
+    .replace(/<figure[\s\S]*?<\/figure>/gi, '')
+    .replace(/<figcaption[\s\S]*?<\/figcaption>/gi, '')
+    .replace(/<form[\s\S]*?<\/form>/gi, '')
+    .replace(/<\/?(p|div|section|article|main|br|h[1-6]|li|ul|ol|blockquote|table|tr|td|th)[^>]*>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\r/g, '')
+    .replace(/[ \t]+\n/g, '\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .replace(/[ \t]{2,}/g, ' ')
+    .trim();
 
-  // Restliche Tags entfernen
-  s = s.replace(/<[^>]+>/g, ' ');
-
-  // Entities
-  s = s.replace(/&nbsp;/g, ' ')
-       .replace(/&amp;/g, '&')
-       .replace(/&lt;/g, '<')
-       .replace(/&gt;/g, '>')
-       .replace(/&quot;/g, '"')
-       .replace(/&#39;/g, "'");
-
-  s = s.replace(/\s+\n/g, '\n')
-       .replace(/\n{3,}/g, '\n\n')
-       .replace(/[ \t]{2,}/g, ' ')
-       .trim();
-
-  return s;
+  if (picked.length < 2000) {
+    const parts = picked.split(/\n{2,}/).map(t => t.trim()).filter(Boolean);
+    if (parts.length > 1) {
+      const best = parts.reduce((a, b) => (b.length > a.length ? b : a), '');
+      if (best.length > picked.length * 1.2) picked = best;
+    }
+  }
+  return picked;
 }
 
 
   // eine Request-Funktion (mit Optionen) + 1 Retry
-  async function ollamaGenerateOnce(model, prompt) {
+  async function ollamaGenerateOnce(model, prompt, log = noopLog) {
     const res = await fetchWithTimeout(`${OLLAMA_URL}/api/generate`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -538,7 +662,12 @@ function extractPlainTextFromHTML(html) {
         model,
         prompt,
         stream: true,
-        options: { num_predict: 128, num_ctx: 2048, temperature: 0.3, keep_alive: '5m' },
+        options: {
+          num_predict: OLLAMA_NUM_PREDICT,
+          num_ctx: 4096,
+          temperature: 0.2,
+          keep_alive: '5m',
+        },
       }),
     });
     if (!res.ok) {
@@ -566,8 +695,57 @@ function extractPlainTextFromHTML(html) {
   //   }
   // }
 
-async function generateWithOllama(rsid, text) {
+  async function ollamaGenerateFull(model, prompt, log) {
+  const MAX_SEGMENTS = 4; // Sicherheitsgrenze
+  let ctx = null;
+  let out = '';
+
+  for (let i = 0; i < MAX_SEGMENTS; i++) {
+    const res = await fetchWithTimeout(`${OLLAMA_URL}/api/generate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model,
+        prompt: i === 0 ? prompt : '', // ab 2. Runde nur Kontext fortsetzen
+        stream: false,
+        options: {
+          num_predict: OLLAMA_NUM_PREDICT, // z.B. 768–1024
+          num_ctx: 4096,
+          temperature: 0.2,
+          keep_alive: '5m',
+        },
+        context: ctx || undefined,
+      }),
+    });
+
+    if (!res.ok) {
+      const raw = await res.text().catch(() => '');
+      log(`❌ HTTP ${res.status} bei LLM-Request: ${raw}`);
+      break;
+    }
+
+    const j = await res.json(); // { response, done, done_reason, context, ... }
+    out += (j.response || '');
+    ctx = j.context;
+
+    log(`🧠 chunk ${i+1}: done_reason=${j.done_reason}`);
+
+    if (j.done && j.done_reason !== 'length') break; // fertig oder Stoppzeichen
+  }
+  return out.trim();
+}
+
+// Revised: no clipping, auto-continue on done_reason === 'length'
+// add default no-op logger so helpers work even without handler logger
+
+async function generateWithOllama(rsid, text, log = noopLog) {
   const model = OLLAMA_MODEL;
+
+  const NUM_PREDICT  = Number(process.env.OLLAMA_NUM_PREDICT   || 1024);
+  const NUM_CTX      = Number(process.env.OLLAMA_NUM_CTX       || 4096);
+  const TEMPERATURE  = Number(process.env.OLLAMA_TEMPERATURE   || 0.2);
+  const MAX_SEGMENTS = Number(process.env.OLLAMA_MAX_SEGMENTS  || 4);
+  const KEEP_ALIVE   = process.env.OLLAMA_KEEP_ALIVE || '5m';
 
   const up = await isOllamaUp();
   log(`🔍 isOllamaUp=${up}`);
@@ -583,45 +761,45 @@ async function generateWithOllama(rsid, text) {
   log(`🛠️ Using OLLAMA_MODEL=${model} at ${OLLAMA_URL}`);
   log(`🚀 Sende LLM-Request an ${model} für ${rsid} (${label})`);
 
-  // Text trimmen und SNP-spezifischen Prompt bauen
   const trimmed = trimForCtx(String(text || ''), 8000);
   log(`🧩 Prompt-Länge (chars): raw=${(text || '').length}, trimmed=${trimmed.length}`);
   const prompt = buildPrompt(trimmed, rsid);
 
   console.time(label);
   try {
-    // Timeout gilt nur für den Request-Aufbau; danach streamen wir ohne Gesamttimeout.
-    const res = await fetchWithTimeout(`${OLLAMA_URL}/api/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    let out = '';
+    let ctx;
+
+    for (let seg = 1; seg <= MAX_SEGMENTS; seg++) {
+      const payload = {
         model,
-        prompt,
-        stream: true,          // STREAMING aktiviert
-        options: {
-          num_predict: 128,    // kürzer = schneller/stabiler
-          num_ctx: 2048,
-          temperature: 0.3,
-          keep_alive: '5m',
-          // optional: stop: ["\n\n###", "\n\nReferences"]
-        },
-      }),
-    });
+        prompt: seg === 1 ? prompt : '',
+        stream: false,
+        options: { num_predict: NUM_PREDICT, num_ctx: NUM_CTX, temperature: TEMPERATURE, keep_alive: KEEP_ALIVE },
+        ...(ctx ? { context: ctx } : {}),
+      };
 
-    if (!res.ok) {
-      const raw = await res.text().catch(() => '');
-      log(`❌ HTTP ${res.status} bei LLM-Request: ${raw}`);
-      return null;
+      const res = await fetchWithTimeout(`${OLLAMA_URL}/api/generate`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const raw = await res.text().catch(() => '');
+        log(`❌ HTTP ${res.status} bei LLM-Request (Segment ${seg}): ${raw}`);
+        break;
+      }
+
+      const j = await res.json();
+      const chunk = j?.response || '';
+      out += chunk;
+      ctx = j?.context;
+      const reason = j?.done_reason || 'unknown';
+      log(`🧠 Segment ${seg}: received ${chunk.length} chars, done_reason=${reason}`);
+      if (j?.done && reason !== 'length') break;
     }
 
-    const summary = await readOllamaStream(res);
-    if (!summary) {
-      log(`⚠️ Leere oder fehlende Antwort von ${model}`);
-      return null;
-    }
-
-    log(`✅ LLM-Zusammenfassung erfolgreich (${summary.length} Zeichen)`);
-    return summary;
+    if (!out.trim()) { log(`⚠️ Leere oder fehlende Antwort von ${model}`); return null; }
+    log(`✅ LLM-Zusammenfassung erfolgreich (${out.length} Zeichen)`);
+    return out.trim();
   } catch (err) {
     log(`❌ Fehler bei LLM-Zusammenfassung: ${err.name === 'AbortError' ? 'Timeout (connect)' : err.message}`);
     return null;
@@ -630,10 +808,15 @@ async function generateWithOllama(rsid, text) {
   }
 }
 
-async function generateWithDistilBART(text, rsid) {
+async function generateWithDistilBART(text, rsid, log = noopLog) {
   const summarizer = await getSummarizerBackup(log);
-  const result = await summarizer(buildPrompt(text, rsid));
-  return result?.[0]?.summary_text?.trim() || '';
+  log(`⚙️ Generiere Fallback-Zusammenfassung…`);
+  const result = await summarizer(buildPrompt(text, rsid), {
+    max_new_tokens: 450, min_new_tokens: 200, no_repeat_ngram_size: 3,
+  });
+  const summary = result?.[0]?.summary_text?.trim() || '';
+  log(`✅ Fallback-Zusammenfassung (${summary.length} Zeichen)`);
+  return summary;
 }
 
 
@@ -642,76 +825,34 @@ async function generateWithDistilBART(text, rsid) {
     return fs.existsSync(cachePath) ? fs.readFileSync(cachePath, 'utf8') : null;
   }
 
-  async function generateSummary(rsid) {
-    const fetched = await fetchEuropePMCPapers(rsid);
 
-    if (!fetched.combinedText.trim()) {
-      log(`⚠️ Keine Paper gefunden für ${rsid}`);
-      return { text: `No Europe PMC papers available for SNP ${rsid}.`, url: fetched.url, local: false };
-    }
+async function generateSummary(rsid, log = noopLog) {
+  const fetched = await fetchEuropePMCPapers(rsid);
+  const combinedText = String(fetched?.combinedText || '').trim();
+  const url = fetched?.url ?? null;
 
-    // Wenn kein Abstract vorhanden war, nutze Titel + evtl. URL, damit das LLM Kontext hat
-    const textForLLM = fetched.combinedText.includes('Abstract:')
-      ? fetched.combinedText
-      : `${fetched.combinedText}\n\n(Only title available for ${rsid})\n${fetched.url ?? ''}`;
-
-    const summary =
-      (await generateWithOllama(rsid, textForLLM)) ||
-      (await generateWithDistilBART(textForLLM, rsid));
-
-    if (!summary) log(`⚠️ Keine Zusammenfassung erzeugt`);
-    return { text: summary, url: fetched.url, local: false };
+  if (!combinedText) {
+    log(`⚠️ Keine Paper gefunden für ${rsid}`);
+    const msg = `No Europe PMC papers available for SNP ${rsid}.`;
+    return { text: msg, html: toHTMLSafe(msg, log), url, local: false };
   }
 
-  // === Request ===
-  const { rsid } = req.query;
-  if (!rsid) {
-    return res.status(400).json({ error: 'Missing rsid parameter', logs: requestLogs });
+  const textForLLM = combinedText.includes('Abstract:')
+    ? combinedText
+    : `${combinedText}\n\n(Only title available for ${rsid})\n${url ?? ''}`;
+
+  const rawSummary =
+    (await generateWithOllama(rsid, textForLLM, log)) ||
+    (await generateWithDistilBART(textForLLM, rsid, log));
+
+  if (!rawSummary || !rawSummary.trim()) {
+    log(`⚠️ Keine Zusammenfassung erzeugt`);
+    const msg = `No summary could be generated for ${rsid}.`;
+    return { text: msg, html: toHTMLSafe(msg, log), url, local: false };
   }
 
-  const cachePath = path.join(process.cwd(), 'public', 'summaries', `${rsid}.txt`);
-  let summaryText = null;
-  let url = null;
-  let isLocal = false;
+  const htmlSummaryRaw = toHTMLSafe(rawSummary, log);
+  const htmlSummary = badgeProvenance(htmlSummaryRaw);
 
-  try {
-    if (fs.existsSync(cachePath)) {
-      log(`📦 Cache-Hit: Lade gespeicherte Zusammenfassung für ${rsid}`);
-      summaryText = fs.readFileSync(cachePath, 'utf8');
-      const { url: cachedUrl } = await fetchEuropePMCPapers(rsid);
-      url = cachedUrl;
-      isLocal = true;
-    } else {
-      log(`📤 Keine Zusammenfassung im Cache. Generiere neue für ${rsid}`);
-      const result = await generateSummary(rsid);
-      summaryText = result?.text?.trim();
-      url = result?.url;
-
-      if (summaryText) {
-        fs.mkdirSync(path.dirname(cachePath), { recursive: true });
-        fs.writeFileSync(cachePath, summaryText, 'utf8');
-        log(`💾 Zusammenfassung gespeichert unter: ${cachePath}`);
-        isLocal = false;
-      } else {
-        log(`❌ Zusammenfassung fehlgeschlagen`);
-        return res.status(404).json({
-          text: 'Keine Zusammenfassung verfügbar.',
-          url: null,
-          local: false,
-          logs: requestLogs,
-        });
-      }
-    }
-
-    res.status(200).json({ text: summaryText, url, local: isLocal, logs: requestLogs });
-
-  } catch (err) {
-    log(`❌ Unerwarteter Fehler: ${err.message}`);
-    res.status(500).json({
-      text: 'Fehler beim Generieren der Zusammenfassung.',
-      url: null,
-      local: false,
-      logs: requestLogs,
-    });
-  }
+  return { text: rawSummary.trim(), html: htmlSummary, url, local: false };
 }
