@@ -64,4 +64,9 @@ public/results/**/apple_watch/apple_health_export/
 public/results/**/apple_watch/workout-routes/
 public/results/**/apple_watch/electrocardiograms/
 public/results/**/apple_watch/Export.xml
+public/results/**/apple_watch/export_cda.xml# Apple Watch Exporte – nicht versionieren
+public/results/**/apple_watch/apple_health_export/
+public/results/**/apple_watch/workout-routes/
+public/results/**/apple_watch/electrocardiograms/
+public/results/**/apple_watch/Export.xml
 public/results/**/apple_watch/export_cda.xml
