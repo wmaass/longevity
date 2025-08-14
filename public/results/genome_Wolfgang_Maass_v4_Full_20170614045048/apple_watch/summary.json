@@ -1,0 +1,10 @@
+{
+  "rhr": 57,
+  "hrv_rmssd": 41,
+  "vo2max": null,
+  "sleep_hours": null,
+  "steps": 6131,
+  "window": "RHR/HRV:30d · Steps/Sleep:14d · VO2max:90d",
+  "asOf": "2025-08-14T11:02:32.004Z",
+  "note": "HRV uses SDNN (ms) as proxy for rMSSD due to Apple export format."
+}

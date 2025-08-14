@@ -36,39 +36,6 @@ function pick(row, keys) {
   return null;
 }
 
-/*********************************
- * Apple Watch loader (summary.json)
- *********************************/
-async function loadAppleWatchSummary(genomeName) {
-  try {
-    // 1) API ruft Export ein, prüft Zeitstempel und schreibt summary.json ggf. neu
-    const url = `/api/apple_watch/refresh-summary?genome=${encodeURIComponent(genomeName)}`;
-    let res = await fetch(url);
-    // Fallback: Wenn z.B. in dev die API nicht verfügbar ist
-    if (!res.ok) {
-      // 2) direkter Fallback auf vorhandene summary.json im Public-Ordner
-      const sumUrl = `/results/${encodeURIComponent(genomeName)}/apple_watch/summary.json`;
-      res = await fetch(sumUrl);
-      if (!res.ok) return null;
-    }
-    const j = await res.json();
-    const out = {};
-    const n = (x) => (Number.isFinite(+x) ? +x : null);
-    if (n(j?.rhr) != null) out.rhr = n(j.rhr);
-    if (n(j?.hrv_rmssd) != null) out.hrv_rmssd = n(j.hrv_rmssd);
-    if (n(j?.hrv) != null && out.hrv_rmssd == null) out.hrv_rmssd = n(j.hrv);
-    if (n(j?.vo2max) != null) out.vo2max = n(j.vo2max);
-    if (n(j?.sleep_hours) != null) out.sleep_hours = n(j.sleep_hours);
-    if (n(j?.steps) != null) out.steps = n(j.steps);
-    out.window = j?.window || null;
-    out.asOf = j?.asOf || null;
-    return Object.keys(out).length ? out : null;
-  } catch {
-    return null;
-  }
-}
-
-
 function calcAge(dobISO, refISO) {
   if (!dobISO) return null;
   const dob = new Date(dobISO);
@@ -192,48 +159,27 @@ const LIFESTYLE_CONFIG = [
 function logistic01(x) { return 1 / (1 + Math.exp(x)); }
 function computeLifestyleScores(bm, mode = 'z', cfg = LIFESTYLE_CONFIG) {
   if (!bm) return { mode, components: [], overallZ: null, overallHR: null, index01: null };
-  
   const comps = [];
   let sumZ = 0, nZ = 0, sumLogHR = 0, anyHR = false;
-
   for (const m of cfg) {
     let raw = get(bm, `${m.path}.value`, get(bm, m.path, null));
     raw = safeNum(raw);
-
     if (raw == null) continue;
-    if ((m.key === 'vo2max' || m.key === 'sleepDuration') && raw <= 0) continue;
-
     let z;
-    if (m.direction === 'window-7-9') { 
-      z = Math.abs(raw - m.target) / (m.sd || 1); 
-    } else if (m.direction === 'lower-better') { 
-      z = (raw - m.target) / (m.sd || 1); 
-    } else { 
-      z = (m.target - raw) / (m.sd || 1); 
-    }
-
+    if (m.direction === 'window-7-9') { z = Math.abs(raw - m.target) / (m.sd || 1); }
+    else if (m.direction === 'lower-better') { z = (raw - m.target) / (m.sd || 1); }
+    else { z = (m.target - raw) / (m.sd || 1); }
     let logHR = null, HR = null;
     if (Number.isFinite(m.hazardBetaPerUnit)) {
-      const ref = m.target; 
-      logHR = m.hazardBetaPerUnit * (raw - ref); 
-      HR = Math.exp(logHR); 
-      sumLogHR += logHR; 
-      anyHR = true;
-    }
-
-    sumZ += z; 
-    nZ += 1;
-
+      const ref = m.target; logHR = m.hazardBetaPerUnit * (raw - ref); HR = Math.exp(logHR); sumLogHR += logHR; anyHR = true; }
+    sumZ += z; nZ += 1;
     comps.push({ key: m.key, label: m.label, unit: m.unit, value: raw, z, display01: logistic01(z), logHR, HR });
   }
-
   const overallZ = nZ ? (sumZ / nZ) : null;
   const overallHR = anyHR ? Math.exp(sumLogHR) : null;
   const index01 = overallZ != null ? logistic01(overallZ) : null;
-
   return { mode, components: comps, overallZ, overallHR, index01 };
 }
-
 
 /*********************************
  * UI widgets
@@ -288,8 +234,6 @@ export default function LongevityPage() {
   const [pgsConfig, setPgsConfig] = useState([]);
   const [pgsBetaMap, setPgsBetaMap] = useState({});
   const [biomarkers, setBiomarkers] = useState(null);
-  const [appleVitals, setAppleVitals] = useState(null);
-  const [appleError, setAppleError] = useState(null);
   const [geneticRows, setGeneticRows] = useState([]); // NEW: per-PGS rows with z & beta
   const [ancestryByPgs, setAncestryByPgs] = useState({}); // { PGS000xxx: { ancestries: string[], pss: string[] } }
   const [whatIf, setWhatIf] = useState({});
@@ -436,21 +380,6 @@ export default function LongevityPage() {
     })();
   }, [router.isReady, genomeName]);
 
-  useEffect(() => {
-    if (!genomeName) return;
-    (async () => {
-      try {
-        const aw = await loadAppleWatchSummary(genomeName);
-        setAppleVitals(aw);
-        setAppleError(null);
-      } catch (e) {
-        setAppleVitals(null);
-        setAppleError(String(e));
-      }
-    })();
-  }, [genomeName]);
-
-
   // Select one PGS per trait/EFO with available betaPerSD, prefer highest |z|
   const selectedPgsRows = useMemo(() => {
     const byTrait = new Map();
@@ -475,30 +404,7 @@ export default function LongevityPage() {
   // NOTE: No z-only fallback for aggregation anymore (scientific defensibility). If β not available, we do not aggregate into risk.
 
   // Lifestyle/Vitals summary (z-score aggregation by default)
-  const lifestyleSummary = useMemo(() => {
-    const overlay = JSON.parse(JSON.stringify(biomarkers || {}));
-    if (appleVitals) {
-      overlay.biomarkers = overlay.biomarkers || {};
-      overlay.biomarkers.vitals = overlay.biomarkers.vitals || {};
-      if (appleVitals.rhr != null) {
-        overlay.biomarkers.vitals.restingHeartRate = { value: appleVitals.rhr, unit: 'bpm' };
-      }
-      if (appleVitals.hrv_rmssd != null) {
-        overlay.biomarkers.vitals.heartRateVariability = { value: appleVitals.hrv_rmssd, unit: 'ms' };
-      }
-      if (appleVitals.vo2max != null) {
-        overlay.biomarkers.vitals.vo2max = { value: appleVitals.vo2max, unit: 'ml/kg/min' };
-      }
-      if (appleVitals.sleep_hours != null) {
-        overlay.biomarkers.vitals.sleep = { duration: { value: appleVitals.sleep_hours, unit: 'h' } };
-      }
-      if (appleVitals.steps != null) {
-        overlay.biomarkers.vitals.activity = { steps: { value: appleVitals.steps, unit: 'steps' } };
-      }
-    }
-    return computeLifestyleScores(overlay, 'z');
-  }, [biomarkers, appleVitals]);
-
+  const lifestyleSummary = useMemo(() => computeLifestyleScores(biomarkers, 'z'), [biomarkers]);
 
   // Biomarker summary
   const biomarkerSummary = useMemo(() => {
@@ -666,12 +572,6 @@ export default function LongevityPage() {
         <div className="bg-white p-5 rounded-lg shadow h-full">
           <div className="flex items-baseline justify-between mb-2">
             <h3 className="text-lg font-semibold">Lifestyle/Vitals (experimentell)</h3>
-            {appleVitals && (
-              <div className="text-xs text-gray-500 mb-2">
-                Quelle: Apple Watch{appleVitals.window ? ` · ${appleVitals.window}` : ''}{appleVitals.asOf ? ` · Stand: ${new Date(appleVitals.asOf).toLocaleDateString()}` : ''}
-              </div>
-            )}
-
             {lifestyleSummary.overallZ != null && (
               <div className="text-xs text-gray-500">Gesamt-z (worse↑): {lifestyleSummary.overallZ.toFixed(2)}</div>
             )}
@@ -701,7 +601,6 @@ export default function LongevityPage() {
           ) : (
             <div className="text-gray-500 text-sm">Keine Lifestyle-/Vitals-Metriken gefunden.</div>
           )}
-
         </div>
       </div>
 
